@@ -18,7 +18,6 @@ class Room {
      *
      */
     bindEventHandlers() {
-        // Connect handler.
         this.io.on('connection', this.onConnect.bind(this));
     }
 
@@ -26,6 +25,8 @@ class Room {
      *
      */
     onConnect(socket) {
+        console.log('Player connected.');
+
         // Create a new player.
         const player = new Player(socket);
 
@@ -37,6 +38,7 @@ class Room {
      * @param {Player} player
      */
     addPlayer(player) {
+        // Tell the player to start the game.
         player.socket.emit('gameStarted', {
             self: player.toData(),
             others: this.players.map(function (player) {
@@ -44,9 +46,24 @@ class Room {
             }),
         });
 
+        // Add the player.
         this.players.push(player);
 
+        // Tell everyone that the player has joined.
         player.socket.broadcast.emit('playerJoined', player.toData());
+    }
+
+    /**
+     * @param {Player} player
+     */
+    removePlayer(player) {
+        // Tell everyone that the player has left.
+        this.socket.broadcast.emit('playerLeft', this.id);
+
+        // Filter out the player.
+        this.players = this.players.filter(function (other) {
+            return other.id !== player.id;
+        });
     }
 }
 
