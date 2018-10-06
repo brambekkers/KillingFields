@@ -59,7 +59,7 @@ function create (){
         players = players.filter((player)=>{
 
             if(player.id === id){
-                this.destroy(player.scenecircle);
+                // this.destroy(player.scenecircle);
             }
 
             return player.id != id;
