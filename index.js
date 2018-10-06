@@ -2,12 +2,10 @@ const express = require('express');
 const app = express();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
-
 const Room = require('./server/js/Room');
-const Player = require('./server/js/Player');
 
 // Create a room.
-const room = new Room();
+const room = new Room(io);
 
 // Home route.
 app.get('/', function(req, res) {
@@ -16,15 +14,6 @@ app.get('/', function(req, res) {
 
 // Host static files.
 app.use(express.static('public'));
-
-// Connect handler.
-io.on('connection', function(socket) {
-    // Preate a new player.
-    const player = new Player(socket);
-
-    // Add player to list.
-    room.addPlayer(player);
-});
 
 // Start the server.
 http.listen(3000, function() {
