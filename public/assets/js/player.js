@@ -41,7 +41,7 @@ class Player {
 
             if (this.cursors.up.isDown && this.sprite.body.touching.down) {
                 this.sprite.setVelocityY(-600);
-            } else if (cursors.down.isDown) {
+            } else if (this.cursors.down.isDown) {
                 this.sprite.setVelocityY(600);
             }
         }
