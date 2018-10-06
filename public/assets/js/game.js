@@ -54,10 +54,11 @@ function create (){
 
     // Player verlaat het spel
     socket.on('playerLeft', (id)=>{
+        console.log("Player verlaat het spel")
         players = players.filter((player)=>{
 
             if(player.id === id){
-                player.circle.destroy();
+                this.destroy(player.circle);
             }
 
             return player.id != id;
