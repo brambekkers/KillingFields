@@ -21,7 +21,7 @@ class Player{
 
         if (this.cursors.left.isDown)
         {
-            this.sprite.setVelocityX(-160);
+            this.sprite.setVelocityX(-300);
 
             animation = 'left';
             looping = true;
@@ -29,7 +29,7 @@ class Player{
         }
         else if (this.cursors.right.isDown)
         {
-            this.sprite.setVelocityX(160);
+            this.sprite.setVelocityX(300);
             animation = 'right';
             looping = true;
             this.sprite.flipX = false;
