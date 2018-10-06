@@ -10,7 +10,7 @@ var config = {
     physics: {
         default: 'arcade',
         arcade: {
-            gravity: { y: 700 },
+            gravity: { y: 1500 },
             debug: false
         }
     },
@@ -26,7 +26,7 @@ let cursors;
  *
  */
 function preload() {
-    this.load.spritesheet('player', 'assets/img/Player/p1_spritesheet.png', { frameWidth: 73 , frameHeight: 96});
+    this.load.spritesheet('player', 'assets/img/Player/p1_spritesheet.png', { frameWidth: 72.5 , frameHeight: 96});
     this.load.image('grassMid', 'assets/img/Tiles/grassMid.png');
 }
 
@@ -42,16 +42,22 @@ function create() {
     });
 
     this.anims.create({
-        key: 'turn',
-        frames: [ { key: 'player', frame: 12 } ],
-        frameRate: 20
-    });
-
-    this.anims.create({
         key: 'right',
         frames: this.anims.generateFrameNumbers('player', { start: 0, end: 4 }),
         frameRate: 10,
         repeat: -1
+    });
+
+    this.anims.create({
+        key: 'turn',
+        frames: [ { key: 'player', frame: 14 } ],
+        frameRate: 20
+    });
+
+    this.anims.create({
+        key: 'jump',
+        frames: [ { key: 'player', frame: 13 } ],
+        frameRate: 20
     });
 
     createPlatforms.bind(this)();
