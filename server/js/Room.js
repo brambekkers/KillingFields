@@ -28,7 +28,7 @@ class Room {
         console.log('Player connected.');
 
         // Create a new player.
-        const player = new Player(socket);
+        const player = new Player(socket, this);
 
         // Add player to list.
         this.addPlayer(player);
@@ -58,7 +58,7 @@ class Room {
      */
     removePlayer(player) {
         // Tell everyone that the player has left.
-        this.socket.broadcast.emit('playerLeft', this.id);
+        player.socket.broadcast.emit('playerLeft', this.id);
 
         // Filter out the player.
         this.players = this.players.filter(function (other) {

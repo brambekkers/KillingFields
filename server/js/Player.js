@@ -6,8 +6,6 @@ class Player {
      * @param {Socket} socket
      */
     constructor(socket, room) {
-        console.log('User connected.');
-
         this.socket = socket;
         this.room = room;
 
