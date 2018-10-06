@@ -40,6 +40,10 @@ class Player{
         {
             this.sprite.setVelocityY(-600);
         }
+        else if(cursors.down.isDown)
+        {
+            this.sprite.setVelocityY(600);
+        }
 
     }
 
