@@ -6,28 +6,6 @@ class Player{
         this.sprite = this.scene.physics.add.sprite(player.x, player.y, 'player');
     }
 
-    create(){
-        this.scene.anims.create({
-            key: 'left',
-            frames: this.scene.anims.generateFrameNumbers('player', { start: 0, end: 4 }),
-            frameRate: 10,
-            repeat: -1
-        });
-
-        this.scene.anims.create({
-            key: 'turn',
-            frames: [ { key: 'player', frame: 12 } ],
-            frameRate: 20
-        });
-
-        this.scene.anims.create({
-            key: 'right',
-            frames: this.scene.anims.generateFrameNumbers('player', { start: 0, end: 4 }),
-            frameRate: 10,
-            repeat: -1
-        });
-    }
-
     update() {
         this.move();
     }
@@ -57,9 +35,9 @@ class Player{
             this.sprite.anims.play('turn');
         }
 
-        if (this.cursors.up.isDown && player.body.touching.down)
+        if (this.cursors.up.isDown && this.sprite.body.touching.down)
         {
-            this.sprite.setVelocityY(-330);
+            this.sprite.setVelocityY(-600);
         }
 
         socket.emit('move', {

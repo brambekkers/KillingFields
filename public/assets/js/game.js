@@ -10,8 +10,8 @@ var config = {
     physics: {
         default: 'arcade',
         arcade: {
-            gravity: { y: 300 },
-            debug: true
+            gravity: { y: 700 },
+            debug: false
         }
     },
 };
@@ -34,6 +34,27 @@ function preload() {
  *
  */
 function create() {
+    this.anims.create({
+        key: 'left',
+        frames: this.anims.generateFrameNumbers('player', { start: 0, end: 4 }),
+        frameRate: 10,
+        repeat: -1
+    });
+
+    this.anims.create({
+        key: 'turn',
+        frames: [ { key: 'player', frame: 12 } ],
+        frameRate: 20
+    });
+
+    this.scene.anims.create({
+        key: 'right',
+        frames: this.anims.generateFrameNumbers('player', { start: 0, end: 4 }),
+        frameRate: 10,
+        repeat: -1
+    });
+
+
     createPlatforms.bind(this)();
     bindSocketEvents.bind(this)();
 }
