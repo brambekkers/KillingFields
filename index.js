@@ -1,34 +1,32 @@
-var express = require('express');
-var app = express();
-var http = require('http').Server(app);
-var io = require('socket.io')(http);
+const express = require('express');
+const app = express();
+const http = require('http').Server(app);
+const io = require('socket.io')(http);
 
-// Laad html
-app.get('/', function(req, res){
-  res.sendFile(__dirname + '/public/index.html');
+const Room = require('./server/js/Room');
+const Player = require('./server/js/Player');
+
+// Create a room.
+const room = new Room();
+
+// Home route.
+app.get('/', function(req, res) {
+    res.sendFile(__dirname + '/public/index.html');
 });
 
-// host static files
+// Host static files.
 app.use(express.static('public'));
 
-// User handler
-io.on('connection', function(socket){
+// Connect handler.
+io.on('connection', function(socket) {
+    // Preate a new player.
+    const player = new Player(socket);
 
-  // connection
-  console.log('a user connected');
-  socket.on('disconnect', function(){
-    console.log('user disconnected');
-  });
-
-  // afhandelen berichten
-  socket.on('chat message', function(msg){
-    console.log('message: ' + msg);
-    io.emit('chat message', msg);
-  });
+    // Add player to list.
+    room.addPlayer(player);
 });
 
-
-
-http.listen(3000, function(){
-  console.log('listening on *:3000');
+// Start the server.
+http.listen(3000, function() {
+    console.log('listening on *:3000');
 });
