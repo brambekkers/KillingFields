@@ -49,12 +49,8 @@ class Room {
         // Add the player.
         this.players.push(player);
 
-<<<<<<< HEAD
-        player.socket.emit('playerJoined', player.toData());
-=======
         // Tell everyone that the player has joined.
         player.socket.broadcast.emit('playerJoined', player.toData());
->>>>>>> 85ea1a0c377d8d04934b8e610fdb16a7446415bc
     }
 
     /**
