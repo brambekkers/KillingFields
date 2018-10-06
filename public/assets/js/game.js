@@ -102,6 +102,7 @@ function bindSocketEvents() {
 function onGameStarted(allPlayers) {
     const me = addPlayer.bind(this)(allPlayers.self);
     me.cursors = this.input.keyboard.createCursorKeys();
+    me.sprite.body.allowGravity = true;
 
     for (const player of allPlayers.others) {
         addPlayer.bind(this)(player);
@@ -123,13 +124,11 @@ function onPlayerMoved(player) {
         return other.id === player.id;
     })[0];
 
-    // console.log('otherPlayer', otherPlayer);
-
     if (!otherPlayer) {
         return;
     }
 
-    otherPlayer.setPosition(player.x, player.y);
+    otherPlayer.setPosition(player);
 };
 
 /**
