@@ -17,58 +17,74 @@ var config = {
 };
 
 let game = new Phaser.Game(config);
-let players = []
+let platforms;
+let players = [];
 
-
-function preload (){
+/**
+ *
+ */
+function preload() {
     this.load.image('player', 'assets/img/Player/p1_front.png');
+    this.load.image('grassMid', 'assets/img/Tiles/grassMid.png');
 }
 
-function create (){
+function create() {
+    createPlatforms.bind(this)();
+    bindSocketEvents.bind(this)();
+}
 
-    ////////////////////////////////////////////
-    //////////// Server handeling //////////////
-    ////////////////////////////////////////////
+function update() {
+
+}
+
+function createPlatforms() {
+    platforms = this.physics.add.staticGroup();
+
+    for (let x = 35; x <= config.width + 35; x += 70) {
+        platforms.create(x, config.height - 35, 'grassMid');
+    }
+};
+
+function bindSocketEvents() {
     const socket = io();
 
-    // Game start
-    socket.on('gameStarted', (allPlayers)=>{
-        console.log("Alle Players toegevoegd");
-        console.log(allPlayers);
+    socket.on('gameStarted', onGameStarted.bind(this));
+    socket.on('playerJoined', onPlayerJoined.bind(this));
+    socket.on('playerLeft', onPlayerLeft.bind(this));
+};
 
-        // Push zelf
-        players.push( new Player(this, allPlayers.self) )
+function onGameStarted(allPlayers) {
+    addPlayer.bind(this)(this, allPlayers.self);
 
-        // Push alle anderen
-        for (const player of allPlayers.others) {
-            players.push( new Player(this, player) )
+    for (const player of allPlayers.others) {
+        addPlayer.bind(this)(this, player);
+    }
+};
+
+function onPlayerJoined(player) {
+    addPlayer.bind(this)(this, player);
+};
+
+function onPlayerLeft(id) {
+    players = players.filter((player)=>{
+        if (player.id === id) {
+            // this.destroy(player.scenecircle);
         }
-    });
 
-    // Er komst een player bij
-    socket.on('playerJoined', (player)=>{
-        console.log("Player joined the game")
-        // Maak nieuwe player
-        let nieuwePlayer = new Player(this, player)
-        players.push( nieuwePlayer )
-    });
+        return player.id !== id;
+    })
+};
 
-    // Player verlaat het spel
-    socket.on('playerLeft', (id)=>{
-        console.log("Player verlaat het spel")
-        players = players.filter((player)=>{
+function addPlayer(data) {
+    let player = createPlayer.bind(this)(data);
+    players.push(player);
 
-            if(player.id === id){
-                // this.destroy(player.scenecircle);
-            }
+    return player;
+};
 
-            return player.id != id;
-        })
-    });
+function createPlayer(data) {
+    let player = new Player(this, data);
+    this.physics.add.collider(player.sprite, platforms);
 
-
-}
-
-function update (){
-
-}
+    return player;
+};

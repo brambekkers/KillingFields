@@ -6,13 +6,13 @@ class Player{
         this.y = player.y || 600/2
 
         this.r = 20
-        this.circle = null
+        this.sprite = null
 
         this.create()
     }
 
     create(){
-        this.circle = this.scene.physics.add.sprite(100, 450, 'player');
+        this.sprite = this.scene.physics.add.sprite(100, 450, 'player');
     }
 
     update(){
