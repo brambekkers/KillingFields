@@ -1,7 +1,7 @@
 var config = {
     type: Phaser.AUTO,
-    width: 800,
-    height: 600,
+    width: 1024,
+    height: 1024,
     scene: {
         preload: preload,
         create: create,
@@ -10,7 +10,7 @@ var config = {
     physics: {
         default: 'arcade',
         arcade: {
-            gravity: { y: 300 },
+            gravity: { y: 0 },
             debug: true
         }
     },
@@ -21,7 +21,9 @@ let players = []
 
 
 function preload (){
-    this.load.image('player', 'assets/img/Player/p1_front.png');
+    console.log(this.load.spritesheet)
+    this.load.spritesheet('player', 'assets/img/Player/p1_spritesheet.png', { frameWidth: 74, frameHeight: 96, spacing: 1 });
+
 }
 
 function create (){
@@ -59,7 +61,7 @@ function create (){
         players = players.filter((player)=>{
 
             if(player.id === id){
-                // this.destroy(player.scenecircle);
+                player.sprite.destroy();
             }
 
             return player.id != id;
@@ -67,8 +69,19 @@ function create (){
     });
 
 
+    ////////////////////////////////////////////
+    ////////////// Game handeling //////////////
+    ////////////////////////////////////////////
+
+    //  Input Events
+    cursors = this.input.keyboard.createCursorKeys();
+
+
+
 }
 
 function update (){
-
+    for (const player of players) {
+        player.update()
+    }
 }
