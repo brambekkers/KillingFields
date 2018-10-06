@@ -13,26 +13,6 @@ class Player{
 
     create(){
         this.sprite = this.scene.physics.add.sprite(this.x, this.y, 'player');
-
-        this.scene.anims.create({
-            key: 'left',
-            frames: this.scene.anims.generateFrameNumbers('player', { start: 0, end: 4 }),
-            frameRate: 10,
-            repeat: -1
-        });
-    
-        this.scene.anims.create({
-            key: 'turn',
-            frames: [ { key: 'player', frame: 12 } ],
-            frameRate: 20
-        });
-
-        this.scene.anims.create({
-            key: 'right',
-            frames: this.scene.anims.generateFrameNumbers('player', { start: 0, end: 4 }),
-            frameRate: 10,
-            repeat: -1
-        });
     }
 
     update(){
