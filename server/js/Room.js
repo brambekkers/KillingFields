@@ -1,3 +1,5 @@
+const Player = require('./Player');
+
 /**
  *
  */
@@ -5,21 +7,36 @@ class Room {
     /**
      *
      */
-    constructor() {
-        this.players = [];
+    constructor(io) {
+        this.io = io;
+        this.players = {};
+
+        this.bindEventHandlers();
+    }
+
+    /**
+     *
+     */
+    bindEventHandlers() {
+        // Connect handler.
+        this.io.on('connection', function(socket) {
+            // Create a new player.
+            const player = new Player(socket);
+
+            // Add player to list.
+            this.addPlayer(player);
+        });
     }
 
     /**
      * @param {Player} player
      */
     addPlayer(player) {
-        player.id = this.players.length + 1;
+        this.players[player.socker.id] = player;
 
-        this.players.push(player);
+        player.socket.emit('players', players);
 
-        player.socket.emit('playerJoined', {
-            player: player.data(),
-        });
+        player.socket.broadcast.emit('playerJoined', player);
     }
 }
 
