@@ -1,11 +1,15 @@
-var app = require('express')();
+var express = require('express');
+var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
 // Laad html
 app.get('/', function(req, res){
-  res.sendFile(__dirname + '/index.html');
+  res.sendFile(__dirname + '/public/index.html');
 });
+
+// host static files
+app.use(express.static('public'));
 
 // User handler
 io.on('connection', function(socket){
