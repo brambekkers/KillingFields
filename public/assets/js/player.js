@@ -12,10 +12,7 @@ class Player{
     }
 
     create(){
-        this.circle = new Phaser.Geom.Circle(this.x, this.y, this.r);
-
-        let graphics = this.scene.add.graphics({ fillStyle: { color: 0xff0000 } });
-        graphics.fillCircleShape(this.circle);
+        this.circle = this.scene.physics.add.sprite(100, 450, 'player');
     }
 
     update(){

@@ -21,7 +21,7 @@ let players = []
 
 
 function preload (){
-
+    this.load.image('player', 'assets/img/Player/p1_front.png');
 }
 
 function create (){
@@ -59,7 +59,7 @@ function create (){
         players = players.filter((player)=>{
 
             if(player.id === id){
-                this.destroy(player.circle);
+                this.destroy(player.scenecircle);
             }
 
             return player.id != id;
