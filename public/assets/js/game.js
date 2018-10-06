@@ -1,7 +1,7 @@
 var config = {
     type: Phaser.AUTO,
-    width: 1024,
-    height: 512,
+    width: 1120,
+    height: 1120,
     scene: {
         preload: preload,
         create: create,
@@ -22,18 +22,32 @@ let platforms;
 let players = [];
 let cursors;
 
+let laag_platform
+let laag_objecten
+let laag_brug
+
 /**
  *
  */
 function preload() {
+    this.load.image('background', 'assets/img/background.png');
     this.load.spritesheet('player', 'assets/img/Player/p1_spritesheet.png', { frameWidth: 72.5 , frameHeight: 96});
-    this.load.image('grassMid', 'assets/img/Tiles/grassMid.png');
+    
+    // Tileset Wereld
+    this.load.image('tilesMain', 'assets/maps/lvl1/tiles_spritesheet.png');
+
+    this.load.tilemapCSV('lvl1_grond', 'assets/maps/lvl1/KillingFields_Platform.csv');
+    this.load.tilemapCSV('lvl1_objecten', 'assets/maps/lvl1/KillingFields_Objecten.csv');
+    this.load.tilemapCSV('lvl1_brug', 'assets/maps/lvl1/KillingFields_Brug.csv');    
+    this.load.tilemapCSV('lvl1_decoratie', 'assets/maps/lvl1/KillingFields_Decoratie.csv');
 }
 
 /**
  *
  */
 function create() {
+    this.add.tileSprite(game.config.width/2, game.config.height/2, game.config.width, game.config.height, 'background');
+
     this.anims.create({
         key: 'left',
         frames: this.anims.generateFrameNumbers('player', { start: 0, end: 4 }),
@@ -60,8 +74,9 @@ function create() {
         frameRate: 20
     });
 
-    createPlatforms.bind(this)();
     bindSocketEvents.bind(this)();
+    createPlatforms.bind(this)();
+
 }
 
 /**
@@ -77,11 +92,31 @@ function update() {
  *
  */
 function createPlatforms() {
-    platforms = this.physics.add.staticGroup();
+    // Tileset platform
+    let tilemap_platform = this.make.tilemap({ key: 'lvl1_grond', tileWidth: 70, tileHeight: 70});
+    let tileset_platform = tilemap_platform.addTilesetImage('tilesMain');
+    laag_platform = tilemap_platform.createStaticLayer(0, tileset_platform, 0, 0); // layer index, tileset, x, y
 
-    for (let x = 35; x <= config.width + 35; x += 70) {
-        platforms.create(x, config.height - 35, 'grassMid');
-    }
+    laag_platform.setCollisionBetween(1, 200);
+
+    // Tileset platform
+    let tilemap_objecten = this.make.tilemap({ key: 'lvl1_objecten', tileWidth: 70, tileHeight: 70});
+    let tileset_objecten = tilemap_platform.addTilesetImage('tilesMain');
+    laag_objecten = tilemap_objecten.createStaticLayer(0, tileset_objecten, 0, 0); // layer index, tileset, x, y
+
+    laag_objecten.setCollisionBetween(1, 200);
+
+    // Tileset brug
+    let tilemap_brug = this.make.tilemap({ key: 'lvl1_brug', tileWidth: 70, tileHeight: 70});
+    let tileset_brug = tilemap_brug.addTilesetImage('tilesMain');
+    laag_brug = tilemap_brug.createStaticLayer(0, tileset_brug, 0, 0); // layer index, tileset, x, y
+
+    laag_brug.setCollisionBetween(1, 200);
+
+    // Tileset decoratie
+    let tilemap_decoratie = this.make.tilemap({ key: 'lvl1_decoratie', tileWidth: 70, tileHeight: 70});
+    let tileset_decoratie = tilemap_decoratie.addTilesetImage('tilesMain');
+    laag_decoratie = tilemap_decoratie.createStaticLayer(0, tileset_decoratie, 0, 0); // layer index, tileset, x, y
 };
 
 /**
@@ -103,6 +138,9 @@ function onGameStarted(allPlayers) {
     const me = addPlayer.bind(this)(allPlayers.self);
     me.cursors = this.input.keyboard.createCursorKeys();
     me.sprite.body.allowGravity = true;
+
+    //collision
+    this.physics.add.collider(me.sprite, [laag_platform, laag_objecten, laag_brug]);
 
     for (const player of allPlayers.others) {
         addPlayer.bind(this)(player);

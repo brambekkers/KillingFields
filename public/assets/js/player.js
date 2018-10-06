@@ -3,7 +3,7 @@ class Player {
         this.scene = scene
         this.id = player.id
 
-        this.sprite = this.scene.physics.add.sprite(player.x, player.y, 'player');
+        this.sprite = this.scene.physics.add.sprite(player.x, player.y, 'player').setBounce(0.1);
         this.sprite.body.allowGravity = false;
     }
 
@@ -34,13 +34,13 @@ class Player {
             this.sprite.setVelocityX(0);
         }
 
-        if (this.cursors.up.isDown && this.sprite.body.touching.down) {
-            this.sprite.setVelocityY(-600);
+        if (this.cursors.up.isDown && this.sprite.body.blocked.down) {
+            this.sprite.setVelocityY(-1000);
         } else if (this.cursors.down.isDown) {
             this.sprite.setVelocityY(600);
         }
 
-        if (!this.sprite.body.touching.down) {
+        if (!this.sprite.body.blocked.down) {
             animation = 'jump';
             looping = true;
         }
