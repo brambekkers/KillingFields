@@ -30,6 +30,19 @@ function create (){
     // Server handeling
     const socket = io();
 
+    // Game start
+    socket.on('gameStarted', (allPlayers)=>{
+
+        // Push zelf
+        players.push( new Player(this, allPlayers.self) )
+
+        // Push alle anderen
+        for (const player of allPlayers.others) {
+            players.push( new Player(this, player) )
+        }
+    });
+
+    // Er komst een player bij
     socket.on('playerJoined', (player)=>{
     
         // Maak nieuwe player
@@ -39,9 +52,7 @@ function create (){
 
     });
 
-    socket.on('players', (allPlayers)=>{
-        players = allPlayers
-    });
+
 
 
 }

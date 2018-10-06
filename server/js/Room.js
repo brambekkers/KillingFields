@@ -22,11 +22,14 @@ class Room {
         this.io.on('connection', this.onConnect.bind(this));
     }
 
+    /**
+     *
+     */
     onConnect(socket) {
         // Create a new player.
         const player = new Player(socket);
 
-        // // Add player to list.
+        // Add player to list.
         this.addPlayer(player);
     }
 
@@ -36,9 +39,12 @@ class Room {
     addPlayer(player) {
         this.players.push(player);
 
-        player.socket.emit('players', JSON.stringify(this.users));
+        player.socket.emit('players', this.players.map(function (player) {
+            return player.toData();
+        }));
+        console.log("test server")
 
-        // player.socket.broadcast.emit('playerJoined', player);
+        player.socket.emit('playerJoined', player.toData());
     }
 }
 
