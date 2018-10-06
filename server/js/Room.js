@@ -9,7 +9,7 @@ class Room {
      */
     constructor(io) {
         this.io = io;
-        this.players = {};
+        this.players = [];
 
         this.bindEventHandlers();
     }
@@ -32,9 +32,9 @@ class Room {
      * @param {Player} player
      */
     addPlayer(player) {
-        this.players[player.socket.id] = player;
+        this.players.push(player);
 
-        player.socket.emit('players', players);
+        player.socket.emit('players', this.players);
 
         player.socket.broadcast.emit('playerJoined', player);
     }
