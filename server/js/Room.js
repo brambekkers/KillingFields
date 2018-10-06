@@ -32,7 +32,7 @@ class Room {
      * @param {Player} player
      */
     addPlayer(player) {
-        this.players[player.socker.id] = player;
+        this.players[player.socket.id] = player;
 
         player.socket.emit('players', players);
 
