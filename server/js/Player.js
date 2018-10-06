@@ -9,8 +9,11 @@ class Player {
         this.socket = socket;
         this.room = room;
 
-        this.x = Math.random() * 800;
-        this.y = Math.random() * 600;
+        this.x = Math.random() * 1024;
+        this.y = Math.random() * 512 - 70;
+        this.animation = 'turn';
+        this.looping = false;
+        this.flipX = false;
 
         this.bindEventHandlers();
     }
@@ -35,19 +38,15 @@ class Player {
     /**
      *
      */
-    onMove(position) {
-        this.setPosition(position.x, position.y);
-    }
-
-    /**
-     *
-     */
-    setPosition(x, y) {
-        this.x = x;
-        this.y = y;
+    onMove(data) {
+        this.x = data.x;
+        this.y = data.y;
+        this.animation = data.animation;
+        this.looping = data.looping;
+        this.flipX = data.flipX;
 
         this.socket.broadcast.emit('playerMoved', this.toData());
-    };
+    }
 
     /**
      *
@@ -57,6 +56,9 @@ class Player {
             id: this.socket.id,
             x: this.x,
             y: this.y,
+            animation: this.animation,
+            looping: this.looping,
+            flipX: this.flipX,
         };
     }
 }
