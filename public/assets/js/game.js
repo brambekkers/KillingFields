@@ -1,7 +1,7 @@
 var config = {
     type: Phaser.AUTO,
-    width: 800,
-    height: 600,
+    width: 1024,
+    height: 512,
     scene: {
         preload: preload,
         create: create,
@@ -19,24 +19,38 @@ var config = {
 let game = new Phaser.Game(config);
 let platforms;
 let players = [];
+let cursors;
 
 /**
  *
  */
 function preload() {
-    this.load.image('player', 'assets/img/Player/p1_front.png');
+    this.load.spritesheet('player', 'assets/img/Player/p1_spritesheet.png', { frameWidth: 74, frameHeight: 96, spacing: 1 });
     this.load.image('grassMid', 'assets/img/Tiles/grassMid.png');
 }
 
+/**
+ *
+ */
 function create() {
     createPlatforms.bind(this)();
     bindSocketEvents.bind(this)();
+
+    cursors = this.input.keyboard.createCursorKeys();
 }
 
+/**
+ *
+ */
 function update() {
-
+    for (const player of players) {
+        player.update()
+    }
 }
 
+/**
+ *
+ */
 function createPlatforms() {
     platforms = this.physics.add.staticGroup();
 
@@ -45,6 +59,9 @@ function createPlatforms() {
     }
 };
 
+/**
+ *
+ */
 function bindSocketEvents() {
     const socket = io();
 
@@ -53,6 +70,9 @@ function bindSocketEvents() {
     socket.on('playerLeft', onPlayerLeft.bind(this));
 };
 
+/**
+ *
+ */
 function onGameStarted(allPlayers) {
     addPlayer.bind(this)(this, allPlayers.self);
 
@@ -61,20 +81,29 @@ function onGameStarted(allPlayers) {
     }
 };
 
+/**
+ *
+ */
 function onPlayerJoined(player) {
     addPlayer.bind(this)(this, player);
 };
 
+/**
+ *
+ */
 function onPlayerLeft(id) {
     players = players.filter((player)=>{
         if (player.id === id) {
-            // this.destroy(player.scenecircle);
+            player.sprite.destroy();
         }
 
         return player.id !== id;
     })
 };
 
+/**
+ *
+ */
 function addPlayer(data) {
     let player = createPlayer.bind(this)(data);
     players.push(player);
@@ -82,6 +111,9 @@ function addPlayer(data) {
     return player;
 };
 
+/**
+ *
+ */
 function createPlayer(data) {
     let player = new Player(this, data);
     this.physics.add.collider(player.sprite, platforms);
