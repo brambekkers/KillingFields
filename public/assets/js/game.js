@@ -39,6 +39,10 @@ function create (){
 
     });
 
+    socket.on('players', (allPlayers)=>{
+        players = allPlayers
+    });
+
 
 }
 
