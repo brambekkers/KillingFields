@@ -16,17 +16,35 @@ var config = {
     },
 };
 
-var game = new Phaser.Game(config);
+let game = new Phaser.Game(config);
+let players = []
 
 
 function preload (){
-
-}
-
-function create (){
     
 }
 
-function update (){
+function create (){
+
+
+    // Server handeling
+    const socket = io();
+
+    socket.on('playerJoined', (player)=>{
+    
+        // Maak nieuwe player
+        console.log(player.id)
+        let nieuwePlayer = new Player(this, player)
+        players.push( nieuwePlayer )
+
+    });
+
 
 }
+
+function update (){
+    
+}
+
+
+
