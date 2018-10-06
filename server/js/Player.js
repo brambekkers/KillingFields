@@ -49,6 +49,17 @@ class Player {
 
         this.socket.broadcast.emit('playerMoved', player);
     };
+
+    /**
+     *
+     */
+    toData() {
+        return {
+            id: this.socket.id,
+            x: this.x,
+            y: this.y,
+        };
+    }
 }
 
 module.exports = Player;

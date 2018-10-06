@@ -39,9 +39,11 @@ class Room {
     addPlayer(player) {
         this.players.push(player);
 
-        player.socket.emit('players', JSON.stringify(this.players));
+        player.socket.emit('players', this.players.map(function (player) {
+            return player.toData();
+        }));
 
-        player.socket.broadcast.emit('playerJoined', JSON.stringify(player));
+        player.socket.broadcast.emit('playerJoined', player.toData());
     }
 }
 
