@@ -34,8 +34,6 @@ class Player {
             this.sprite.setVelocityX(0);
         }
 
-        this.sprite.anims.play(animation, looping);
-
         if (this.cursors.up.isDown && this.sprite.body.touching.down) {
             this.sprite.setVelocityY(-600);
         } else if (this.cursors.down.isDown) {
@@ -46,6 +44,8 @@ class Player {
             animation = 'jump';
             looping = true;
         }
+
+        this.sprite.anims.play(animation, looping);
 
         socket.emit('move', {
             x: this.sprite.x,
