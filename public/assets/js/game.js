@@ -47,13 +47,12 @@ function create() {
         frameRate: 20
     });
 
-    this.scene.anims.create({
+    this.anims.create({
         key: 'right',
         frames: this.anims.generateFrameNumbers('player', { start: 0, end: 4 }),
         frameRate: 10,
         repeat: -1
     });
-
 
     createPlatforms.bind(this)();
     bindSocketEvents.bind(this)();
@@ -95,11 +94,11 @@ function bindSocketEvents() {
  *
  */
 function onGameStarted(allPlayers) {
-    const me = addPlayer.bind(this)(this, allPlayers.self);
+    const me = addPlayer.bind(this)(allPlayers.self);
     me.cursors = this.input.keyboard.createCursorKeys();
 
     for (const player of allPlayers.others) {
-        addPlayer.bind(this)(this, player);
+        addPlayer.bind(this)(player);
     }
 };
 
@@ -107,7 +106,7 @@ function onGameStarted(allPlayers) {
  *
  */
 function onPlayerJoined(player) {
-    addPlayer.bind(this)(this, player);
+    addPlayer.bind(this)(player);
 };
 
 /**
@@ -115,7 +114,6 @@ function onPlayerJoined(player) {
  */
 function onPlayerMoved(player) {
     const otherPlayer = players.filter(function (other) {
-        console.log(other, player);
         return other.id === player.id;
     })[0];
 

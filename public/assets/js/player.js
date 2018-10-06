@@ -47,7 +47,6 @@ class Player{
     }
 
     setPosition(x, y) {
-        console.log('setPosition');
         this.sprite.x = x;
         this.sprite.y = y;
     }
