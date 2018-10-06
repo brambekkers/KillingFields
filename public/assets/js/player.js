@@ -19,35 +19,33 @@ class Player {
         let animation = 'turn';
         let looping = false;
 
-        if (!this.sprite.body.touching.down) {
-            this.sprite.anims.play('jump', true);
+        if (this.cursors.left.isDown) {
+            this.sprite.setVelocityX(-300);
+
+            animation = 'left';
+            looping = true;
+            this.sprite.flipX = true;
+        } else if (this.cursors.right.isDown) {
+            this.sprite.setVelocityX(300);
+            animation = 'right';
+            looping = true;
+            this.sprite.flipX = false;
         } else {
-            if (this.cursors.left.isDown) {
-                this.sprite.setVelocityX(-300);
-
-                animation = 'left';
-                looping = true;
-                this.sprite.flipX = true;
-            } else if (this.cursors.right.isDown) {
-                this.sprite.setVelocityX(300);
-                animation = 'right';
-                looping = true;
-                this.sprite.flipX = false;
-            } else {
-                this.sprite.setVelocityX(0);
-            }
-
-            this.sprite.anims.play(animation, looping);
-
-            if (this.cursors.up.isDown && this.sprite.body.touching.down) {
-                this.sprite.setVelocityY(-600);
-            } else if (this.cursors.down.isDown) {
-                this.sprite.setVelocityY(600);
-            }
+            this.sprite.setVelocityX(0);
         }
 
+        this.sprite.anims.play(animation, looping);
 
+        if (this.cursors.up.isDown && this.sprite.body.touching.down) {
+            this.sprite.setVelocityY(-600);
+        } else if (this.cursors.down.isDown) {
+            this.sprite.setVelocityY(600);
+        }
 
+        if (!this.sprite.body.touching.down) {
+            animation = 'jump';
+            looping = true;
+        }
 
         socket.emit('move', {
             x: this.sprite.x,
