@@ -25,7 +25,7 @@ class Room {
 
             // Add player to list.
             this.addPlayer(player);
-        });
+        }.bind(this));
     }
 
     /**
