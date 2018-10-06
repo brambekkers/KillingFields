@@ -22,7 +22,7 @@ let players = []
 
 function preload (){
     console.log(this.load.spritesheet)
-    this.load.spritesheet('player', 'assets/img/Player/p1_spritesheet.png', { frameWidth: 74, frameHeight: 96, spacing: 1 });
+    this.load.spritesheet('player', 'assets/img/Player/p1_spritesheet.png', { frameWidth: 73 , frameHeight: 96});
 
 }
 
