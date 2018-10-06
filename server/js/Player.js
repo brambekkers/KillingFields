@@ -9,8 +9,8 @@ class Player {
         console.log('User connected.');
 
         this.socket = socket;
-        this.x = Math.random(0, 800);
-        this.y = Math.random(0, 600);
+        this.x = Math.random() * 800;
+        this.y = Math.random() * 600;
 
         this.bindEventHandlers();
     }
