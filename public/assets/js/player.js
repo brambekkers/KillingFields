@@ -56,9 +56,9 @@ class Player{
             this.sprite.anims.play('turn');
         }
 
-        if (cursors.up.isDown && player.body.touching.down)
+        if (cursors.up.isDown && this.sprite.body.touching.down)
         {
-            this.sprite.setVelocityY(-330);
+            this.sprite.setVelocityY(-600);
         }
 
     }
