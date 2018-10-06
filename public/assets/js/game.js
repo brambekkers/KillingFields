@@ -25,7 +25,7 @@ let cursors;
  *
  */
 function preload() {
-    this.load.spritesheet('player', 'assets/img/Player/p1_spritesheet.png', { frameWidth: 74, frameHeight: 96, spacing: 1 });
+    this.load.spritesheet('player', 'assets/img/Player/p1_spritesheet.png', { frameWidth: 73 , frameHeight: 96});
     this.load.image('grassMid', 'assets/img/Tiles/grassMid.png');
 }
 
