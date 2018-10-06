@@ -21,7 +21,7 @@ let players = []
 
 
 function preload (){
-    
+
 }
 
 function create (){
@@ -33,7 +33,8 @@ function create (){
 
     // Game start
     socket.on('gameStarted', (allPlayers)=>{
-        console.log("Alle Players toegevoegd")
+        console.log("Alle Players toegevoegd");
+        console.log(allPlayers);
 
         // Push zelf
         players.push( new Player(this, allPlayers.self) )
@@ -68,8 +69,5 @@ function create (){
 }
 
 function update (){
-    
+
 }
-
-
-
