@@ -13,6 +13,9 @@
 		<script src="/assets/js/game.js"></script>
 		<script>
 			const socket = io();
+			socket.on('playerJoined', function(msg){
+				console.log(msg)
+			});
 		</script>
 	</body>
 

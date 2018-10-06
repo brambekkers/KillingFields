@@ -6,22 +6,27 @@ var config = {
         preload: preload,
         create: create,
         update: update
-    }
+    },
+    physics: {
+        default: 'arcade',
+        arcade: {
+            gravity: { y: 300 },
+            debug: true
+        }
+    },
 };
 
 var game = new Phaser.Game(config);
 
-function preload ()
-{
+
+function preload (){
 
 }
 
-function create ()
-{
+function create (){
     
 }
 
-function update ()
-{
+function update (){
 
 }
