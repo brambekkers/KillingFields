@@ -19,13 +19,15 @@ class Room {
      */
     bindEventHandlers() {
         // Connect handler.
-        this.io.on('connection', function(socket) {
-            // Create a new player.
-            const player = new Player(socket);
+        this.io.on('connection', this.onConnect.bind(this));
+    }
 
-            // Add player to list.
-            this.addPlayer(player);
-        }.bind(this));
+    onConnect(socket) {
+        // Create a new player.
+        const player = new Player(socket);
+
+        // // Add player to list.
+        this.addPlayer(player);
     }
 
     /**
@@ -34,9 +36,9 @@ class Room {
     addPlayer(player) {
         this.players.push(player);
 
-        player.socket.emit('players', this.players);
+        player.socket.emit('players', JSON.stringify(this.users));
 
-        player.socket.broadcast.emit('playerJoined', player);
+        // player.socket.broadcast.emit('playerJoined', player);
     }
 }
 
