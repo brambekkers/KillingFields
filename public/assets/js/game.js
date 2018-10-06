@@ -44,12 +44,9 @@ function create (){
 
     // Er komst een player bij
     socket.on('playerJoined', (player)=>{
-    
         // Maak nieuwe player
-        console.log(player.id)
         let nieuwePlayer = new Player(this, player)
         players.push( nieuwePlayer )
-
     });
 
 

@@ -12,8 +12,6 @@ class Player{
     }
 
     create(){
-        console.log("Ik ben geladen")
-
         this.circle = new Phaser.Geom.Circle(this.x, this.y, this.r);
 
         let graphics = this.scene.add.graphics({ fillStyle: { color: 0xff0000 } });
@@ -21,7 +19,7 @@ class Player{
     }
 
     update(){
-        console.log("Ik wordt geupdate")
+
 
     }
 

@@ -37,12 +37,14 @@ class Room {
      * @param {Player} player
      */
     addPlayer(player) {
-        this.players.push(player);
+        player.socket.emit('gameStarted', {
+            self: player.toData(),
+            others: this.players.map(function (player) {
+                return player.toData();
+            }),
+        });
 
-        player.socket.emit('players', this.players.map(function (player) {
-            return player.toData();
-        }));
-        console.log("test server")
+        this.players.push(player);
 
         player.socket.emit('playerJoined', player.toData());
     }
