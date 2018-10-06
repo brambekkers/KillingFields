@@ -58,11 +58,11 @@ class Room {
      */
     removePlayer(player) {
         // Tell everyone that the player has left.
-        player.socket.broadcast.emit('playerLeft', this.id);
-        console.log("player verlaat het spel")
+        player.socket.broadcast.emit('playerLeft', player.socket.id);
+
         // Filter out the player.
         this.players = this.players.filter(function (other) {
-            return other.id !== player.id;
+            return other.socket.id !== player.socket.id;
         });
     }
 }
