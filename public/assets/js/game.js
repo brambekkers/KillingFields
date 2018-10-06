@@ -17,6 +17,7 @@ var config = {
 };
 
 let game = new Phaser.Game(config);
+let socket;
 let platforms;
 let players = [];
 let cursors;
@@ -46,18 +47,15 @@ function create() {
         frameRate: 20
     });
 
-    this.scene.anims.create({
+    this.anims.create({
         key: 'right',
         frames: this.anims.generateFrameNumbers('player', { start: 0, end: 4 }),
         frameRate: 10,
         repeat: -1
     });
 
-
     createPlatforms.bind(this)();
     bindSocketEvents.bind(this)();
-
-    cursors = this.input.keyboard.createCursorKeys();
 }
 
 /**
@@ -84,10 +82,11 @@ function createPlatforms() {
  *
  */
 function bindSocketEvents() {
-    const socket = io();
+    socket = io();
 
     socket.on('gameStarted', onGameStarted.bind(this));
     socket.on('playerJoined', onPlayerJoined.bind(this));
+    socket.on('playerMoved', onPlayerMoved.bind(this));
     socket.on('playerLeft', onPlayerLeft.bind(this));
 };
 
@@ -95,10 +94,11 @@ function bindSocketEvents() {
  *
  */
 function onGameStarted(allPlayers) {
-    addPlayer.bind(this)(this, allPlayers.self);
+    const me = addPlayer.bind(this)(allPlayers.self);
+    me.cursors = this.input.keyboard.createCursorKeys();
 
     for (const player of allPlayers.others) {
-        addPlayer.bind(this)(this, player);
+        addPlayer.bind(this)(player);
     }
 };
 
@@ -106,7 +106,24 @@ function onGameStarted(allPlayers) {
  *
  */
 function onPlayerJoined(player) {
-    addPlayer.bind(this)(this, player);
+    addPlayer.bind(this)(player);
+};
+
+/**
+ *
+ */
+function onPlayerMoved(player) {
+    const otherPlayer = players.filter(function (other) {
+        return other.id === player.id;
+    })[0];
+
+    // console.log('otherPlayer', otherPlayer);
+
+    if (!otherPlayer) {
+        return;
+    }
+
+    otherPlayer.setPosition(player.x, player.y);
 };
 
 /**

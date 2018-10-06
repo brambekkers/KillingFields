@@ -36,8 +36,6 @@ class Player {
      *
      */
     onMove(position) {
-        console.log('Player moved.');
-
         this.setPosition(position.x, position.y);
     }
 
@@ -48,7 +46,7 @@ class Player {
         this.x = x;
         this.y = y;
 
-        this.socket.broadcast.emit('playerMoved', player.toData());
+        this.socket.broadcast.emit('playerMoved', this.toData());
     };
 
     /**
