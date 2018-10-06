@@ -26,6 +26,15 @@ class Player {
     onDisconnect() {
         console.log('User disconnected.');
     }
+
+    /**
+     * @returns {Object}
+     */
+    data() {
+        return {
+            id: this.id,
+        };
+    }
 }
 
 module.exports = Player;
