@@ -22,6 +22,7 @@ var config = {
 };
 
 let game = new Phaser.Game(config);
+let level;
 let socket;
 let player;
 let cursors;
@@ -29,7 +30,6 @@ let cursors;
 let enemies = {};
 let projectiles = {};
 
-let platforms;
 let projectileGroup;
 let enemyProjectileGroup;
 
@@ -37,20 +37,27 @@ let enemyProjectileGroup;
  *
  */
 function preload() {
-    this.load.spritesheet('player', 'assets/img/Player/p1_spritesheet.png', { frameWidth: 72.5 , frameHeight: 96});
-    this.load.image('grassMid', 'assets/img/Tiles/grassMid.png');
+    this.load.spritesheet('player1', 'assets/img/Player/player1.png', { frameWidth: 73, frameHeight: 96});
+    this.load.spritesheet('player2', 'assets/img/Player/player2.png', { frameWidth: 73, frameHeight: 96});
+    this.load.spritesheet('player3', 'assets/img/Player/player3.png', { frameWidth: 73, frameHeight: 96});
+
     this.load.image('fireball', 'assets/img/Items/fireball.png');
+
+    // create lvl en preload images
+    level = new Level(this,  {id: 1})
 }
 
 /**
  *
  */
 function create() {
+    this.add.tileSprite(game.config.width/2, game.config.height/2, game.config.width, game.config.height, 'background');
+    level.createLevel()
+
     this.physics.world.setBounds(0, 0, GAME_WIDTH, GAME_HEIGHT);
     cursors = this.input.keyboard.createCursorKeys();
 
     createAnimations.bind(this)();
-    createPlatforms.bind(this)();
     createProjectiles.bind(this)();
 
     bindSocketEvents.bind(this)();
@@ -69,43 +76,33 @@ function update() {
  *
  */
 function createAnimations() {
-    this.anims.create({
-        key: 'left',
-        frames: this.anims.generateFrameNumbers('player', { start: 0, end: 4 }),
-        frameRate: 10,
-        repeat: -1
-    });
+    for (let i = 1; i <= 3; i++) {
+        this.anims.create({
+            key: `player${i}_walk`,
+            frames: this.anims.generateFrameNumbers(`player${i}`, { start: 0, end: 4 }),
+            frameRate: 15,
+            repeat: -1
+        });
 
-    this.anims.create({
-        key: 'right',
-        frames: this.anims.generateFrameNumbers('player', { start: 0, end: 4 }),
-        frameRate: 10,
-        repeat: -1
-    });
+        this.anims.create({
+            key: `player${i}_turn`,
+            frames: [ { key: `player${i}`, frame: 9 } ],
+            frameRate: 20
+        });
 
-    this.anims.create({
-        key: 'turn',
-        frames: [ { key: 'player', frame: 14 } ],
-        frameRate: 20
-    });
+        this.anims.create({
+            key: `player${i}_jump`,
+            frames: [ { key: `player${i}`, frame: 13 } ],
+            frameRate: 20
+        });
 
-    this.anims.create({
-        key: 'jump',
-        frames: [ { key: 'player', frame: 13 } ],
-        frameRate: 20
-    });
-}
-
-/**
- *
- */
-function createPlatforms() {
-    platforms = this.physics.add.staticGroup();
-
-    for (let x = 35; x <= config.width + 35; x += 70) {
-        platforms.create(x, config.height - 105, 'grassMid');
+        this.anims.create({
+            key: `player${i}_duck`,
+            frames: [ { key: `player${i}`, frame: 11 } ],
+            frameRate: 20
+        });
     }
-};
+}
 
 /**
  *
@@ -148,8 +145,8 @@ function onGameStarted(game) {
 function addPlayer(data) {
     player = new Player(this, data);
 
-    this.physics.add.collider(player.sprite, platforms);
-    this.cameras.main.startFollow(player.sprite);
+    this.physics.add.collider(player.sprite, [level.laag_platform, level.laag_objecten]);
+    // this.cameras.main.startFollow(player.sprite);
 
     return player;
 };
@@ -220,7 +217,7 @@ function onEnemyLeft(id) {
     try {
         const enemy = getEnemy(id);
 
-        enemy.sprite.disableBody(true, true);
+        enemy.sprite.destroy();
         delete enemy;
     } catch (error) {
         console.warn('Failed to remove enemy.');
@@ -249,7 +246,7 @@ function onEnemyShoot(data) {
     projectile.body.height = 20;
     projectile.body.setOffset(25, 25);
 
-    this.physics.add.collider(projectile, platforms);
+    this.physics.add.collider(projectile, [level.laag_platform, level.laag_objecten]);
 
     if (player) {
         this.physics.add.collider(projectile, player.sprite, onPlayerHit);
@@ -299,7 +296,7 @@ function onEnemyDied(enemyData) {
     try {
         const enemy = getEnemy(enemyData.id);
 
-        enemy.sprite.disableBody(true, true);
+        enemy.sprite.destroy();
         delete enemy;
     } catch (error) {
         console.warn('Failed to destroy enemy.');

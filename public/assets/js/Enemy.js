@@ -9,13 +9,12 @@ class Enemy {
         this.scene = scene;
 
         this.id = data.id;
+        this.caracter = data.character;
         this.health = data.health;
 
-        this.sprite = this.scene.physics.add.sprite(data.x, data.y, 'player');
+        this.sprite = this.scene.add.sprite(data.x, data.y, data.character);
         this.sprite.flipX = data.flipX;
         this.sprite.anims.play(data.animation, data.looping);
-
-        this.sprite.body.allowGravity = false;
     }
 
     /**

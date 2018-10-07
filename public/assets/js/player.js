@@ -9,9 +9,10 @@ class Player {
         this.scene = scene;
 
         this.id = data.id;
+        this.character = data.character;
         this.health = data.health;
 
-        this.sprite = this.scene.physics.add.sprite(data.x, data.y, 'player');
+        this.sprite = this.scene.physics.add.sprite(data.x, data.y, data.character);
         this.sprite.flipX = data.flipX;
         this.sprite.anims.play(data.animation, data.looping);
 
@@ -23,6 +24,12 @@ class Player {
      */
     update() {
         this.move();
+
+        // max Velocity (zodat we te snel gaan en door de grond)
+        var standing = this.sprite.body.blocked.down || this.sprite.body.touching.down;
+        if (!standing && this.sprite.body.velocity.y > 800){
+            this.sprite.setVelocityY(800)
+        }
 
         this.projectileCooldown--;
 
@@ -37,25 +44,33 @@ class Player {
     move() {
         if (cursors.left.isDown) {
             this.sprite.setVelocityX(-300);
-            this.sprite.anims.play('left', true);
+            this.sprite.anims.play(`${this.character}_walk`, true);
             this.sprite.flipX = true;
         } else if (cursors.right.isDown) {
             this.sprite.setVelocityX(300);
-            this.sprite.anims.play('right', true);
+            this.sprite.anims.play(`${this.character}_walk`, true);
             this.sprite.flipX = false;
         } else {
             this.sprite.setVelocityX(0);
-            this.sprite.anims.play('turn');
+            this.sprite.anims.play(`${this.character}_turn`);
         }
 
-        if (cursors.up.isDown && this.sprite.body.touching.down) {
-            this.sprite.setVelocityY(-600);
-        } else if (cursors.down.isDown) {
-            this.sprite.setVelocityY(600);
+        if (
+            cursors.up.isDown &&
+            this.sprite.body.blocked.down
+        ) {
+            this.sprite.setVelocityY(-1000);
+        } else if (
+            cursors.down.isDown &&
+            this.sprite.body.blocked.down &&
+            cursors.right.isUp &&
+            cursors.left.isUp
+        ) {
+            this.sprite.anims.play(`${this.character}_duck`);
         }
 
-        if (!this.sprite.body.touching.down) {
-            this.sprite.anims.play('jump');
+        if (!this.sprite.body.blocked.down) {
+            this.sprite.anims.play(`${this.character}_jump`);
         }
 
         socket.emit('move', {
@@ -95,7 +110,7 @@ class Player {
         projectile.body.height = 20;
         projectile.body.setOffset(25, 25);
 
-        this.scene.physics.add.collider(projectile, platforms);
+        this.scene.physics.add.collider(projectile, [level.laag_platform, level.laag_objecten]);
 
         projectiles[projectile.id] = projectile;
 

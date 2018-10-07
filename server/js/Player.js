@@ -9,11 +9,12 @@ class Player {
         this.socket = socket;
         this.room = room;
 
+        this.character = `player${1 + Math.round(Math.random() * 2)}`;
         this.health = 3;
         this.x = Math.random() * 1024;
         this.y = Math.random() * 512 - 70;
 
-        this.animation = 'turn';
+        this.animation = `${this.character}_turn`;
         this.looping = false;
         this.flipX = false;
 
@@ -90,6 +91,7 @@ class Player {
     toData() {
         return {
             id: this.socket.id,
+            character: this.character,
             health: this.health,
             x: this.x,
             y: this.y,
