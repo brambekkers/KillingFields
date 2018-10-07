@@ -11,7 +11,7 @@ var config = {
         default: 'arcade',
         arcade: {
             gravity: { y: 1500 },
-            debug: false
+            debug: true
         }
     },
 };
@@ -24,7 +24,7 @@ let cursors;
 
 let laag_platform
 let laag_objecten
-let laag_brug
+let laag_decoratie
 
 /**
  *
@@ -38,7 +38,6 @@ function preload() {
 
     this.load.tilemapCSV('lvl1_grond', 'assets/maps/lvl1/KillingFields_Platform.csv');
     this.load.tilemapCSV('lvl1_objecten', 'assets/maps/lvl1/KillingFields_Objecten.csv');
-    this.load.tilemapCSV('lvl1_brug', 'assets/maps/lvl1/KillingFields_Brug.csv');    
     this.load.tilemapCSV('lvl1_decoratie', 'assets/maps/lvl1/KillingFields_Decoratie.csv');
 }
 
@@ -106,17 +105,17 @@ function createPlatforms() {
 
     laag_objecten.setCollisionBetween(1, 200);
 
-    // Tileset brug
-    let tilemap_brug = this.make.tilemap({ key: 'lvl1_brug', tileWidth: 70, tileHeight: 70});
-    let tileset_brug = tilemap_brug.addTilesetImage('tilesMain');
-    laag_brug = tilemap_brug.createStaticLayer(0, tileset_brug, 0, 0); // layer index, tileset, x, y
-
-    laag_brug.setCollisionBetween(1, 200);
-
     // Tileset decoratie
     let tilemap_decoratie = this.make.tilemap({ key: 'lvl1_decoratie', tileWidth: 70, tileHeight: 70});
     let tileset_decoratie = tilemap_decoratie.addTilesetImage('tilesMain');
     laag_decoratie = tilemap_decoratie.createStaticLayer(0, tileset_decoratie, 0, 0); // layer index, tileset, x, y
+
+
+
+    // debug
+        // debugGraphics = this.add.graphics();
+        // debugGraphics.clear();
+        // laag_platform.renderDebug(debugGraphics, { tileColor: null });
 };
 
 /**
@@ -140,7 +139,7 @@ function onGameStarted(allPlayers) {
     me.sprite.body.allowGravity = true;
 
     //collision
-    this.physics.add.collider(me.sprite, [laag_platform, laag_objecten, laag_brug]);
+    this.physics.add.collider(me.sprite, [laag_platform, laag_objecten]);
 
     for (const player of allPlayers.others) {
         addPlayer.bind(this)(player);
@@ -201,3 +200,5 @@ function createPlayer(data) {
 
     return player;
 };
+
+
