@@ -20,25 +20,17 @@ let game = new Phaser.Game(config);
 let socket;
 let platforms;
 let players = [];
+let level
 let cursors;
-
-let laag_platform
-let laag_objecten
-let laag_decoratie
 
 /**
  *
  */
 function preload() {
-    this.load.image('background', 'assets/img/background.png');
     this.load.spritesheet('player', 'assets/img/Player/p1_spritesheet.png', { frameWidth: 72.5 , frameHeight: 96});
     
-    // Tileset Wereld
-    this.load.image('tilesMain', 'assets/maps/lvl1/tiles_spritesheet.png');
-
-    this.load.tilemapCSV('lvl1_grond', 'assets/maps/lvl1/KillingFields_Platform.csv');
-    this.load.tilemapCSV('lvl1_objecten', 'assets/maps/lvl1/KillingFields_Objecten.csv');
-    this.load.tilemapCSV('lvl1_decoratie', 'assets/maps/lvl1/KillingFields_Decoratie.csv');
+    // create lvl en preload images
+    level = new Level(this,  {id: 1})
 }
 
 /**
@@ -73,9 +65,8 @@ function create() {
         frameRate: 20
     });
 
+    level.createLevel()
     bindSocketEvents.bind(this)();
-    createPlatforms.bind(this)();
-
 }
 
 /**
@@ -86,37 +77,6 @@ function update() {
         player.update()
     }
 }
-
-/**
- *
- */
-function createPlatforms() {
-    // Tileset platform
-    let tilemap_platform = this.make.tilemap({ key: 'lvl1_grond', tileWidth: 70, tileHeight: 70});
-    let tileset_platform = tilemap_platform.addTilesetImage('tilesMain');
-    laag_platform = tilemap_platform.createStaticLayer(0, tileset_platform, 0, 0); // layer index, tileset, x, y
-
-    laag_platform.setCollisionBetween(1, 200);
-
-    // Tileset platform
-    let tilemap_objecten = this.make.tilemap({ key: 'lvl1_objecten', tileWidth: 70, tileHeight: 70});
-    let tileset_objecten = tilemap_platform.addTilesetImage('tilesMain');
-    laag_objecten = tilemap_objecten.createStaticLayer(0, tileset_objecten, 0, 0); // layer index, tileset, x, y
-
-    laag_objecten.setCollisionBetween(1, 200);
-
-    // Tileset decoratie
-    let tilemap_decoratie = this.make.tilemap({ key: 'lvl1_decoratie', tileWidth: 70, tileHeight: 70});
-    let tileset_decoratie = tilemap_decoratie.addTilesetImage('tilesMain');
-    laag_decoratie = tilemap_decoratie.createStaticLayer(0, tileset_decoratie, 0, 0); // layer index, tileset, x, y
-
-
-
-    // debug
-        // debugGraphics = this.add.graphics();
-        // debugGraphics.clear();
-        // laag_platform.renderDebug(debugGraphics, { tileColor: null });
-};
 
 /**
  *
@@ -139,7 +99,7 @@ function onGameStarted(allPlayers) {
     me.sprite.body.allowGravity = true;
 
     //collision
-    this.physics.add.collider(me.sprite, [laag_platform, laag_objecten]);
+    this.physics.add.collider(me.sprite, [level.laag_platform, level.laag_objecten]);
 
     for (const player of allPlayers.others) {
         addPlayer.bind(this)(player);
