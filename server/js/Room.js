@@ -40,8 +40,8 @@ class Room {
     addPlayer(player) {
         // Tell the player to start the game.
         player.socket.emit('gameStarted', {
-            self: player.toData(),
-            others: this.players.map(function (player) {
+            player: player.toData(),
+            enemies: this.players.map(function (player) {
                 return player.toData();
             }),
         });
@@ -50,7 +50,7 @@ class Room {
         this.players.push(player);
 
         // Tell everyone that the player has joined.
-        player.socket.broadcast.emit('playerJoined', player.toData());
+        player.socket.broadcast.emit('enemyJoined', player.toData());
     }
 
     /**
@@ -58,7 +58,7 @@ class Room {
      */
     removePlayer(player) {
         // Tell everyone that the player has left.
-        player.socket.broadcast.emit('playerLeft', player.socket.id);
+        player.socket.broadcast.emit('enemyLeft', player.socket.id);
 
         // Filter out the player.
         this.players = this.players.filter(function (other) {
