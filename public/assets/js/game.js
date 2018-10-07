@@ -27,7 +27,9 @@ let cursors;
  *
  */
 function preload() {
-    this.load.spritesheet('player', 'assets/img/Player/p1_spritesheet.png', { frameWidth: 72.5 , frameHeight: 96});
+    this.load.spritesheet('player1', 'assets/img/Player/player1.png', { frameWidth: 73, frameHeight: 96});
+    this.load.spritesheet('player2', 'assets/img/Player/player2.png', { frameWidth: 73, frameHeight: 96});
+    this.load.spritesheet('player3', 'assets/img/Player/player3.png', { frameWidth: 73, frameHeight: 96});
     
     // create lvl en preload images
     level = new Level(this,  {id: 1})
@@ -40,28 +42,27 @@ function create() {
     this.add.tileSprite(game.config.width/2, game.config.height/2, game.config.width, game.config.height, 'background');
 
     this.anims.create({
-        key: 'left',
-        frames: this.anims.generateFrameNumbers('player', { start: 0, end: 4 }),
-        frameRate: 10,
-        repeat: -1
-    });
-
-    this.anims.create({
-        key: 'right',
-        frames: this.anims.generateFrameNumbers('player', { start: 0, end: 4 }),
-        frameRate: 10,
+        key: 'walk',
+        frames: this.anims.generateFrameNumbers('player1', { start: 0, end: 4 }),
+        frameRate: 15,
         repeat: -1
     });
 
     this.anims.create({
         key: 'turn',
-        frames: [ { key: 'player', frame: 14 } ],
+        frames: [ { key: 'player1', frame: 9 } ],
         frameRate: 20
     });
 
     this.anims.create({
         key: 'jump',
-        frames: [ { key: 'player', frame: 13 } ],
+        frames: [ { key: 'player1', frame: 13 } ],
+        frameRate: 20
+    });
+
+    this.anims.create({
+        key: 'duck',
+        frames: [ { key: 'player1', frame: 11 } ],
         frameRate: 20
     });
 
