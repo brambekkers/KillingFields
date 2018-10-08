@@ -1,5 +1,5 @@
 /**
- *
+ * Client Player
  */
 class Player {
     /**
@@ -11,12 +11,18 @@ class Player {
         this.id = data.id;
         this.character = data.character;
         this.health = data.health;
+        this.healthText =  this.healthText = this.scene.add.text(10, 10, this.health, { 
+            fontFamily: 'Arial', 
+            fontSize: 40, 
+            color: '#fff' 
+        });
 
         this.sprite = this.scene.physics.add.sprite(data.x, data.y, data.character);
         this.sprite.flipX = data.flipX;
         this.sprite.anims.play(data.animation, data.looping);
 
         this.projectileCooldown = 0;
+
     }
 
     /**
@@ -31,10 +37,16 @@ class Player {
             this.sprite.setVelocityY(800)
         }
 
+        // Shooting
         this.projectileCooldown--;
 
         if (cursors.space.isDown) {
             this.shoot();
+        }
+
+        // pas health aan als je geraakt wordt
+        if(this.health != this.healthText.text){
+            this.healthText.setText(this.health);
         }
     }
 

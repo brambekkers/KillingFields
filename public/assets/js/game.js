@@ -16,7 +16,7 @@ var config = {
             gravity: {
                 y: 1500,
             },
-            debug: false,
+            debug: true,
         },
     },
 };
@@ -37,11 +37,15 @@ let enemyProjectileGroup;
  *
  */
 function preload() {
+    // Player
     this.load.spritesheet('player1', 'assets/img/Player/player1.png', { frameWidth: 73, frameHeight: 96});
     this.load.spritesheet('player2', 'assets/img/Player/player2.png', { frameWidth: 73, frameHeight: 96});
     this.load.spritesheet('player3', 'assets/img/Player/player3.png', { frameWidth: 73, frameHeight: 96});
 
     this.load.image('fireball', 'assets/img/Items/fireball.png');
+
+    // Fonts
+    this.load.script('webfont', 'https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js')
 
     // create lvl en preload images
     level = new Level(this,  {id: 1})
@@ -61,6 +65,21 @@ function create() {
     createProjectiles.bind(this)();
 
     bindSocketEvents.bind(this)();
+
+    // fonts
+    var add = this.add;
+    var input = this.input;
+    WebFont.load({
+        google: {
+            families: ['Knewave']
+        },
+        active: function (){
+            if(player){
+                player.healthText.setFontFamily("Knewave")
+                player.healthText.setShadow(2, 2, "#333333", 2, false, true);
+            }
+        }
+    });
 }
 
 /**

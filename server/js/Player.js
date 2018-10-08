@@ -1,5 +1,5 @@
 /**
- *
+ * Server Player
  */
 class Player {
     /**
@@ -10,7 +10,7 @@ class Player {
         this.room = room;
 
         this.character = `player${1 + Math.round(Math.random() * 2)}`;
-        this.health = 3;
+        this.health = 10;
         this.x = Math.random() * 1024;
         this.y = Math.random() * 512 - 70;
 
