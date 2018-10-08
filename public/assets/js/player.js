@@ -11,11 +11,14 @@ class Player {
         this.id = data.id;
         this.character = data.character;
         this.health = data.health;
-        this.healthText =  this.healthText = this.scene.add.text(10, 10, this.health, { 
-            fontFamily: 'Arial', 
-            fontSize: 40, 
-            color: '#fff' 
-        });
+
+        this.hud = {
+            x: 40,
+            y: 40,
+            char: null,
+            healthText: null,
+            heartHealth: null
+        }
 
         this.sprite = this.scene.physics.add.sprite(data.x, data.y, data.character);
         this.sprite.flipX = data.flipX;
@@ -45,8 +48,8 @@ class Player {
         }
 
         // pas health aan als je geraakt wordt
-        if(this.health != this.healthText.text){
-            this.healthText.setText(this.health);
+        if(this.health != this.hud.healthText && this.hud.healthText ){
+            this.hud.healthText.setText(this.health);
         }
     }
 
@@ -157,6 +160,19 @@ class Player {
         } else {
             this.die();
         }
+    }
+
+    createHud(){
+        this.hud.char = this.scene.add.sprite(this.hud.x, this.hud.y, 'hudPlayer1');
+        player.hud.char.setScale(1.3)
+        this.hud.heartHealth = this.scene.add.sprite(this.hud.x + 60, this.hud.y-10, 'heartHealth');
+        player.hud.heartHealth.setScale(0.7)
+
+        this.hud.healthText = this.scene.add.text(this.hud.x + 50, this.hud.y +5 , this.health, { 
+            fontFamily: 'Knewave', 
+            fontSize: 25,
+            color: '#fff' 
+        }).setShadow(2, 2, "#333333", 2, false, true);
     }
 
     /**

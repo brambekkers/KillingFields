@@ -38,9 +38,10 @@ let enemyProjectileGroup;
  */
 function preload() {
     // Player
-    this.load.spritesheet('player1', 'assets/img/Player/player1.png', { frameWidth: 73, frameHeight: 96});
-    this.load.spritesheet('player2', 'assets/img/Player/player2.png', { frameWidth: 73, frameHeight: 96});
-    this.load.spritesheet('player3', 'assets/img/Player/player3.png', { frameWidth: 73, frameHeight: 96});
+    for (let i = 1; i <= 3; i++) {
+        this.load.spritesheet(`player${i}`, `assets/img/Player/player${i}.png`, { frameWidth: 73, frameHeight: 96});    
+        this.load.image(`hudPlayer${i}`, `assets/img/HUD/hud${1}/hud.png`);    
+    }
 
     this.load.spritesheet('heartHealth', 'assets/img/HUD/hudHealth/heartSpritesheet.png', { frameWidth: 53, frameHeight: 45});
     this.load.image('fireball', 'assets/img/Items/fireball.png');
@@ -67,20 +68,17 @@ function create() {
 
     bindSocketEvents.bind(this)();
 
-    // fonts
-    var add = this.add;
-    var input = this.input;
+    // font
     WebFont.load({
         google: {
             families: ['Knewave']
         },
         active: function (){
             if(player){
-                player.healthText.setFontFamily("Knewave")
-                player.healthText.setShadow(2, 2, "#333333", 2, false, true);
+                player.createHud()              
             }
         }
-    });
+    });   
 }
 
 /**
@@ -120,6 +118,15 @@ function createAnimations() {
             key: `player${i}_duck`,
             frames: [ { key: `player${i}`, frame: 11 } ],
             frameRate: 20
+        });
+    }
+
+    for (let i = 0; i <= 11; i++) {
+        this.anims.create({
+            key: `heartHealth${i}`,
+            frames: this.anims.generateFrameNumbers('heartHealth', { start: `${i+1}`, end: `${i+1}`}),
+            frameRate: 10,
+            repeat: -1
         });
     }
 }
