@@ -42,6 +42,7 @@ function preload() {
     this.load.spritesheet('player2', 'assets/img/Player/player2.png', { frameWidth: 73, frameHeight: 96});
     this.load.spritesheet('player3', 'assets/img/Player/player3.png', { frameWidth: 73, frameHeight: 96});
 
+    this.load.spritesheet('heartHealth', 'assets/img/HUD/hudHealth/heartSpritesheet.png', { frameWidth: 53, frameHeight: 45});
     this.load.image('fireball', 'assets/img/Items/fireball.png');
 
     // Fonts
