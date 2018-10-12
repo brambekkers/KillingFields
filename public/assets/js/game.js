@@ -65,6 +65,7 @@ function create() {
 
     this.cameras.main.setBounds(0, 0, GAME_WIDTH, GAME_HEIGHT);
     this.physics.world.setBounds(0, 0, GAME_WIDTH, GAME_HEIGHT);
+
     cursors = this.input.keyboard.createCursorKeys();
 
     createAnimations.bind(this)();

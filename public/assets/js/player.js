@@ -165,13 +165,15 @@ class Player {
     }
 
     createHud() {
+        console.log(this.scene)
         // HUD Achtergrond
-        this.hud.background = this.scene.add.sprite(GAME_WIDTH / 2, GAME_HEIGHT - 45, 'hudAchtergrond');
+        this.hud.background = this.scene.add.image(this.sprite.x, this.sprite.y, 'hudAchtergrond');
+        this.hud.background.setScrollFactor(0);
         // HUD CHAR
-        this.hud.char = this.scene.add.sprite(GAME_WIDTH / 2, GAME_HEIGHT - 80, `hudPlayer${this.characterNum}`);
+        this.hud.char = this.scene.add.sprite(GAME_WIDTH / 2, GAME_HEIGHT - 100, `hudPlayer${this.characterNum}`);
         player.hud.char.setScale(1.6)
         // HUD HEALTH HEART
-        this.hud.heartHealth = this.scene.add.sprite(GAME_WIDTH / 2, GAME_HEIGHT - 20, 'heartHealth');
+        this.hud.heartHealth = this.scene.add.sprite(GAME_WIDTH / 2, GAME_HEIGHT - 40, 'heartHealth');
         this.hud.heartHealth.anims.play(`heartHealth10`);
         player.hud.heartHealth.setScale(0.8)
     }
