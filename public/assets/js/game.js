@@ -1,10 +1,10 @@
-const GAME_WIDTH = 1120;
-const GAME_HEIGHT = 1120;
+const GAME_WIDTH = 2240;
+const GAME_HEIGHT = 2240;
 
 var config = {
     type: Phaser.AUTO,
-    width: GAME_WIDTH,
-    height: GAME_HEIGHT,
+    width: 1600,
+    height: 900,
     scene: {
         preload: preload,
         create: create,
@@ -16,7 +16,7 @@ var config = {
             gravity: {
                 y: 1500,
             },
-            debug: true,
+            debug: false,
         },
     },
 };
@@ -40,26 +40,30 @@ function preload() {
     // Player
     for (let i = 1; i <= 3; i++) {
         this.load.spritesheet(`player${i}`, `assets/img/Player/player${i}.png`, { frameWidth: 73, frameHeight: 96});    
-        this.load.image(`hudPlayer${i}`, `assets/img/HUD/hud${1}/hud.png`);    
+        this.load.image(`hudPlayer${i}`, `assets/img/HUD/hud${i}/hud.png`);    
     }
 
     this.load.spritesheet('heartHealth', 'assets/img/HUD/hudHealth/heartSpritesheet.png', { frameWidth: 53, frameHeight: 45});
     this.load.image('fireball', 'assets/img/Items/fireball.png');
+    this.load.image('voorbeeldHud', 'assets/img/HUD/voorbeeldHud.png');
+    this.load.image('hudAchtergrond', 'assets/img/HUD/hudAchtergrond.png');
 
     // Fonts
     this.load.script('webfont', 'https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js')
 
     // create lvl en preload images
-    level = new Level(this,  {id: 1})
+    level = new Level(this,  {id: 2})
 }
 
 /**
  *
  */
 function create() {
-    this.add.tileSprite(game.config.width/2, game.config.height/2, game.config.width, game.config.height, 'background');
+
+
     level.createLevel()
 
+    this.cameras.main.setBounds(0, 0, GAME_WIDTH, GAME_HEIGHT);
     this.physics.world.setBounds(0, 0, GAME_WIDTH, GAME_HEIGHT);
     cursors = this.input.keyboard.createCursorKeys();
 
@@ -68,17 +72,16 @@ function create() {
 
     bindSocketEvents.bind(this)();
 
-    // font
-    WebFont.load({
-        google: {
-            families: ['Knewave']
-        },
-        active: function (){
-            if(player){
-                player.createHud()              
-            }
-        }
-    });   
+    // // font
+    // WebFont.load({
+    //     google: {
+    //         families: ['Knewave']
+    //     },
+    //     active: function (){
+    //         if(player){
+    //         }
+    //     }
+    // });   
 }
 
 /**
@@ -124,7 +127,7 @@ function createAnimations() {
     for (let i = 0; i <= 11; i++) {
         this.anims.create({
             key: `heartHealth${i}`,
-            frames: this.anims.generateFrameNumbers('heartHealth', { start: `${i+1}`, end: `${i+1}`}),
+            frames: this.anims.generateFrameNumbers('heartHealth', { start: `${i}`, end: `${i}`}),
             frameRate: 10,
             repeat: -1
         });
@@ -173,7 +176,13 @@ function addPlayer(data) {
     player = new Player(this, data);
 
     this.physics.add.collider(player.sprite, [level.laag_platform, level.laag_objecten]);
-    // this.cameras.main.startFollow(player.sprite);
+
+    // Create HUD
+    player.createHud()   
+
+    // camera
+    this.cameras.main.startFollow(player.sprite);
+    this.cameras.main.setZoom(1); 
 
     return player;
 };

@@ -50,7 +50,7 @@ class Room {
         this.players.push(player);
 
         // Tell everyone that the player has joined.
-        player.socket.broadcast.emit('enemyJoined', player.toData());
+        player.socket.broadcast.emit('enemyJoined', player.toData());           
     }
 
     /**

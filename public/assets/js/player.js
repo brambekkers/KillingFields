@@ -9,14 +9,13 @@ class Player {
         this.scene = scene;
 
         this.id = data.id;
+        this.characterNum = data.characterNum
         this.character = data.character;
         this.health = data.health;
 
         this.hud = {
-            x: 40,
-            y: 40,
+            background: null,
             char: null,
-            healthText: null,
             heartHealth: null
         }
 
@@ -36,8 +35,8 @@ class Player {
 
         // max Velocity (zodat we te snel gaan en door de grond)
         var standing = this.sprite.body.blocked.down || this.sprite.body.touching.down;
-        if (!standing && this.sprite.body.velocity.y > 800){
-            this.sprite.setVelocityY(800)
+        if (!standing && this.sprite.body.velocity.y > 800) {
+            this.sprite.setVelocityY(600)
         }
 
         // Shooting
@@ -47,10 +46,11 @@ class Player {
             this.shoot();
         }
 
-        // pas health aan als je geraakt wordt
-        if(this.health != this.hud.healthText && this.hud.healthText ){
-            this.hud.healthText.setText(this.health);
-        }
+        // // pas health aan als je geraakt wordt
+        // if(this.health != this.hud.healthText && this.hud.healthText ){
+        //     this.hud.healthText.setText(this.health);
+        //     this.hud.heartHealth.play(`heartHealth${this.health}`, true);
+        // }
     }
 
     /**
@@ -157,22 +157,23 @@ class Player {
 
         if (this.health > 0) {
             socket.emit('hit', projectile.damage);
+            this.hud.heartHealth.play(`heartHealth${this.health}`, true);
         } else {
             this.die();
+
         }
     }
 
-    createHud(){
-        this.hud.char = this.scene.add.sprite(this.hud.x, this.hud.y, 'hudPlayer1');
-        player.hud.char.setScale(1.3)
-        this.hud.heartHealth = this.scene.add.sprite(this.hud.x + 60, this.hud.y-10, 'heartHealth');
-        player.hud.heartHealth.setScale(0.7)
-
-        this.hud.healthText = this.scene.add.text(this.hud.x + 50, this.hud.y +5 , this.health, { 
-            fontFamily: 'Knewave', 
-            fontSize: 25,
-            color: '#fff' 
-        }).setShadow(2, 2, "#333333", 2, false, true);
+    createHud() {
+        // HUD Achtergrond
+        this.hud.background = this.scene.add.sprite(GAME_WIDTH / 2, GAME_HEIGHT - 45, 'hudAchtergrond');
+        // HUD CHAR
+        this.hud.char = this.scene.add.sprite(GAME_WIDTH / 2, GAME_HEIGHT - 80, `hudPlayer${this.characterNum}`);
+        player.hud.char.setScale(1.6)
+        // HUD HEALTH HEART
+        this.hud.heartHealth = this.scene.add.sprite(GAME_WIDTH / 2, GAME_HEIGHT - 20, 'heartHealth');
+        this.hud.heartHealth.anims.play(`heartHealth10`);
+        player.hud.heartHealth.setScale(0.8)
     }
 
     /**
