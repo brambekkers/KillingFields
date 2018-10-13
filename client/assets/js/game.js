@@ -7,6 +7,7 @@ const config = {
     type: Phaser.AUTO,
     width: 1600,
     height: 900,
+    pixelArt: true,
     scene: {
         preload,
         create,
@@ -36,6 +37,8 @@ let projectiles = {};
 let projectileGroup;
 let enemyProjectileGroup;
 
+let keyA, keyS, keyD, keyE, keyF
+
 /**
  *
  */
@@ -53,6 +56,7 @@ function preload() {
 
     Level.preload(this, 2)
     Hud.preload(this)
+    Crate.preload(this)
 }
 
 /**
@@ -68,6 +72,7 @@ function create() {
     this.physics.world.setBounds(0, 0, GAME_WIDTH, GAME_HEIGHT);
 
     cursors = this.input.keyboard.createCursorKeys();
+    addInputKeys.bind(this)()
 
     createAnimations.bind(this)();
     createProjectiles.bind(this)();
@@ -85,6 +90,15 @@ function create() {
     //     }
     // });
 }
+
+function addInputKeys(){
+    keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
+    keyS = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
+    keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
+    keyE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E);
+    keyF = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F);
+}
+
 
 /**
  *

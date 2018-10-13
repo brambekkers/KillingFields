@@ -40,7 +40,8 @@ class Player extends ArcadeSprite {
         this.projectileCooldown--;
 
         if (cursors.space.isDown) {
-            this.shoot();
+            // this.shoot();
+            this.createCrate()
         }
     }
 
@@ -48,11 +49,11 @@ class Player extends ArcadeSprite {
      *
      */
     move() {
-        if (cursors.left.isDown) {
+        if (cursors.left.isDown || keyA.isDown) {
             this.setVelocityX(-300);
             this.anims.play(`${this.character}_walk`, true);
             this.flipX = true;
-        } else if (cursors.right.isDown) {
+        } else if (cursors.right.isDown || keyD.isDown) {
             this.setVelocityX(300);
             this.anims.play(`${this.character}_walk`, true);
             this.flipX = false;
@@ -62,12 +63,16 @@ class Player extends ArcadeSprite {
         }
 
         if (
-            cursors.up.isDown &&
+            cursors.space.isDown &&
             this.body.blocked.down
         ) {
             this.setVelocityY(-1000);
         } else if (
             cursors.down.isDown &&
+            this.body.blocked.down &&
+            cursors.right.isUp &&
+            cursors.left.isUp ||
+            keyS.isDown &&
             this.body.blocked.down &&
             cursors.right.isUp &&
             cursors.left.isUp
@@ -77,7 +82,7 @@ class Player extends ArcadeSprite {
             this.displayOriginY = 60
         }
 
-        if(cursors.down.isUp){
+        if(cursors.down.isUp && keyS.isUp){
             this.setSize(50, 94)
             this.displayOriginY = 48
         }
@@ -172,5 +177,16 @@ class Player extends ArcadeSprite {
         player = undefined;
 
         socket.emit('died');
+    }
+
+    /**
+     *
+     */
+    createCrate(){
+        let crate = new Crate(this.scene, 800, 200)
+        this.scene.physics.add.collider(crate, [
+            level.laag_platform,
+            level.laag_objecten,
+        ]);
     }
 }
