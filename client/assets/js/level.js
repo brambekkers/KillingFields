@@ -26,7 +26,7 @@ class Level {
     createLevel(){
         // Tiles background
         this.background = this.scene.add.tileSprite(GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH, GAME_HEIGHT, 'background');
-        
+
         this.createPlatforms();
     }
 
@@ -55,7 +55,7 @@ class Level {
     makeObjectCollision(){
         this.laag_objecten.forEachTile(function (tile) {
             if(tile.index !== -1){
-                
+
             }
         },this);
     }

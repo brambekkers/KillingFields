@@ -1,24 +1,21 @@
 /**
- * Client Player
+ *
  */
-class Player {
+class Player extends ArcadeSprite {
     /**
      *
      */
     constructor(scene, data) {
-        this.scene = scene;
+        super(scene, data.x, data.y, data.character);
 
         this.id = data.id;
-        this.characterNum = data.characterNum
+        this.characterNum = data.characterNum;
         this.character = data.character;
         this.health = data.health;
-
-        this.sprite = this.scene.physics.add.sprite(data.x, data.y, data.character);
-        this.sprite.flipX = data.flipX;
-        this.sprite.anims.play(data.animation, data.looping);
-
         this.projectileCooldown = 0;
 
+        this.flipX = data.flipX;
+        this.anims.play(data.animation, data.looping);
     }
 
     /**
@@ -28,9 +25,9 @@ class Player {
         this.move();
 
         // max Velocity (zodat we te snel gaan en door de grond)
-        var standing = this.sprite.body.blocked.down || this.sprite.body.touching.down;
-        if (!standing && this.sprite.body.velocity.y > 800) {
-            this.sprite.setVelocityY(600)
+        var standing = this.body.blocked.down || this.body.touching.down;
+        if (!standing && this.body.velocity.y > 800) {
+            this.setVelocityY(600)
         }
 
         // Shooting
@@ -52,42 +49,42 @@ class Player {
      */
     move() {
         if (cursors.left.isDown) {
-            this.sprite.setVelocityX(-300);
-            this.sprite.anims.play(`${this.character}_walk`, true);
-            this.sprite.flipX = true;
+            this.setVelocityX(-300);
+            this.anims.play(`${this.character}_walk`, true);
+            this.flipX = true;
         } else if (cursors.right.isDown) {
-            this.sprite.setVelocityX(300);
-            this.sprite.anims.play(`${this.character}_walk`, true);
-            this.sprite.flipX = false;
+            this.setVelocityX(300);
+            this.anims.play(`${this.character}_walk`, true);
+            this.flipX = false;
         } else {
-            this.sprite.setVelocityX(0);
-            this.sprite.anims.play(`${this.character}_turn`);
+            this.setVelocityX(0);
+            this.anims.play(`${this.character}_turn`);
         }
 
         if (
             cursors.up.isDown &&
-            this.sprite.body.blocked.down
+            this.body.blocked.down
         ) {
-            this.sprite.setVelocityY(-1000);
+            this.setVelocityY(-1000);
         } else if (
             cursors.down.isDown &&
-            this.sprite.body.blocked.down &&
+            this.body.blocked.down &&
             cursors.right.isUp &&
             cursors.left.isUp
         ) {
-            this.sprite.anims.play(`${this.character}_duck`);
+            this.anims.play(`${this.character}_duck`);
         }
 
-        if (!this.sprite.body.blocked.down) {
-            this.sprite.anims.play(`${this.character}_jump`);
+        if (!this.body.blocked.down) {
+            this.anims.play(`${this.character}_jump`);
         }
 
         socket.emit('move', {
-            x: this.sprite.x,
-            y: this.sprite.y,
-            animation: this.sprite.anims.currentAnim.key,
-            looping: this.sprite.anims.currentAnim.repeat,
-            flipX: this.sprite.flipX,
+            x: this.x,
+            y: this.y,
+            animation: this.anims.currentAnim.key,
+            looping: this.anims.currentAnim.repeat,
+            flipX: this.flipX,
         });
     }
 
@@ -101,27 +98,30 @@ class Player {
 
         this.projectileCooldown = 30;
 
-        const direction = this.sprite.flipX ? -1 : 1;
+        const direction = this.flipX ? -1 : 1;
 
-        const projectile = projectileGroup
+        const projectile = this.scene.projectileGroup
             .create(
-                this.sprite.x + 20 * direction,
-                this.sprite.y,
+                this.x + 20 * direction,
+                this.y,
                 'fireball'
             )
             .setBounce(1);
 
-        projectile.id = new Date().getTime(); // TODO: User a better ID.
+        projectile.id = new Date().getTime(); // TODO: Use a better ID.
         projectile.damage = 1;
-        projectile.flipX = this.sprite.flipX;
+        projectile.flipX = this.flipX;
         projectile.body.velocity.x = 500 * direction;
         projectile.body.width = 20;
         projectile.body.height = 20;
         projectile.body.setOffset(25, 25);
 
-        this.scene.physics.add.collider(projectile, [level.laag_platform, level.laag_objecten]);
+        this.scene.physics.add.collider(projectile, [
+            this.scene.platformLayer,
+            this.scene.objectLayer,
+        ]);
 
-        projectiles[projectile.id] = projectile;
+        this.scene.projectiles[projectile.id] = projectile;
 
         socket.emit('shoot', {
             id: projectile.id,
@@ -143,7 +143,7 @@ class Player {
      */
     hitBy(projectile) {
         projectile.disableBody(true, true);
-        delete projectiles[projectile.id];
+        delete this.scene.projectiles[projectile.id];
 
         socket.emit('projectileDestroyed', projectile.id);
 
@@ -162,8 +162,8 @@ class Player {
      *
      */
     die() {
-        this.sprite.disableBody(true, true);
-        player = undefined;
+        this.disableBody(true, true);
+        this.scene.player = undefined;
 
         socket.emit('died');
     }

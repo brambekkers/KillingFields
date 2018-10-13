@@ -1,7 +1,7 @@
 /**
  *
  */
-class Enemy extends Phaser.GameObjects.Sprite {
+class Enemy extends Sprite {
     /**
      *
      */
@@ -14,8 +14,6 @@ class Enemy extends Phaser.GameObjects.Sprite {
 
         this.flipX = data.flipX;
         this.anims.play(data.animation, data.looping);
-
-        this.scene.add.existing(this);
     }
 
     /**
