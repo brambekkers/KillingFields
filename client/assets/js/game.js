@@ -1,15 +1,17 @@
 const GAME_WIDTH = 2240;
 const GAME_HEIGHT = 2240;
 
-const socket = io();
+// const socket = io();
 
-const game = new Phaser.Game({
+const config = {
     type: Phaser.AUTO,
     width: 1600,
     height: 900,
-    scene: [
-        LevelOne,
-    ],
+    scene: {
+        preload,
+        create,
+        update,
+    },
     physics: {
         default: 'arcade',
         arcade: {
@@ -176,10 +178,10 @@ function addPlayer(data) {
     player = new Player(this, data);
     hud = new Hud(this);
 
-    this.physics.add.collider(player.sprite, [level.laag_platform, level.laag_objecten]);
+    this.physics.add.collider(player, [level.laag_platform, level.laag_objecten]);
 
     // camera
-    this.cameras.main.startFollow(player.sprite);
+    this.cameras.main.startFollow(player);
     this.cameras.main.setZoom(1);
 
     return player;

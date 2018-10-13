@@ -15,8 +15,8 @@ class Player extends ArcadeSprite {
         this.kills = 1
 
         this.setSize(50, 94, true)
-        this.sprite.flipX = data.flipX;
-        this.sprite.anims.play(data.animation, data.looping);
+        this.flipX = data.flipX;
+        this.anims.play(data.animation, data.looping);
 
         this.projectileCooldown = 0;
 
@@ -107,7 +107,7 @@ class Player extends ArcadeSprite {
 
         const direction = this.flipX ? -1 : 1;
 
-        const projectile = this.scene.projectileGroup
+        const projectile = projectileGroup
             .create(
                 this.x + 20 * direction,
                 this.y,
@@ -124,11 +124,11 @@ class Player extends ArcadeSprite {
         projectile.body.setOffset(25, 25);
 
         this.scene.physics.add.collider(projectile, [
-            this.scene.platformLayer,
-            this.scene.objectLayer,
+            level.laag_platform,
+            level.laag_objecten,
         ]);
 
-        this.scene.projectiles[projectile.id] = projectile;
+        projectiles[projectile.id] = projectile;
 
         socket.emit('shoot', {
             id: projectile.id,
@@ -150,7 +150,7 @@ class Player extends ArcadeSprite {
      */
     hitBy(projectile) {
         projectile.disableBody(true, true);
-        delete this.scene.projectiles[projectile.id];
+        delete projectiles[projectile.id];
 
         socket.emit('projectileDestroyed', projectile.id);
 
@@ -158,10 +158,9 @@ class Player extends ArcadeSprite {
 
         if (this.health > 0) {
             socket.emit('hit', projectile.damage);
-            this.hud.heartHealth.play(`heartHealth${this.health}`, true);
+            hud.heartHealth.play(`heartHealth${this.health}`, true);
         } else {
             this.die();
-
         }
     }
 
@@ -170,7 +169,7 @@ class Player extends ArcadeSprite {
      */
     die() {
         this.disableBody(true, true);
-        this.scene.player = undefined;
+        player = undefined;
 
         socket.emit('died');
     }
