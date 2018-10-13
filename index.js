@@ -8,11 +8,11 @@ const Room = require('./server/js/Room');
 const room = new Room(io);
 
 // Host static files.
-app.use(express.static('public'));
+app.use(express.static('client'));
 
 // Home route.
 app.get('/', function(req, res) {
-    res.sendFile(__dirname + '/public/index.html');
+    res.sendFile(__dirname + '/client/index.html');
 });
 
 // Start the server.
