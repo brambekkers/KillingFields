@@ -23,20 +23,10 @@ class Hud {
 
     create(){
         // HUD Achtergrond
-        this.background = this.scene.add.image(0, 0, 'hudAchtergrond').setOrigin(0, 0);
-        this.background.setScrollFactor(0);
-        this.background.setScale(0.8)
-
-        // HUD CHAR
-        this.char = this.scene.add.sprite(10, 10, `hudPlayer${player.characterNum}`).setOrigin(0, 0);
-        this.char.setScrollFactor(0);
-        this.char.setScale(1.8)
-
-        // HUD HEALTH HEART
-        this.heartHealth = this.scene.add.sprite(120, 10, 'heartHealth').setOrigin(0, 0);
+        this.background = this.createSprite(0, 0, 'hudAchtergrond', 0.8)
+        this.char = this.createSprite(12, 10, `hudPlayer${player.characterNum}`, 1.8)
+        this.heartHealth = this.createSprite(120, 10, 'heartHealth', 0.9)
         this.heartHealth.anims.play(`heartHealth10`);
-        this.heartHealth.setScrollFactor(0);
-        this.heartHealth.setScale(0.9)
 
         // HUD TEXT
         this.killText = this.scene.add.text(290, 21, player.kills).setOrigin(1, 0);
@@ -45,6 +35,14 @@ class Hud {
         this.killText.setFontStyle('bold italic');
         this.killText.setFontFamily('Arial');
         this.killText.setScrollFactor(0);
+    }
+
+    createSprite(x, y, spriteName, scale){
+        let sprite = this.scene.add.sprite(x, y, spriteName).setOrigin(0, 0);
+        sprite.setScrollFactor(0);
+        sprite.setScale(scale)
+
+        return sprite
     }
 
     

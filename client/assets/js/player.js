@@ -14,7 +14,9 @@ class Player {
         this.health = data.health;
         this.kills = 1
 
-        this.sprite = this.scene.physics.add.sprite(data.x, data.y, data.character);
+        this.sprite = this.scene.physics.add
+            .sprite(data.x, data.y, data.character)
+            .setSize(50, 94, true)
         this.sprite.flipX = data.flipX;
         this.sprite.anims.play(data.animation, data.looping);
 
@@ -40,12 +42,6 @@ class Player {
         if (cursors.space.isDown) {
             this.shoot();
         }
-
-        // // pas health aan als je geraakt wordt
-        // if(this.health != this.hud.healthText && this.hud.healthText ){
-        //     this.hud.healthText.setText(this.health);
-        //     this.hud.heartHealth.play(`heartHealth${this.health}`, true);
-        // }
     }
 
     /**
@@ -77,6 +73,13 @@ class Player {
             cursors.left.isUp
         ) {
             this.sprite.anims.play(`${this.character}_duck`);
+            this.sprite.setSize(50, 65);
+            this.sprite.displayOriginY = 60
+        }
+
+        if(cursors.down.isUp){
+            this.sprite.setSize(50, 94)
+            this.sprite.displayOriginY = 48
         }
 
         if (!this.sprite.body.blocked.down) {

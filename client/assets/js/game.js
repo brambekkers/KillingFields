@@ -16,7 +16,7 @@ var config = {
             gravity: {
                 y: 1500,
             },
-            debug: false,
+            debug: true,
         },
     },
 };
@@ -63,7 +63,6 @@ function create() {
     level = new Level(this,  {id: 2})
 
     this.cameras.main.setBounds(0, 0, GAME_WIDTH, GAME_HEIGHT);
-    console.log(this.cameras)
     this.physics.world.setBounds(0, 0, GAME_WIDTH, GAME_HEIGHT);
 
     cursors = this.input.keyboard.createCursorKeys();
