@@ -9,54 +9,16 @@ class Level extends Scene {
         super(config);
 
         this.initialize();
-        this.create();
     }
 
     /**
      *
      */
     initialize() {
+        this.layers = {};
         this.enemies = {};
         this.projectiles = {};
     }
-
-    /**
-     * @abstract
-     */
-    create() {}
-
-    /**
-     *
-     */
-    createLayer(tileMapKey, tileWidth = 70, tileHeight = 70) {
-        const tilemap = this.make.tilemap({
-            key,
-            tileWidth,
-            tileHeight,
-        });
-
-        const tileset = tilemap_platform.addTilesetImage('tiles');
-
-        return tilemap.createDynamicLayer(0, tileset, 0, 0);
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     /**
      *
@@ -84,39 +46,68 @@ class Level extends Scene {
      *
      */
     create() {
-        // // create lvl en preload images
-        // level = new Level(this,  {id: 2})
-
-        this.cameras.main.setBounds(0, 0, GAME_WIDTH, GAME_HEIGHT);
-
         this.physics.world.setBounds(0, 0, GAME_WIDTH, GAME_HEIGHT);
-
+        this.cameras.main.setBounds(0, 0, GAME_WIDTH, GAME_HEIGHT);
         window.cursors = this.input.keyboard.createCursorKeys();
+
+        this.createBackground();
+        this.createPlatforms();
+        this.createObjects();
+        this.createDecorations();
 
         this.createAnimations();
         this.createProjectiles();
 
         this.bindSocketEvents();
 
-        // // font
-        // WebFont.load({
-        //     google: {
-        //         families: ['Knewave']
-        //     },
-        //     active: (){
-        //         if(player){
-        //         }
-        //     }
-        // });
+        this.start();
     }
 
     /**
      *
      */
-    update() {
-        if (this.player) {
-            this.player.update();
-        }
+    createLayer(key, tileWidth = 70, tileHeight = 70) {
+        const tilemap = this.make.tilemap({
+            key,
+            tileWidth,
+            tileHeight,
+        });
+
+        const tileset = tilemap.addTilesetImage('tiles');
+
+        return tilemap.createDynamicLayer(0, tileset, 0, 0);
+    }
+
+    /**
+     *
+     */
+    createBackground() {
+        this.background = this.add.tileSprite(GAME_WIDTH / 2, GAME_HEIGHT / 2, GAME_WIDTH, GAME_HEIGHT, 'background');
+    }
+
+    /**
+     *
+     */
+    createPlatforms() {
+        this.layers.platforms = this
+            .createLayer('platforms')
+            .setCollisionBetween(1, 200);
+    }
+
+    /**
+     *
+     */
+    createObjects() {
+        this.layers.objects = this
+            .createLayer('objects')
+            .setCollisionBetween(1, 200);
+    }
+
+    /**
+     *
+     */
+    createDecorations() {
+        this.layers.decoration = this.createLayer('decoration');
     }
 
     /**
@@ -164,23 +155,39 @@ class Level extends Scene {
      *
      */
     createProjectiles() {
-    	window.projectileGroup = this.physics.add.group();
-    	window.enemyProjectileGroup = this.physics.add.group();
+    	this.projectileGroup = this.physics.add.group();
+    	this.enemyProjectileGroup = this.physics.add.group();
     }
 
     /**
      *
      */
     bindSocketEvents() {
-        socket.on('gameStarted', onGameStarted.bind(this));
-        socket.on('enemyJoined', onEnemyJoined.bind(this));
-        socket.on('enemyLeft', onEnemyLeft.bind(this));
-        socket.on('enemyMoved', onEnemyMoved.bind(this));
-        socket.on('enemyShot', onEnemyShoot.bind(this));
-        socket.on('projectileDestroyed', onProjectileDestroyed.bind(this)); // TODO: Should be part of onEnemyHit.
-        socket.on('enemyHit', onEnemyHit.bind(this));
-        socket.on('enemyDied', onEnemyDied.bind(this));
-    };
+        socket.on('gameStarted', this.onGameStarted.bind(this));
+        socket.on('enemyJoined', this.onEnemyJoined.bind(this));
+        socket.on('enemyLeft', this.onEnemyLeft.bind(this));
+        socket.on('enemyMoved', this.onEnemyMoved.bind(this));
+        socket.on('enemyShot', this.onEnemyShoot.bind(this));
+        socket.on('projectileDestroyed', this.onProjectileDestroyed.bind(this)); // TODO: Should be part of onEnemyHit.
+        socket.on('enemyHit', this.onEnemyHit.bind(this));
+        socket.on('enemyDied', this.onEnemyDied.bind(this));
+    }
+
+    /**
+     *
+     */
+    start() {
+        socket.emit('start');
+    }
+
+    /**
+     *
+     */
+    update() {
+        if (this.player) {
+            this.player.update();
+        }
+    }
 
     /**
      *
@@ -191,7 +198,17 @@ class Level extends Scene {
         for (const enemy of game.enemies) {
             this.addEnemy(enemy);
         }
-    };
+    }
+
+    /**
+     *
+     */
+    getSolids() {
+        return [
+            this.layers.platforms,
+            this.layers.objects,
+        ];
+    }
 
     /**
      *
@@ -200,24 +217,24 @@ class Level extends Scene {
         this.player = new Player(this, data);
         this.hud = new Hud(this);
 
-        this.physics.add.collider(player, [
-            this.platformLayer,
-            this.objectLayer,
+        this.physics.add.collider(this.player, [
+            this.layers.platforms,
+            this.layers.objects,
         ]);
 
         // camera
-        this.cameras.main.startFollow(player);
+        this.cameras.main.startFollow(this.player);
         this.cameras.main.setZoom(1);
 
         return this.player;
-    };
+    }
 
     /**
      *
      */
     onEnemyJoined(data) {
         this.addEnemy(data);
-    };
+    }
 
     /**
      *
@@ -228,7 +245,7 @@ class Level extends Scene {
         this.enemies[data.id] = enemy;
 
         return enemy;
-    };
+    }
 
     /**
      *
@@ -271,7 +288,7 @@ class Level extends Scene {
         } catch (error) {
             console.warn('Failed to update enemy.');
         }
-    };
+    }
 
     /**
      *
@@ -285,7 +302,7 @@ class Level extends Scene {
         } catch (error) {
             console.warn('Failed to remove enemy.');
         }
-    };
+    }
 
     /**
      *

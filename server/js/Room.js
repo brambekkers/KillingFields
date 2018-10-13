@@ -27,6 +27,17 @@ class Room {
     onConnect(socket) {
         console.log('Player connected.');
 
+        socket.on('start', function () {
+            this.onStart(socket);
+        }.bind(this));
+    }
+
+    /**
+     *
+     */
+    onStart(socket) {
+        console.log('Player started.');
+
         // Create a new player.
         const player = new Player(socket, this);
 
@@ -50,7 +61,7 @@ class Room {
         this.players.push(player);
 
         // Tell everyone that the player has joined.
-        player.socket.broadcast.emit('enemyJoined', player.toData());           
+        player.socket.broadcast.emit('enemyJoined', player.toData());
     }
 
     /**
