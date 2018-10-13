@@ -5,6 +5,7 @@ class Hud {
         this.background = null
         this.char =  null 
         this.heartHealth = null
+        this.killText= null
 
         this.create()
     }
@@ -22,16 +23,26 @@ class Hud {
 
     create(){
         // HUD Achtergrond
-        this.background = this.scene.add.image(0, 0, 'hudAchtergrond');
-        this.background.setScrollFactor(0);
-
-        // HUD CHAR
-        this.char = this.scene.add.sprite(GAME_WIDTH / 2, GAME_HEIGHT - 100, `hudPlayer${this.characterNum}`);
-        this.char.setScale(1.6)
-        // HUD HEALTH HEART
-        this.heartHealth = this.scene.add.sprite(GAME_WIDTH / 2, GAME_HEIGHT - 40, 'heartHealth');
+        this.background = this.createSprite(0, 0, 'hudAchtergrond', 0.8)
+        this.char = this.createSprite(12, 10, `hudPlayer${player.characterNum}`, 1.8)
+        this.heartHealth = this.createSprite(120, 10, 'heartHealth', 0.9)
         this.heartHealth.anims.play(`heartHealth10`);
-        this.heartHealth.setScale(0.8)
+
+        // HUD TEXT
+        this.killText = this.scene.add.text(290, 21, player.kills).setOrigin(1, 0);
+        this.killText.setFontSize(18);
+        this.killText.setColor('#674b25');
+        this.killText.setFontStyle('bold italic');
+        this.killText.setFontFamily('Arial');
+        this.killText.setScrollFactor(0);
+    }
+
+    createSprite(x, y, spriteName, scale){
+        let sprite = this.scene.add.sprite(x, y, spriteName).setOrigin(0, 0);
+        sprite.setScrollFactor(0);
+        sprite.setScale(scale)
+
+        return sprite
     }
 
     
