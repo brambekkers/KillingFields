@@ -49,11 +49,11 @@ class Player extends ArcadeSprite {
      */
     move() {
         if (cursors.left.isDown) {
-            this.setVelocityX(-300);
+            this.setVelocityX(-400);
             this.anims.play(`${this.character}_walk`, true);
             this.flipX = true;
         } else if (cursors.right.isDown) {
-            this.setVelocityX(300);
+            this.setVelocityX(400);
             this.anims.play(`${this.character}_walk`, true);
             this.flipX = false;
         } else {
@@ -107,7 +107,7 @@ class Player extends ArcadeSprite {
 
         const direction = this.flipX ? -1 : 1;
 
-        const projectile = projectileGroup
+        const projectile = this.scene.projectileGroup
             .create(
                 this.x + 20 * direction,
                 this.y,
@@ -123,12 +123,9 @@ class Player extends ArcadeSprite {
         projectile.body.height = 20;
         projectile.body.setOffset(25, 25);
 
-        this.scene.physics.add.collider(projectile, [
-            level.laag_platform,
-            level.laag_objecten,
-        ]);
+        this.scene.physics.add.collider(projectile, this.scene.getSolids());
 
-        projectiles[projectile.id] = projectile;
+        this.scene.projectiles[projectile.id] = projectile;
 
         socket.emit('shoot', {
             id: projectile.id,
