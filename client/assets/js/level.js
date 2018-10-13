@@ -8,19 +8,19 @@ class Level {
         this.laag_objecten = null
         this.laag_decoratie = null
 
-        this.preloadLevel()
+        this.createLevel()
     }
 
-    preloadLevel(){
+    static preload(scene, id){
         // achtergrond
-        this.scene.load.image('background', 'assets/img/background.png');
+        scene.load.image('background', 'assets/img/background.png');
 
         // Tileset Wereld
-        this.scene.load.image('tilesMain', 'assets/maps/tiles_spritesheet.png');
+        scene.load.image('tilesMain', 'assets/maps/tiles_spritesheet.png');
 
-        this.scene.load.tilemapCSV(`lvl${this.id}_grond`, `assets/maps/lvl${this.id}/KillingFields_Platform.csv`);
-        this.scene.load.tilemapCSV(`lvl${this.id}_objecten`, `assets/maps/lvl${this.id}/KillingFields_Objecten.csv`);
-        this.scene.load.tilemapCSV(`lvl${this.id}_decoratie`, `assets/maps/lvl${this.id}/KillingFields_Decoratie.csv`);
+        scene.load.tilemapCSV(`lvl${id}_grond`, `assets/maps/lvl${id}/KillingFields_Platform.csv`);
+        scene.load.tilemapCSV(`lvl${id}_objecten`, `assets/maps/lvl${id}/KillingFields_Objecten.csv`);
+        scene.load.tilemapCSV(`lvl${id}_decoratie`, `assets/maps/lvl${id}/KillingFields_Decoratie.csv`);
     }
 
     createLevel(){

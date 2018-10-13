@@ -25,6 +25,7 @@ let game = new Phaser.Game(config);
 let level;
 let socket;
 let player;
+let hud
 let cursors;
 
 let enemies = {};
@@ -33,26 +34,25 @@ let projectiles = {};
 let projectileGroup;
 let enemyProjectileGroup;
 
+ 
+
 /**
  *
  */
 function preload() {
     // Player
     for (let i = 1; i <= 3; i++) {
-        this.load.spritesheet(`player${i}`, `assets/img/Player/player${i}.png`, { frameWidth: 73, frameHeight: 96});    
-        this.load.image(`hudPlayer${i}`, `assets/img/HUD/hud${i}/hud.png`);    
+        this.load.spritesheet(`player${i}`, `assets/img/Player/player${i}.png`, { frameWidth: 73, frameHeight: 96});     
     }
 
-    this.load.spritesheet('heartHealth', 'assets/img/HUD/hudHealth/heartSpritesheet.png', { frameWidth: 53, frameHeight: 45});
     this.load.image('fireball', 'assets/img/Items/fireball.png');
-    this.load.image('voorbeeldHud', 'assets/img/HUD/voorbeeldHud.png');
-    this.load.image('hudAchtergrond', 'assets/img/HUD/hudAchtergrond.png');
+
 
     // Fonts
     this.load.script('webfont', 'https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js')
-
-    // create lvl en preload images
-    level = new Level(this,  {id: 2})
+    
+    Level.preload(this, 2)
+    Hud.preload(this)
 }
 
 /**
@@ -61,9 +61,11 @@ function preload() {
 function create() {
 
 
-    level.createLevel()
+    // create lvl en preload images
+    level = new Level(this,  {id: 2})
 
     this.cameras.main.setBounds(0, 0, GAME_WIDTH, GAME_HEIGHT);
+    console.log(this.cameras)
     this.physics.world.setBounds(0, 0, GAME_WIDTH, GAME_HEIGHT);
 
     cursors = this.input.keyboard.createCursorKeys();
@@ -175,11 +177,10 @@ function onGameStarted(game) {
  */
 function addPlayer(data) {
     player = new Player(this, data);
+    hud = new Hud(this);
 
     this.physics.add.collider(player.sprite, [level.laag_platform, level.laag_objecten]);
 
-    // Create HUD
-    player.createHud()   
 
     // camera
     this.cameras.main.startFollow(player.sprite);
