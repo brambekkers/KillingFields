@@ -34,15 +34,13 @@ let projectiles = {};
 let projectileGroup;
 let enemyProjectileGroup;
 
- 
-
 /**
  *
  */
 function preload() {
     // Player
     for (let i = 1; i <= 3; i++) {
-        this.load.spritesheet(`player${i}`, `assets/img/Player/player${i}.png`, { frameWidth: 73, frameHeight: 96});     
+        this.load.spritesheet(`player${i}`, `assets/img/Player/player${i}.png`, { frameWidth: 73, frameHeight: 96});
     }
 
     this.load.image('fireball', 'assets/img/Items/fireball.png');
@@ -50,7 +48,7 @@ function preload() {
 
     // Fonts
     this.load.script('webfont', 'https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js')
-    
+
     Level.preload(this, 2)
     Hud.preload(this)
 }
@@ -84,7 +82,7 @@ function create() {
     //         if(player){
     //         }
     //     }
-    // });   
+    // });
 }
 
 /**
@@ -181,10 +179,9 @@ function addPlayer(data) {
 
     this.physics.add.collider(player.sprite, [level.laag_platform, level.laag_objecten]);
 
-
     // camera
     this.cameras.main.startFollow(player.sprite);
-    this.cameras.main.setZoom(1); 
+    this.cameras.main.setZoom(1);
 
     return player;
 };
@@ -255,7 +252,7 @@ function onEnemyLeft(id) {
     try {
         const enemy = getEnemy(id);
 
-        enemy.sprite.destroy();
+        enemy.destroy();
         delete enemy;
     } catch (error) {
         console.warn('Failed to remove enemy.');
@@ -334,7 +331,7 @@ function onEnemyDied(enemyData) {
     try {
         const enemy = getEnemy(enemyData.id);
 
-        enemy.sprite.destroy();
+        enemy.destroy();
         delete enemy;
     } catch (error) {
         console.warn('Failed to destroy enemy.');
