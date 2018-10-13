@@ -39,8 +39,8 @@ let enemyProjectileGroup;
 function preload() {
     // Player
     for (let i = 1; i <= 3; i++) {
-        this.load.spritesheet(`player${i}`, `assets/img/Player/player${i}.png`, { frameWidth: 73, frameHeight: 96});    
-        this.load.image(`hudPlayer${i}`, `assets/img/HUD/hud${i}/hud.png`);    
+        this.load.spritesheet(`player${i}`, `assets/img/Player/player${i}.png`, { frameWidth: 73, frameHeight: 96});
+        this.load.image(`hudPlayer${i}`, `assets/img/HUD/hud${i}/hud.png`);
     }
 
     this.load.spritesheet('heartHealth', 'assets/img/HUD/hudHealth/heartSpritesheet.png', { frameWidth: 53, frameHeight: 45});
@@ -82,7 +82,7 @@ function create() {
     //         if(player){
     //         }
     //     }
-    // });   
+    // });
 }
 
 /**
@@ -179,11 +179,11 @@ function addPlayer(data) {
     this.physics.add.collider(player.sprite, [level.laag_platform, level.laag_objecten]);
 
     // Create HUD
-    player.createHud()   
+    player.createHud()
 
     // camera
     this.cameras.main.startFollow(player.sprite);
-    this.cameras.main.setZoom(1); 
+    this.cameras.main.setZoom(1);
 
     return player;
 };
@@ -254,7 +254,7 @@ function onEnemyLeft(id) {
     try {
         const enemy = getEnemy(id);
 
-        enemy.sprite.destroy();
+        enemy.destroy();
         delete enemy;
     } catch (error) {
         console.warn('Failed to remove enemy.');
@@ -333,7 +333,7 @@ function onEnemyDied(enemyData) {
     try {
         const enemy = getEnemy(enemyData.id);
 
-        enemy.sprite.destroy();
+        enemy.destroy();
         delete enemy;
     } catch (error) {
         console.warn('Failed to destroy enemy.');

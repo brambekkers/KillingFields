@@ -1,36 +1,37 @@
 /**
  *
  */
-class Enemy {
+class Enemy extends Phaser.GameObjects.Sprite {
     /**
      *
      */
     constructor(scene, data) {
-        this.scene = scene;
+        super(scene, data.x, data.y, data.character);
 
         this.id = data.id;
-        this.caracter = data.character;
+        this.character = data.character;
         this.health = data.health;
 
-        this.sprite = this.scene.add.sprite(data.x, data.y, data.character);
-        this.sprite.flipX = data.flipX;
-        this.sprite.anims.play(data.animation, data.looping);
+        this.flipX = data.flipX;
+        this.anims.play(data.animation, data.looping);
+
+        this.scene.add.existing(this);
     }
 
     /**
      *
      */
     setPosition(x, y) {
-        this.sprite.x = x;
-        this.sprite.y = y;
+        this.x = x;
+        this.y = y;
     }
 
     /**
      *
      */
     setAnimation(key, repeat, flipX) {
-        this.sprite.anims.play(key, repeat);
-        this.sprite.flipX = flipX;
+        this.anims.play(key, repeat);
+        this.flipX = flipX;
     }
 
     /**
