@@ -12,6 +12,7 @@ class Player {
         this.characterNum = data.characterNum
         this.character = data.character;
         this.health = data.health;
+        this.kills = 1
 
         this.sprite = this.scene.physics.add.sprite(data.x, data.y, data.character);
         this.sprite.flipX = data.flipX;
