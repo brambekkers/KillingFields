@@ -5,8 +5,8 @@ const GAME_HEIGHT = 2240;
 
 const config = {
     type: Phaser.AUTO,
-    width: 1600,
-    height: 900,
+    width: window.innerWidth,
+    height: window.innerHeight,
     pixelArt: true,
     scene: {
         preload,
@@ -36,6 +36,8 @@ let projectiles = {};
 
 let projectileGroup;
 let enemyProjectileGroup;
+
+let crateGroup
 
 let keyA, keyS, keyD, keyE, keyF
 
@@ -78,6 +80,8 @@ function create() {
     createProjectiles.bind(this)();
 
     bindSocketEvents.bind(this)();
+
+    createGroups.bind(this)()
 
     // // font
     // WebFont.load({
@@ -148,6 +152,10 @@ function createAnimations() {
             repeat: -1
         });
     }
+}
+
+function createGroups(){
+    crateGroup = this.physics.add.group();
 }
 
 /**

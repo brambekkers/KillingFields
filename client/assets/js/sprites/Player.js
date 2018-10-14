@@ -19,6 +19,7 @@ class Player extends ArcadeSprite {
         this.anims.play(data.animation, data.looping);
 
         this.projectileCooldown = 0;
+        this.itemCooldown = 0;
 
         this.flipX = data.flipX;
         this.anims.play(data.animation, data.looping);
@@ -38,9 +39,12 @@ class Player extends ArcadeSprite {
 
         // Shooting
         this.projectileCooldown--;
-
-        if (cursors.space.isDown) {
-            // this.shoot();
+        if (keyE.isDown) {
+            this.shoot();
+        }
+        // Drop item
+        this.itemCooldown--;
+        if (keyF.isDown) {
             this.createCrate()
         }
     }
@@ -49,25 +53,33 @@ class Player extends ArcadeSprite {
      *
      */
     move() {
+        // move left
         if (cursors.left.isDown || keyA.isDown) {
             this.setVelocityX(-300);
             this.anims.play(`${this.character}_walk`, true);
             this.flipX = true;
-        } else if (cursors.right.isDown || keyD.isDown) {
+        }
+         // move right 
+        else if (cursors.right.isDown || keyD.isDown) {
             this.setVelocityX(300);
             this.anims.play(`${this.character}_walk`, true);
             this.flipX = false;
-        } else {
+        } 
+         // Reset player
+        else {
             this.setVelocityX(0);
             this.anims.play(`${this.character}_turn`);
         }
 
+        // Player jump
         if (
             cursors.space.isDown &&
             this.body.blocked.down
         ) {
             this.setVelocityY(-1000);
-        } else if (
+        } 
+        // Player duck
+        else if (
             cursors.down.isDown &&
             this.body.blocked.down &&
             cursors.right.isUp &&
@@ -183,10 +195,17 @@ class Player extends ArcadeSprite {
      *
      */
     createCrate(){
-        let crate = new Crate(this.scene, 800, 200)
+        if (this.itemCooldown > 0) {
+            return;
+        }
+
+        this.itemCooldown = 20;
+
+        let crate = new Crate(this.scene, this.x, this.y)
         this.scene.physics.add.collider(crate, [
             level.laag_platform,
             level.laag_objecten,
+            this
         ]);
     }
 }
