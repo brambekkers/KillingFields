@@ -58,4 +58,13 @@ class ArcadeSprite extends Phaser.Physics.Arcade.Sprite {
             velocity: this.body.velocity,
         };
     }
+
+    /**
+     * Destroys this sprite.
+     */
+    destroy() {
+        this.body.destroy();
+
+        super.destroy();
+    }
 }

@@ -3,6 +3,13 @@
  */
 class ArcadeItem extends ArcadeSprite {
     /**
+     *
+     */
+    static get cooldown() {
+        return 30;
+    }
+
+    /**
      * Creates an ArcadeItem.
      */
     constructor(scene, data) {
@@ -16,7 +23,7 @@ class ArcadeItem extends ArcadeSprite {
      * Destroys this item.
      */
     destroy() {
-        // Deregister this item from the scene.
+        // Unregister this item from the scene.
         delete this.scene.projectiles[this.id];
 
         super.destroy();

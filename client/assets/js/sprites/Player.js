@@ -14,7 +14,13 @@ class Player extends ArcadeSprite {
 
         this.setSize(50, 94, true);
 
-        this.projectileCooldown = 0;
+        this.cooldowns = {
+            primary: 0,
+            secondary: 0,
+        };
+
+        this.PrimaryItem = Fireball;
+        this.SecondaryItem = Crate;
     }
 
     /**
@@ -66,39 +72,44 @@ class Player extends ArcadeSprite {
      */
     update() {
         this.move();
-
-        this.limit();
+        this.limitMovement();
 
         this.coolDown();
-
-        if (cursors.space.isDown) {
-            this.shoot();
-        }
+        this.useItems();
     }
 
     /**
-     *
+     * @todo Separate animations from movement logic.
      */
     move() {
+        // Move left.
         if (cursors.left.isDown || keyA.isDown) {
             this.setVelocityX(-400);
             this.anims.play(`${this.character}_walk`, true);
             this.flipX = true;
-        } else if (cursors.right.isDown || keyD.isDown) {
+        }
+        // Move right.
+        else if (cursors.right.isDown || keyD.isDown) {
             this.setVelocityX(400);
             this.anims.play(`${this.character}_walk`, true);
             this.flipX = false;
-        } else {
+        }
+        // Idle.
+        else {
             this.setVelocityX(0);
             this.anims.play(`${this.character}_turn`);
         }
 
+        // Jumping.
         if (
             cursors.space.isDown &&
-            this.body.blocked.down
+            (this.body.blocked.down || this.body.touching.down)
         ) {
             this.setVelocityY(-1000);
-        } else if (
+        }
+
+        // Ducking.
+        else if (
             cursors.down.isDown &&
             this.body.blocked.down &&
             cursors.right.isUp &&
@@ -112,13 +123,13 @@ class Player extends ArcadeSprite {
             this.setSize(50, 65);
             this.displayOriginY = 60
         }
-
-        if(cursors.down.isUp && keyS.isUp){
+        // Standing up.
+        else if (cursors.down.isUp && keyS.isUp) {
             this.setSize(50, 94)
             this.displayOriginY = 48
         }
 
-        if (!this.body.blocked.down) {
+        if (!this.body.blocked.down && !this.body.touching.down) {
             this.anims.play(`${this.character}_jump`);
         }
 
@@ -128,7 +139,7 @@ class Player extends ArcadeSprite {
     /**
      *
      */
-    limit() {
+    limitMovement() {
         const standing = (
             this.body.blocked.down ||
             this.body.touching.down
@@ -145,23 +156,53 @@ class Player extends ArcadeSprite {
      *
      */
     coolDown() {
-        this.projectileCooldown--;
+        this.cooldowns.primary--;
+        this.cooldowns.secondary--;
     }
 
     /**
      *
      */
-    shoot() {
-        if (this.projectileCooldown > 0) {
+    useItems() {
+        if (keyF.isDown) {
+            this.usePrimaryItem();
+        }
+
+        if (keyE.isDown) {
+            this.useSecondaryItem();
+        }
+    }
+
+    /**
+     *
+     */
+    usePrimaryItem() {
+        if (
+            !this.PrimaryItem ||
+            this.cooldowns.primary > 0
+        ) {
             return;
         }
 
-        // const projectile = this.createFireball();
-        const projectile = this.createCrate();
+        this.PrimaryItem.use(this);
 
-        socket.emit('shoot', projectile.toData());
+        this.cooldowns.primary = this.PrimaryItem.cooldown;
+    }
 
-        this.projectileCooldown = projectile.cooldown;
+    /**
+     *
+     */
+    useSecondaryItem() {
+        if (
+            !this.SecondaryItem ||
+            this.cooldowns.secondary > 0
+        ) {
+            return;
+        }
+
+        this.SecondaryItem.use(this);
+
+        this.cooldowns.secondary = this.SecondaryItem.cooldown;
     }
 
     /**
@@ -169,7 +210,7 @@ class Player extends ArcadeSprite {
      */
     hitBy(projectile) {
         projectile.disableBody(true, true);
-        delete projectiles[projectile.id];
+        delete this.scene.projectiles[projectile.id];
 
         socket.emit('projectileDestroyed', projectile.id);
 
@@ -177,7 +218,7 @@ class Player extends ArcadeSprite {
 
         if (this.health > 0) {
             socket.emit('hit', projectile.damage);
-            hud.heartHealth.play(`heartHealth${this.health}`, true);
+            // hud.heartHealth.play(`heartHealth${this.health}`, true);
         } else {
             this.die();
         }
@@ -188,33 +229,8 @@ class Player extends ArcadeSprite {
      */
     die() {
         this.disableBody(true, true);
-        player = undefined;
+        this.scene.player = undefined;
 
         socket.emit('died');
-    }
-
-    /**
-     *
-     */
-    createFireball() {
-        const position = new Vector2(this.x, this.y);
-        const direction = new Vector2(this.flipX ? -1 : 1, 0).normalize();
-
-        return new Fireball(this.scene, {
-            position: position.add(direction.multiply(20)),
-            velocity: direction.setMagnitude(500),
-        });
-    }
-
-    /**
-     *
-     */
-    createCrate() {
-        const position = new Vector2(this.x, this.y);
-        const direction = new Vector2(this.flipX ? -1 : 1, 0).normalize();
-
-        return new Crate(this.scene, {
-            position: position.add(direction.multiply(70)),
-        });
     }
 }

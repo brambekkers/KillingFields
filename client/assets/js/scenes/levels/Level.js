@@ -15,7 +15,11 @@ class Level extends Scene {
      *
      */
     initialize() {
+        this.width = window.innerWidth;
+        this.height = window.innerHeight;
+
         this.layers = {};
+        this.groups = {};
         this.enemies = {};
         this.projectiles = {};
     }
@@ -40,15 +44,15 @@ class Level extends Scene {
      *
      */
     create() {
-        this.physics.world.setBounds(0, 0, GAME_WIDTH, GAME_HEIGHT);
-        this.cameras.main.setBounds(0, 0, GAME_WIDTH, GAME_HEIGHT);
+        this.physics.world.setBounds(0, 0, this.width, this.height);
+        this.cameras.main.setBounds(0, 0, this.width, this.height);
         this.createKeys();
 
         this.createBackground();
+        this.createLayers();
+        this.createGroups();
+
         this.createAnimations();
-        this.createPlatforms();
-        this.createObjects();
-        this.createDecorations();
 
         this.bindSocketEvents();
 
@@ -70,6 +74,22 @@ class Level extends Scene {
     /**
      *
      */
+    createBackground() {
+        this.background = this.add.tileSprite(this.width / 2, this.height / 2, this.width, this.height, 'background');
+    }
+
+    /**
+     *
+     */
+    createLayers() {
+        this.createPlatformLayer();
+        this.createObjectLayer();
+        this.createDecorationLayer();
+    }
+
+    /**
+     *
+     */
     createLayer(key, tileWidth = 70, tileHeight = 70) {
         const tilemap = this.make.tilemap({
             key,
@@ -85,14 +105,7 @@ class Level extends Scene {
     /**
      *
      */
-    createBackground() {
-        this.background = this.add.tileSprite(GAME_WIDTH / 2, GAME_HEIGHT / 2, GAME_WIDTH, GAME_HEIGHT, 'background');
-    }
-
-    /**
-     *
-     */
-    createPlatforms() {
+    createPlatformLayer() {
         this.layers.platforms = this
             .createLayer('platforms')
             .setCollisionBetween(1, 200);
@@ -101,7 +114,7 @@ class Level extends Scene {
     /**
      *
      */
-    createObjects() {
+    createObjectLayer() {
         this.layers.objects = this
             .createLayer('objects')
             .setCollisionBetween(1, 200);
@@ -110,8 +123,32 @@ class Level extends Scene {
     /**
      *
      */
-    createDecorations() {
+    createDecorationLayer() {
         this.layers.decoration = this.createLayer('decoration');
+    }
+
+    /**
+     *
+     */
+    createGroups() {
+        this.createCrateGroup();
+    }
+
+    /**
+     *
+     */
+    createCrateGroup() {
+        this.groups.crates = this.physics.add.group({
+            // Initial angular speed of 60 degrees per second.
+            // Drag reduces it by 5 degrees/s per second, thus to zero after 12 seconds.
+            // angularDrag: 5,
+            // angularVelocity: 60,
+            // bounceX: 0.05,
+            // bounceY: 0,
+            collideWorldBounds: false,
+            dragX: 1000,
+            // dragY: 1000
+        });
     }
 
     /**
@@ -174,6 +211,7 @@ class Level extends Scene {
         return [
             this.layers.platforms,
             this.layers.objects,
+            this.groups.crates,
         ];
     }
 
@@ -207,11 +245,7 @@ class Level extends Scene {
      *
      */
     addEnemy(data) {
-        const enemy = new Enemy(this, data);
-
-        this.enemies[enemy.id] = enemy;
-
-        return enemy;
+        return new Enemy(this, data);
     }
 
     /**
@@ -263,7 +297,6 @@ class Level extends Scene {
             const enemy = this.getEnemy(id);
 
             enemy.destroy();
-            enemy = undefined;
         } catch (error) {
             console.warn('Failed to remove enemy.', error);
         }
@@ -295,7 +328,9 @@ class Level extends Scene {
     addEnemyFireball(data) {
         const fireball = new Fireball(this, data);
 
-        this.physics.add.collider(fireball, player, onPlayerHit.bind(this));
+        if (this.player) {
+            this.physics.add.collider(fireball, this.player, this.onPlayerHit.bind(this));
+        }
 
         return fireball;
     }
@@ -319,10 +354,9 @@ class Level extends Scene {
      */
     onProjectileDestroyed(id) {
         try {
-            const projectile = this.getProjectile(id);
+            let projectile = this.getProjectile(id);
 
-            projectile.disableBody(true, true);
-            projectile = undefined;
+            projectile.destroy();
         } catch (error) {
             console.warn('Failed to destroy projectile.', error);
         }
@@ -346,10 +380,9 @@ class Level extends Scene {
      */
     onEnemyDied(enemyData) {
         try {
-            const enemy = this.getEnemy(enemyData.id);
+            let enemy = this.getEnemy(enemyData.id);
 
             enemy.destroy();
-            enemy = undefined;
         } catch (error) {
             console.warn('Failed to destroy enemy.', error);
         }

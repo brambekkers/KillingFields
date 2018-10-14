@@ -9,6 +9,9 @@ class Enemy extends Sprite {
         super(scene, data);
 
         this.health = data.health;
+
+        // Register this enemy with the scene.
+        this.scene.enemies[this.id] = this;
     }
 
     /**
@@ -38,5 +41,15 @@ class Enemy extends Sprite {
      */
     updateHealth(health) {
         this.health = health;
+    }
+
+    /**
+     *
+     */
+    destroy() {
+        // Unregister this enemy from the scene.
+        delete this.scene.enemies[this.id];
+
+        super.destroy();
     }
 }

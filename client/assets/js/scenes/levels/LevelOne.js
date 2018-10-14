@@ -5,6 +5,16 @@ class LevelOne extends Level {
     /**
      *
      */
+    initialize() {
+        super.initialize();
+
+        this.width = 16 * 70;
+        this.height = 16 * 70;
+    }
+
+    /**
+     *
+     */
     preload() {
         super.preload();
 

@@ -5,6 +5,16 @@ class LevelTwo extends Level {
     /**
      *
      */
+    initialize() {
+        super.initialize();
+
+        this.width = 32 * 70;
+        this.height = 32 * 70;
+    }
+
+    /**
+     *
+     */
     preload() {
         super.preload();
 

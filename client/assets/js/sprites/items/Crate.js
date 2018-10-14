@@ -12,8 +12,12 @@ class Crate extends ArcadeItem {
 
         this.cooldown = 30;
 
-        this.scene.physics.add.collider(this, this.scene.player);
-        this.scene.physics.add.collider(this, this.scene.getSolids());
+        this.scene.physics.add.collider(this, [
+            ...this.scene.getSolids(),
+            this.scene.player,
+        ]);
+
+        this.scene.groups.crates.add(this);
     }
 
     /**
@@ -32,6 +36,20 @@ class Crate extends ArcadeItem {
         scene.load.image('crate0', 'assets/img/Tiles/box.png');
         scene.load.image('crate1', 'assets/img/Tiles/boxEmpty.png');
         scene.load.image('crate2', 'assets/img/Tiles/boxAlt.png');
+    }
+
+    /**
+     *
+     */
+    static use(player) {
+        const position = new Vector2(player.x, player.y);
+        const direction = new Vector2(player.flipX ? -1 : 1, 0).normalize();
+
+        const crate = new Crate(player.scene, {
+            position: position.add(direction.multiply(70)),
+        });
+
+        socket.emit('shoot', crate.toData());
     }
 
     /**

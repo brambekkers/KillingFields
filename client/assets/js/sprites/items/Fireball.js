@@ -14,7 +14,6 @@ class Fireball extends ArcadeItem {
             ),
         }));
 
-        this.cooldown = 30;
         this.damage = 1;
         this.bounces = 3;
 
@@ -31,6 +30,21 @@ class Fireball extends ArcadeItem {
      */
     static preload(scene) {
         scene.load.image('fireball', 'assets/img/Items/fireball.png');
+    }
+
+    /**
+     *
+     */
+    static use(player) {
+        const position = new Vector2(player.x, player.y);
+        const direction = new Vector2(player.flipX ? -1 : 1, 0).normalize();
+
+        const fireball = new Fireball(player.scene, {
+            position: position.add(direction.multiply(20)),
+            velocity: direction.setMagnitude(500),
+        });
+
+        socket.emit('shoot', fireball.toData());
     }
 
     /**
