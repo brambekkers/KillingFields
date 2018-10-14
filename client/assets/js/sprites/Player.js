@@ -6,22 +6,59 @@ class Player extends ArcadeSprite {
      *
      */
     constructor(scene, data) {
-        super(scene, data.x, data.y, data.character);
+        super(scene, data);
 
-        this.id = data.id;
-        this.characterNum = data.characterNum;
         this.character = data.character;
         this.health = data.health;
-        this.kills = 1
+        this.kills = 0;
 
-        this.setSize(50, 94, true)
-        this.flipX = data.flipX;
-        this.anims.play(data.animation, data.looping);
+        this.setSize(50, 94, true);
 
         this.projectileCooldown = 0;
+    }
 
-        this.flipX = data.flipX;
-        this.anims.play(data.animation, data.looping);
+    /**
+     *
+     */
+    static preload(scene) {
+        for (let i = 1; i <= 3; i++) {
+            scene.load.spritesheet(`player${i}`, `assets/img/Player/player${i}.png`, {
+                frameWidth: 73,
+                frameHeight: 96,
+            });
+        }
+    }
+
+    /**
+     *
+     */
+    static createAnimations(scene) {
+        for (let i = 1; i <= 3; i++) {
+            scene.anims.create({
+                key: `player${i}_walk`,
+                frames: scene.anims.generateFrameNumbers(`player${i}`, { start: 0, end: 4 }),
+                frameRate: 15,
+                repeat: -1
+            });
+
+            scene.anims.create({
+                key: `player${i}_turn`,
+                frames: [ { key: `player${i}`, frame: 9 } ],
+                frameRate: 20
+            });
+
+            scene.anims.create({
+                key: `player${i}_jump`,
+                frames: [ { key: `player${i}`, frame: 13 } ],
+                frameRate: 20
+            });
+
+            scene.anims.create({
+                key: `player${i}_duck`,
+                frames: [ { key: `player${i}`, frame: 11 } ],
+                frameRate: 20
+            });
+        }
     }
 
     /**
@@ -30,18 +67,12 @@ class Player extends ArcadeSprite {
     update() {
         this.move();
 
-        // max Velocity (zodat we te snel gaan en door de grond)
-        var standing = this.body.blocked.down || this.body.touching.down;
-        if (!standing && this.body.velocity.y > 800) {
-            this.setVelocityY(600)
-        }
+        this.limit();
 
-        // Shooting
-        this.projectileCooldown--;
+        this.coolDown();
 
         if (cursors.space.isDown) {
-            // this.shoot();
-            this.createCrate()
+            this.shoot();
         }
     }
 
@@ -91,13 +122,30 @@ class Player extends ArcadeSprite {
             this.anims.play(`${this.character}_jump`);
         }
 
-        socket.emit('move', {
-            x: this.x,
-            y: this.y,
-            animation: this.anims.currentAnim.key,
-            looping: this.anims.currentAnim.repeat,
-            flipX: this.flipX,
-        });
+        socket.emit('move', this.toData());
+    }
+
+    /**
+     *
+     */
+    limit() {
+        const standing = (
+            this.body.blocked.down ||
+            this.body.touching.down
+        );
+
+        const limitExceeded = this.body.velocity.y > 600;
+
+        if (!standing && limitExceeded) {
+            this.setVelocityY(600);
+        }
+    }
+
+    /**
+     *
+     */
+    coolDown() {
+        this.projectileCooldown--;
     }
 
     /**
@@ -108,43 +156,12 @@ class Player extends ArcadeSprite {
             return;
         }
 
-        this.projectileCooldown = 30;
+        // const projectile = this.createFireball();
+        const projectile = this.createCrate();
 
-        const direction = this.flipX ? -1 : 1;
+        socket.emit('shoot', projectile.toData());
 
-        const projectile = this.scene.projectileGroup
-            .create(
-                this.x + 20 * direction,
-                this.y,
-                'fireball'
-            )
-            .setBounce(1);
-
-        projectile.id = new Date().getTime(); // TODO: Use a better ID.
-        projectile.damage = 1;
-        projectile.flipX = this.flipX;
-        projectile.body.velocity.x = 500 * direction;
-        projectile.body.width = 20;
-        projectile.body.height = 20;
-        projectile.body.setOffset(25, 25);
-
-        this.scene.physics.add.collider(projectile, this.scene.getSolids());
-
-        this.scene.projectiles[projectile.id] = projectile;
-
-        socket.emit('shoot', {
-            id: projectile.id,
-            damage: projectile.damage,
-            flipX: projectile.flipX,
-            x: projectile.x,
-            y: projectile.y,
-            body: {
-                velocity: {
-                    x: projectile.body.velocity.x,
-                    y: projectile.body.velocity.y,
-                },
-            },
-        });
+        this.projectileCooldown = projectile.cooldown;
     }
 
     /**
@@ -179,11 +196,25 @@ class Player extends ArcadeSprite {
     /**
      *
      */
-    createCrate(){
-        let crate = new Crate(this.scene, 800, 200)
-        this.scene.physics.add.collider(crate, [
-            level.laag_platform,
-            level.laag_objecten,
-        ]);
+    createFireball() {
+        const position = new Vector2(this.x, this.y);
+        const direction = new Vector2(this.flipX ? -1 : 1, 0).normalize();
+
+        return new Fireball(this.scene, {
+            position: position.add(direction.multiply(20)),
+            velocity: direction.setMagnitude(500),
+        });
+    }
+
+    /**
+     *
+     */
+    createCrate() {
+        const position = new Vector2(this.x, this.y);
+        const direction = new Vector2(this.flipX ? -1 : 1, 0).normalize();
+
+        return new Crate(this.scene, {
+            position: position.add(direction.multiply(70)),
+        });
     }
 }

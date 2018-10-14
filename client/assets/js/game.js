@@ -20,4 +20,4 @@ const game = new Phaser.Game({
             debug: true,
         },
     },
-};
+});

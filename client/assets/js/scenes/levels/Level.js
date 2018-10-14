@@ -27,19 +27,13 @@ class Level extends Scene {
         // Tilemap
         this.load.image('tiles', 'assets/maps/tiles_spritesheet.png');
 
-        // Player
-        for (let i = 1; i <= 3; i++) {
-            this.load.spritesheet(`player${i}`, `assets/img/Player/player${i}.png`, { frameWidth: 73, frameHeight: 96});
-        }
-
-        // Items
-        this.load.image('fireball', 'assets/img/Items/fireball.png');
-
         // Fonts
         this.load.script('webfont', 'https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js')
 
-        // Level.preload(this, 2)
-        Hud.preload(this)
+        Player.preload(this);
+        Hud.preload(this);
+        Fireball.preload(this);
+        Crate.preload(this);
     }
 
     /**
@@ -48,19 +42,29 @@ class Level extends Scene {
     create() {
         this.physics.world.setBounds(0, 0, GAME_WIDTH, GAME_HEIGHT);
         this.cameras.main.setBounds(0, 0, GAME_WIDTH, GAME_HEIGHT);
-        window.cursors = this.input.keyboard.createCursorKeys();
+        this.createKeys();
 
         this.createBackground();
+        this.createAnimations();
         this.createPlatforms();
         this.createObjects();
         this.createDecorations();
 
-        this.createAnimations();
-        this.createProjectiles();
-
         this.bindSocketEvents();
 
         this.start();
+    }
+
+    /**
+     *
+     */
+    createKeys() {
+        window.cursors = this.input.keyboard.createCursorKeys();
+        window.keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
+        window.keyS = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
+        window.keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
+        window.keyE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E);
+        window.keyF = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F);
     }
 
     /**
@@ -114,49 +118,8 @@ class Level extends Scene {
      *
      */
     createAnimations() {
-        for (let i = 1; i <= 3; i++) {
-            this.anims.create({
-                key: `player${i}_walk`,
-                frames: this.anims.generateFrameNumbers(`player${i}`, { start: 0, end: 4 }),
-                frameRate: 15,
-                repeat: -1
-            });
-
-            this.anims.create({
-                key: `player${i}_turn`,
-                frames: [ { key: `player${i}`, frame: 9 } ],
-                frameRate: 20
-            });
-
-            this.anims.create({
-                key: `player${i}_jump`,
-                frames: [ { key: `player${i}`, frame: 13 } ],
-                frameRate: 20
-            });
-
-            this.anims.create({
-                key: `player${i}_duck`,
-                frames: [ { key: `player${i}`, frame: 11 } ],
-                frameRate: 20
-            });
-        }
-
-        for (let i = 0; i <= 11; i++) {
-            this.anims.create({
-                key: `heartHealth${i}`,
-                frames: this.anims.generateFrameNumbers('heartHealth', { start: `${i}`, end: `${i}`}),
-                frameRate: 10,
-                repeat: -1
-            });
-        }
-    }
-
-    /**
-     *
-     */
-    createProjectiles() {
-    	this.projectileGroup = this.physics.add.group();
-    	this.enemyProjectileGroup = this.physics.add.group();
+        Player.createAnimations(this);
+        Hud.createAnimations(this);
     }
 
     /**
@@ -186,6 +149,10 @@ class Level extends Scene {
     update() {
         if (this.player) {
             this.player.update();
+        }
+
+        for (const key of Object.keys(this.projectiles)) {
+            this.projectiles[key].update();
         }
     }
 
@@ -242,7 +209,7 @@ class Level extends Scene {
     addEnemy(data) {
         const enemy = new Enemy(this, data);
 
-        this.enemies[data.id] = enemy;
+        this.enemies[enemy.id] = enemy;
 
         return enemy;
     }
@@ -280,13 +247,11 @@ class Level extends Scene {
         try {
             const enemy = this.getEnemy(enemyData.id);
 
-            const { x, y } = enemyData;
-            enemy.setPosition(x, y);
-
-            const { animation, looping, flipX } = enemyData;
-            enemy.setAnimation(animation, looping, flipX);
+            enemy.updatePosition(enemyData.position);
+            enemy.updateFacing(enemyData.flipX);
+            enemy.updateAnimation(enemyData.animation);
         } catch (error) {
-            console.warn('Failed to update enemy.');
+            console.warn('Failed to update enemy.', error);
         }
     }
 
@@ -300,7 +265,7 @@ class Level extends Scene {
             enemy.destroy();
             enemy = undefined;
         } catch (error) {
-            console.warn('Failed to remove enemy.');
+            console.warn('Failed to remove enemy.', error);
         }
     }
 
@@ -308,51 +273,38 @@ class Level extends Scene {
      *
      */
     onEnemyShoot(data) {
-        this.addProjectile(data);
+        this.addEnemyProjectile(data);
     }
 
     /**
      *
      */
-    addProjectile(data) {
+    addEnemyProjectile(data) {
         switch (data.type) {
-            default:
             case 'fireball':
-                return this.addFireball(data);
+                return this.addEnemyFireball(data);
+
+            case 'crate':
+                return this.addEnemyCrate(data);
         }
     }
 
     /**
      *
      */
-    addFireball(data) {
-        const fireball = window.enemyProjectileGroup
-            .create(
-                data.x,
-                data.y,
-                'fireball'
-            )
-            .setBounce(1);
+    addEnemyFireball(data) {
+        const fireball = new Fireball(this, data);
 
-        fireball.id = data.id;
-        fireball.damage = data.damage;
-        fireball.flipX = data.flipX;
-
-        fireball.body.velocity.x = data.body.velocity.x;
-        fireball.body.velocity.y = data.body.velocity.y;
-        fireball.body.width = 20;
-        fireball.body.height = 20;
-        fireball.body.setOffset(25, 25);
-
-        this.physics.add.collider(fireball, [level.laag_platform, level.laag_objecten]);
-
-        if (player) {
-            this.physics.add.collider(fireball, player, onPlayerHit.bind(this));
-        }
-
-        this.projectiles[fireball.id] = fireball;
+        this.physics.add.collider(fireball, player, onPlayerHit.bind(this));
 
         return fireball;
+    }
+
+    /**
+     *
+     */
+    addEnemyCrate(data) {
+        return new Crate(this, data);
     }
 
     /**
@@ -372,7 +324,7 @@ class Level extends Scene {
             projectile.disableBody(true, true);
             projectile = undefined;
         } catch (error) {
-            console.warn('Failed to destroy projectile.');
+            console.warn('Failed to destroy projectile.', error);
         }
     }
 
@@ -383,9 +335,9 @@ class Level extends Scene {
         try {
             const enemy = this.getEnemy(enemyData.id);
 
-            enemy.setHealth(enemyData.health);
+            enemy.updateHealth(enemyData.health);
         } catch (error) {
-            console.warn('Failed to update enemy health.');
+            console.warn('Failed to update enemy health.', error);
         }
     }
 
@@ -399,7 +351,7 @@ class Level extends Scene {
             enemy.destroy();
             enemy = undefined;
         } catch (error) {
-            console.warn('Failed to destroy enemy.');
+            console.warn('Failed to destroy enemy.', error);
         }
     }
 }

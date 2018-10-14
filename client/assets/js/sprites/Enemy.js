@@ -6,36 +6,37 @@ class Enemy extends Sprite {
      *
      */
     constructor(scene, data) {
-        super(scene, data.x, data.y, data.character);
+        super(scene, data);
 
-        this.id = data.id;
-        this.character = data.character;
         this.health = data.health;
-
-        this.flipX = data.flipX;
-        this.anims.play(data.animation, data.looping);
     }
 
     /**
      *
      */
-    setPosition(x, y) {
-        this.x = x;
-        this.y = y;
+    updatePosition(position) {
+        this.x = position.x;
+        this.y = position.y;
     }
 
     /**
      *
      */
-    setAnimation(key, repeat, flipX) {
-        this.anims.play(key, repeat);
+    updateFacing(flipX) {
         this.flipX = flipX;
     }
 
     /**
      *
      */
-    setHealth(health) {
+    updateAnimation(animation) {
+        this.anims.play(animation.key, animation.repeat);
+    }
+
+    /**
+     *
+     */
+    updateHealth(health) {
         this.health = health;
     }
 }

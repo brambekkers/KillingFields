@@ -9,14 +9,17 @@ class Player {
         this.socket = socket;
         this.room = room;
 
-        this.characterNum = 1 + Math.round(Math.random() * 2)
-        this.character = `player${this.characterNum}`;
+        this.character = `player${1 + Math.round(Math.random() * 2)}`;
+        this.texture = this.character;
         this.health = 10;
-        this.x = Math.random() * 2240;
-        this.y = Math.random() * 1024 - 70;
-
-        this.animation = `${this.character}_turn`;
-        this.looping = false;
+        this.position = {
+            x: Math.random() * 2240,
+            y: Math.random() * 1024 - 70,
+        };
+        this.animation = {
+            key: `${this.character}_turn`,
+            repeat: false,
+        };
         this.flipX = false;
 
         this.bindEventHandlers();
@@ -47,10 +50,8 @@ class Player {
      *
      */
     onMove(data) {
-        this.x = data.x;
-        this.y = data.y;
+        this.position = data.position;
         this.animation = data.animation;
-        this.looping = data.looping;
         this.flipX = data.flipX;
 
         this.socket.broadcast.emit('enemyMoved', this.toData());
@@ -92,13 +93,11 @@ class Player {
     toData() {
         return {
             id: this.socket.id,
-            characterNum: this.characterNum,
             character: this.character,
+            texture: this.texture,
             health: this.health,
-            x: this.x,
-            y: this.y,
+            position: this.position,
             animation: this.animation,
-            looping: this.looping,
             flipX: this.flipX,
         };
     }
