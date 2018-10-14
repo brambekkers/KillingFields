@@ -155,7 +155,17 @@ function createAnimations() {
 }
 
 function createGroups(){
-    crateGroup = this.physics.add.group();
+    crateGroup = this.physics.add.group({
+        // Initial angular speed of 60 degrees per second.
+        // Drag reduces it by 5 degrees/s per second, thus to zero after 12 seconds.
+        // angularDrag: 5,
+        // angularVelocity: 60,
+        // bounceX: 0.05,
+        // bounceY: 0,
+        collideWorldBounds: false,
+        dragX: 1000,
+        // dragY: 1000
+    });
 }
 
 /**

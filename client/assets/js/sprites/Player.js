@@ -74,7 +74,7 @@ class Player extends ArcadeSprite {
         // Player jump
         if (
             cursors.space.isDown &&
-            this.body.blocked.down
+            (this.body.blocked.down || this.body.touching.down)
         ) {
             this.setVelocityY(-1000);
         } 
@@ -99,7 +99,7 @@ class Player extends ArcadeSprite {
             this.displayOriginY = 48
         }
 
-        if (!this.body.blocked.down) {
+        if (!this.body.blocked.down && !this.body.touching.down) {
             this.anims.play(`${this.character}_jump`);
         }
 
@@ -202,10 +202,17 @@ class Player extends ArcadeSprite {
         this.itemCooldown = 20;
 
         let crate = new Crate(this.scene, this.x, this.y)
-        this.scene.physics.add.collider(crate, [
+
+        crateGroup.add(crate)
+
+        this.scene.physics.add.collider(crateGroup, [
             level.laag_platform,
             level.laag_objecten,
-            this
+            player,
+            crate
         ]);
+        // this.scene.physics.add.collider(crate, crateGroup);
+
+        
     }
 }
