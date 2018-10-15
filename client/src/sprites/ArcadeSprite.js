@@ -1,7 +1,15 @@
+import Phaser from 'phaser';
+import Vector2 from '../math/Vector2';
+
 /**
  * @abstract
  */
-class ArcadeSprite extends Phaser.Physics.Arcade.Sprite {
+export default class ArcadeSprite extends Phaser.Physics.Arcade.Sprite {
+    /**
+     *
+     */
+     id;
+
     /**
      *
      */

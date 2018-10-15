@@ -1,28 +1,47 @@
+import Scene from '../Scene';
+import Vector2 from '../../math/Vector2';
+import Hud from '../../Hud';
+import Player from '../../sprites/Player';
+import Enemy from '../../sprites/Enemy';
+import Fireball from '../../sprites/items/Fireball';
+import Crate from '../../sprites/items/Crate';
+
 /**
  * @abstract
  */
-class Level extends Scene {
+export default class Level extends Scene {
     /**
      *
      */
-    constructor(config) {
-        super(config);
-
-        this.initialize();
-    }
+    dimensions = new Vector2(
+        window.innerWidth,
+        window.innerHeight
+    );
 
     /**
      *
      */
-    initialize() {
-        this.width = window.innerWidth;
-        this.height = window.innerHeight;
+    background;
 
-        this.layers = {};
-        this.groups = {};
-        this.enemies = {};
-        this.projectiles = {};
-    }
+    /**
+     *
+     */
+    layers = {};
+
+    /**
+     *
+     */
+    groups = {};
+
+    /**
+     *
+     */
+    enemies = {};
+
+    /**
+     *
+     */
+    projectiles = {};
 
     /**
      *
@@ -34,8 +53,8 @@ class Level extends Scene {
         // Fonts
         this.load.script('webfont', 'https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js')
 
-        Player.preload(this);
         Hud.preload(this);
+        Player.preload(this);
         Fireball.preload(this);
         Crate.preload(this);
     }
@@ -44,8 +63,8 @@ class Level extends Scene {
      *
      */
     create() {
-        this.physics.world.setBounds(0, 0, this.width, this.height);
-        this.cameras.main.setBounds(0, 0, this.width, this.height);
+        this.physics.world.setBounds(0, 0, this.dimensions.x, this.dimensions.y);
+        this.cameras.main.setBounds(0, 0, this.dimensions.x, this.dimensions.y);
 
         this.createBackground();
         this.createLayers();
@@ -62,7 +81,7 @@ class Level extends Scene {
      *
      */
     createBackground() {
-        this.background = this.add.tileSprite(this.width / 2, this.height / 2, this.width, this.height, 'background');
+        this.background = this.add.tileSprite(this.dimensions.x / 2, this.dimensions.y / 2, this.dimensions.x, this.dimensions.y, 'background');
     }
 
     /**

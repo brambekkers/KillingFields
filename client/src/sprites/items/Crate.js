@@ -1,7 +1,15 @@
+import ArcadeItem from './ArcadeItem';
+import Vector2 from '../../math/Vector2';
+
 /**
  *
  */
-class Crate extends ArcadeItem {
+export default class Crate extends ArcadeItem {
+    /**
+     * The cooldown duration of this item in frames.
+     */
+    static cooldown = 20;
+
     /**
      *
      */
@@ -9,8 +17,6 @@ class Crate extends ArcadeItem {
         super(scene, Object.assign(data, {
             texture: Crate.randomTexture(),
         }));
-
-        this.cooldown = 30;
 
         this.scene.physics.add.collider(this, [
             ...this.scene.getSolids(),

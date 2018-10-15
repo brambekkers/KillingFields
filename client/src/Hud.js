@@ -1,4 +1,4 @@
-class Hud {
+export default class Hud {
     constructor(player) {
         this.player = player;
 
