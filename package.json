@@ -4,6 +4,7 @@
   "description": "",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "watchify client/src -o client/public/assets/js/bundle.js -t [ babelify --presets [ @babel/preset-env ] --plugins [ babel-plugin-transform-class-properties ] ]",
     "build": "browserify client/src -o client/public/assets/js/bundle.js -t [ babelify --presets [ @babel/preset-env ] --plugins [ babel-plugin-transform-class-properties ] ]"
   },
   "dependencies": {
@@ -17,6 +18,7 @@
     "@babel/preset-env": "^7.1.0",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babelify": "^10.0.0",
-    "browserify": "^16.2.3"
+    "browserify": "^16.2.3",
+    "watchify": "^3.11.0"
   }
 }
