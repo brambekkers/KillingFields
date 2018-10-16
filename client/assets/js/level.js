@@ -25,7 +25,7 @@ class Level {
 
     createLevel(){
         // Tiles background
-        this.background = this.scene.add.tileSprite(GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH, GAME_HEIGHT, 'background');
+        this.background = this.scene.add.tileSprite(GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH, GAME_HEIGHT, 'background').setScrollFactor(0);;
 
         this.createPlatforms();
     }

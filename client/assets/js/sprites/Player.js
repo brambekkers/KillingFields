@@ -13,6 +13,7 @@ class Player extends ArcadeSprite {
         this.character = data.character;
         this.health = data.health;
         this.kills = 1
+        this.items = ['crate', 'crate']
 
         this.setSize(50, 94, true)
         this.flipX = data.flipX;
@@ -31,17 +32,12 @@ class Player extends ArcadeSprite {
     update() {
         this.move();
 
-        // max Velocity (zodat we te snel gaan en door de grond)
-        var standing = this.body.blocked.down || this.body.touching.down;
-        if (!standing && this.body.velocity.y > 800) {
-            this.setVelocityY(600)
-        }
-
         // Shooting
         this.projectileCooldown--;
         if (keyE.isDown) {
             this.shoot();
         }
+        
         // Drop item
         this.itemCooldown--;
         if (keyF.isDown) {
@@ -201,18 +197,16 @@ class Player extends ArcadeSprite {
 
         this.itemCooldown = 20;
 
-        let crate = new Crate(this.scene, this.x, this.y)
+        let crate = new Crate(this.scene, this.x-10, this.y)
 
         crateGroup.add(crate)
+        // crateGroup.setAll('body.velocity.y', 500);
 
         this.scene.physics.add.collider(crateGroup, [
             level.laag_platform,
             level.laag_objecten,
             player,
             crate
-        ]);
-        // this.scene.physics.add.collider(crate, crateGroup);
-
-        
+        ]);    
     }
 }

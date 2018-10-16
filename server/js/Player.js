@@ -12,8 +12,8 @@ class Player {
         this.characterNum = 1 + Math.round(Math.random() * 2)
         this.character = `player${this.characterNum}`;
         this.health = 10;
-        this.x = Math.random() * 2240;
-        this.y = Math.random() * 1024 - 70;
+        this.x = (Math.random() * 2000) + 200;
+        this.y = Math.random() * 2000;
 
         this.animation = `${this.character}_turn`;
         this.looping = false;

@@ -53,9 +53,7 @@ function preload() {
     this.load.image('fireball', 'assets/img/Items/fireball.png');
 
 
-    // Fonts
-    this.load.script('webfont', 'https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js')
-
+  
     Level.preload(this, 2)
     Hud.preload(this)
     Crate.preload(this)
@@ -82,17 +80,6 @@ function create() {
     bindSocketEvents.bind(this)();
 
     createGroups.bind(this)()
-
-    // // font
-    // WebFont.load({
-    //     google: {
-    //         families: ['Knewave']
-    //     },
-    //     active: function (){
-    //         if(player){
-    //         }
-    //     }
-    // });
 }
 
 function addInputKeys(){
@@ -156,15 +143,10 @@ function createAnimations() {
 
 function createGroups(){
     crateGroup = this.physics.add.group({
-        // Initial angular speed of 60 degrees per second.
-        // Drag reduces it by 5 degrees/s per second, thus to zero after 12 seconds.
-        // angularDrag: 5,
-        // angularVelocity: 60,
-        // bounceX: 0.05,
-        // bounceY: 0,
+        maxVelocity: 500,
         collideWorldBounds: false,
-        dragX: 1000,
-        // dragY: 1000
+        dragX: 10000,
+        velocityY: -100,
     });
 }
 
@@ -208,6 +190,9 @@ function onGameStarted(game) {
  */
 function addPlayer(data) {
     player = new Player(this, data);
+    // hierdoor valt player niet door de grond
+    player.setDragY(300)
+
     hud = new Hud(this);
 
     this.physics.add.collider(player, [level.laag_platform, level.laag_objecten]);
