@@ -37,11 +37,11 @@ class Player extends ArcadeSprite {
         if (keyE.isDown) {
             this.shoot();
         }
-        
+
         // Drop item
         this.itemCooldown--;
         if (keyF.isDown) {
-            this.createCrate()
+            this.shootItem()
         }
     }
 
@@ -158,6 +158,28 @@ class Player extends ArcadeSprite {
         });
     }
 
+    shootItem(){
+        // cooldown
+        if (this.itemCooldown > 0) {
+            return;
+        }
+        this.itemCooldown = 30;
+
+
+        let shoot = false
+
+        if(player.items[0] === 'crate'){
+            this.createCrate()
+            shoot = true
+        }
+
+        if(shoot){
+            player.items.shift()
+            hud.updateItemBox()
+        }
+
+    }
+
     /**
      * @todo Sould the server determine whether the player died instead?
      */
@@ -191,22 +213,29 @@ class Player extends ArcadeSprite {
      *
      */
     createCrate(){
-        if (this.itemCooldown > 0) {
-            return;
-        }
+        // Create new crate and add to group
+        crateGroup.add(new Crate(this.scene, this.x-10, this.y))
 
-        this.itemCooldown = 20;
+        //collision box to eachother
+        this.scene.physics.add.collider(crateGroup, crateGroup, function (s1, s2) {
+            let b1 = s1.body;
+            let b2 = s2.body;
+    
+            if (b1.y > b2.y) {
+                b2.y += (b1.top - b2.bottom);
+                b2.stop();
+            }
+            else {
+                b1.y += (b2.top - b1.bottom);
+                b1.stop();
+            }
+        });
 
-        let crate = new Crate(this.scene, this.x-10, this.y)
-
-        crateGroup.add(crate)
-        // crateGroup.setAll('body.velocity.y', 500);
-
+        // collision box to everything else
         this.scene.physics.add.collider(crateGroup, [
             level.laag_platform,
             level.laag_objecten,
-            player,
-            crate
+            player
         ]);    
     }
 }

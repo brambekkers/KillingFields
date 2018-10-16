@@ -13,7 +13,7 @@ class Hud {
         this.box2 = null
         this.box3 = null
 
-        this.itemGroup = this.scene.physics.add.staticGroup()
+        this.itemGroup = this.scene.add.group()
 
         this.create()
     }
@@ -36,7 +36,9 @@ class Hud {
 
     create(){
         this.createCharInfo()
-        this.createItemBox()
+        this.createItemBox({
+            
+        })
 
         let _this = this
         // font
