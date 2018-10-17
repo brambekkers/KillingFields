@@ -13,7 +13,7 @@ class Player extends ArcadeSprite {
         this.character = data.character;
         this.health = data.health;
         this.kills = 1
-        this.items = ['crate', 'crate']
+        this.items = ['crate', 'spike', 'crate']
 
         this.setSize(50, 94, true)
         this.flipX = data.flipX;
@@ -172,6 +172,10 @@ class Player extends ArcadeSprite {
             this.createCrate()
             shoot = true
         }
+        if(player.items[0] === 'spike'){
+            this.createSpike()
+            shoot = true
+        }
 
         if(shoot){
             player.items.shift()
@@ -189,10 +193,14 @@ class Player extends ArcadeSprite {
 
         socket.emit('projectileDestroyed', projectile.id);
 
-        this.health -= projectile.damage;
+        this.dealDmg(projectile)
+    }
+
+    dealDmg(source){
+        this.health -= source.damage;
 
         if (this.health > 0) {
-            socket.emit('hit', projectile.damage);
+            socket.emit('hit', source.damage);
             hud.heartHealth.play(`heartHealth${this.health}`, true);
         } else {
             this.die();
@@ -237,5 +245,28 @@ class Player extends ArcadeSprite {
             level.laag_objecten,
             player
         ]);    
+    }
+
+    /**
+     *
+     */
+    createSpike(){
+        // Create new crate and add to group
+        spikeGroup.add(new Spike(this.scene, this.x-10, this.y))
+
+
+        // collision Spike to where it have to lay
+        this.scene.physics.add.collider(spikeGroup, [
+            level.laag_platform,
+            level.laag_objecten,
+        ]);  
+        
+        this.scene.physics.add.overlap(spikeGroup, player, this.hitBySpike, null, this);
+    }
+
+    hitBySpike(){
+        console.log("hit by spike")
+
+
     }
 }

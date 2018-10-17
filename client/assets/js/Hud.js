@@ -45,7 +45,6 @@ class Hud {
     static preload(scene){
         scene.load.image('voorbeeldHud', 'assets/img/HUD/voorbeeldHud.png');
         scene.load.image('hudAchtergrond', 'assets/img/HUD/hudAchtergrond.png');
-        scene.load.image('item_crate', 'assets/img/Tiles/box.png');
         scene.load.spritesheet('heartHealth', 'assets/img/HUD/hudHealth/heartSpritesheet.png', { frameWidth: 53, frameHeight: 45});
 
         // Fonts
@@ -130,7 +129,10 @@ class Hud {
             let newItem
 
             if(itemSlot.item === 'crate'){
-                newItem =  this.scene.add.image(itemSlot.x, itemSlot.y, `item_crate`)
+                newItem =  this.scene.add.image(itemSlot.x, itemSlot.y, `crate2`)
+            }
+            if(itemSlot.item === 'spike'){
+                newItem =  this.scene.add.image(itemSlot.x, itemSlot.y, `spike`)
             }
     
             if(itemSlot.item){

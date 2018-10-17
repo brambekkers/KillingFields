@@ -56,7 +56,10 @@ function preload() {
   
     Level.preload(this, 2)
     Hud.preload(this)
+
+    // Preload items
     Crate.preload(this)
+    Spike.preload(this)
 }
 
 /**
@@ -143,6 +146,14 @@ function createAnimations() {
 
 function createGroups(){
     crateGroup = this.physics.add.group({
+        mass: 10,
+        maxVelocity: 500,
+        collideWorldBounds: false,
+        dragX: 10000,
+        velocityY: -100,
+    });
+
+    spikeGroup = this.physics.add.group({
         mass: 10,
         maxVelocity: 500,
         collideWorldBounds: false,
@@ -303,7 +314,7 @@ function onEnemyShoot(data) {
     this.physics.add.collider(projectile, [level.laag_platform, level.laag_objecten]);
 
     if (player) {
-        this.physics.add.collider(projectile, player.sprite, onPlayerHit);
+        this.physics.add.collider(projectile, player, onPlayerHit);
     }
 
     projectiles[projectile.id] = projectile;
