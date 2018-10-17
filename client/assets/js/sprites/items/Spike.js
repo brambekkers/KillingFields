@@ -5,6 +5,8 @@ class Spike extends ArcadeItem{
     constructor(scene, x, y, options){
         super(scene, x, y, 'spike', null, options);
 
+        this.damage = 2
+
     }
 
     static preload(scene){

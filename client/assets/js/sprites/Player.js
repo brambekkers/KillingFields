@@ -21,6 +21,7 @@ class Player extends ArcadeSprite {
 
         this.projectileCooldown = 0;
         this.itemCooldown = 0;
+        this.spikeHitCooldown = 0;
 
         this.flipX = data.flipX;
         this.anims.play(data.animation, data.looping);
@@ -31,18 +32,28 @@ class Player extends ArcadeSprite {
      */
     update() {
         this.move();
+        this.cooldown()
 
         // Shooting
-        this.projectileCooldown--;
         if (keyE.isDown) {
             this.shoot();
         }
 
         // Drop item
-        this.itemCooldown--;
         if (keyF.isDown) {
             this.shootItem()
         }
+    }
+
+    cooldown(){
+        // Shooting
+        this.projectileCooldown--;
+
+        // Spike
+        this.spikeHitCooldown--;
+
+        // Drop item
+        this.itemCooldown--;
     }
 
     /**
@@ -201,10 +212,11 @@ class Player extends ArcadeSprite {
 
         if (this.health > 0) {
             socket.emit('hit', source.damage);
-            hud.heartHealth.play(`heartHealth${this.health}`, true);
         } else {
             this.die();
         }
+        
+        hud.heartHealth.play(`heartHealth${this.health}`, true);
     }
 
     /**
@@ -252,7 +264,8 @@ class Player extends ArcadeSprite {
      */
     createSpike(){
         // Create new crate and add to group
-        spikeGroup.add(new Spike(this.scene, this.x-10, this.y))
+        let spike = new Spike(this.scene, this.x-10, this.y)
+        spikeGroup.add(spike)
 
 
         // collision Spike to where it have to lay
@@ -261,12 +274,16 @@ class Player extends ArcadeSprite {
             level.laag_objecten,
         ]);  
         
-        this.scene.physics.add.overlap(spikeGroup, player, this.hitBySpike, null, this);
+        this.scene.physics.add.overlap(spike, player, this.hitBySpike, null, this);
     }
 
-    hitBySpike(){
-        console.log("hit by spike")
+    hitBySpike(spike, player){
+        // cooldown
+        if (this.spikeHitCooldown > 0) {
+            return;
+        }
+        this.spikeHitCooldown = 100;
 
-
+        this.dealDmg(spike)
     }
 }
