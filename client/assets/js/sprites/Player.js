@@ -5,6 +5,27 @@ class Player extends ArcadeSprite {
     /**
      *
      */
+    get jumpVelocity() {
+        return 1000;
+    }
+
+    /**
+     *
+     */
+    get walkVelocity() {
+        return 400;
+    }
+
+    /**
+     *
+     */
+    get fallVelocity() {
+        return 600;
+    }
+
+    /**
+     *
+     */
     constructor(scene, data) {
         super(scene, data);
 
@@ -21,6 +42,10 @@ class Player extends ArcadeSprite {
 
         this.PrimaryItem = Fireball;
         this.SecondaryItem = Crate;
+
+        this.input = new PlayerInput(this);
+        this.state = new PlayerState(this);
+        this.hud = new Hud(this);
     }
 
     /**
@@ -42,9 +67,12 @@ class Player extends ArcadeSprite {
         for (let i = 1; i <= 3; i++) {
             scene.anims.create({
                 key: `player${i}_walk`,
-                frames: scene.anims.generateFrameNumbers(`player${i}`, { start: 0, end: 4 }),
+                frames: scene.anims.generateFrameNumbers(`player${i}`, {
+                    start: 0,
+                    end: 4,
+                }),
                 frameRate: 15,
-                repeat: -1
+                repeat: -1,
             });
 
             scene.anims.create({
@@ -71,66 +99,52 @@ class Player extends ArcadeSprite {
      *
      */
     update() {
+        this.face();
         this.move();
         this.limitMovement();
+        this.animateMovement();
 
         this.coolDown();
         this.useItems();
     }
 
+    ////////////////////
+    ///// MOVEMENT /////
+    ////////////////////
+
     /**
-     * @todo Separate animations from movement logic.
+     *
      */
-    move() {
-        // Move left.
-        if (cursors.left.isDown || keyA.isDown) {
-            this.setVelocityX(-400);
-            this.anims.play(`${this.character}_walk`, true);
+    face() {
+        if (this.input.left) {
             this.flipX = true;
         }
-        // Move right.
-        else if (cursors.right.isDown || keyD.isDown) {
-            this.setVelocityX(400);
-            this.anims.play(`${this.character}_walk`, true);
+
+        if (this.input.right) {
             this.flipX = false;
         }
-        // Idle.
-        else {
-            this.setVelocityX(0);
-            this.anims.play(`${this.character}_turn`);
-        }
+    }
+
+    /**
+     *
+     */
+    move() {
+        // Walking.
+        this.walk(this.input.horizontal);
 
         // Jumping.
-        if (
-            cursors.space.isDown &&
-            (this.body.blocked.down || this.body.touching.down)
-        ) {
-            this.setVelocityY(-1000);
+        if (this.input.jump && this.state.canJump) {
+            this.jump();
         }
 
         // Ducking.
-        else if (
-            cursors.down.isDown &&
-            this.body.blocked.down &&
-            cursors.right.isUp &&
-            cursors.left.isUp ||
-            keyS.isDown &&
-            this.body.blocked.down &&
-            cursors.right.isUp &&
-            cursors.left.isUp
-        ) {
-            this.anims.play(`${this.character}_duck`);
-            this.setSize(50, 65);
-            this.displayOriginY = 60
-        }
-        // Standing up.
-        else if (cursors.down.isUp && keyS.isUp) {
-            this.setSize(50, 94)
-            this.displayOriginY = 48
+        else if (this.input.down && this.state.canDuck) {
+            this.duck();
         }
 
-        if (!this.body.blocked.down && !this.body.touching.down) {
-            this.anims.play(`${this.character}_jump`);
+        // Standing up.
+        if (!this.input.down && this.state.canStand) {
+            this.stand();
         }
 
         socket.emit('move', this.toData());
@@ -139,18 +153,70 @@ class Player extends ArcadeSprite {
     /**
      *
      */
+    walk(direction) {
+        this.setVelocityX(this.walkVelocity * direction);
+    }
+
+    /**
+     *
+     */
+    jump() {
+        this.setVelocityY(this.jumpVelocity * -1);
+    }
+
+    /**
+     *
+     */
+    duck() {
+        this.state.isDucking = true;
+
+        this.setSize(50, 65);
+        this.displayOriginY = 60;
+    }
+
+    /**
+     *
+     */
+    stand() {
+        this.state.isDucking = false;
+
+        this.setSize(50, 94)
+        this.displayOriginY = 48;
+    }
+
+    /**
+     *
+     */
     limitMovement() {
-        const standing = (
-            this.body.blocked.down ||
-            this.body.touching.down
-        );
+        const limitExceeded = this.body.velocity.y > this.fallVelocity;
 
-        const limitExceeded = this.body.velocity.y > 600;
-
-        if (!standing && limitExceeded) {
-            this.setVelocityY(600);
+        if (this.state.isAirborne && limitExceeded) {
+            this.setVelocityY(this.fallVelocity);
         }
     }
+
+    /////////////////////
+    ///// ANIMATION /////
+    /////////////////////
+
+    /**
+     *
+     */
+    animateMovement() {
+        if (this.state.isAirborne) {
+            this.anims.play(`${this.character}_jump`);
+        } else if (this.state.isDucking) {
+            this.anims.play(`${this.character}_duck`);
+        } else if (this.state.isWalking) {
+            this.anims.play(`${this.character}_walk`, true);
+        } else {
+            this.anims.play(`${this.character}_turn`,);
+        }
+    }
+
+    /////////////////
+    ///// ITEMS /////
+    /////////////////
 
     /**
      *
@@ -164,11 +230,11 @@ class Player extends ArcadeSprite {
      *
      */
     useItems() {
-        if (keyF.isDown) {
+        if (this.input.primary) {
             this.usePrimaryItem();
         }
 
-        if (keyE.isDown) {
+        if (this.input.secondary) {
             this.useSecondaryItem();
         }
     }

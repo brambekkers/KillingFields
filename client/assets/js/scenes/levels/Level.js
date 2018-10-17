@@ -46,7 +46,6 @@ class Level extends Scene {
     create() {
         this.physics.world.setBounds(0, 0, this.width, this.height);
         this.cameras.main.setBounds(0, 0, this.width, this.height);
-        this.createKeys();
 
         this.createBackground();
         this.createLayers();
@@ -57,18 +56,6 @@ class Level extends Scene {
         this.bindSocketEvents();
 
         this.start();
-    }
-
-    /**
-     *
-     */
-    createKeys() {
-        window.cursors = this.input.keyboard.createCursorKeys();
-        window.keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
-        window.keyS = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
-        window.keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
-        window.keyE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E);
-        window.keyF = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F);
     }
 
     /**
@@ -220,7 +207,6 @@ class Level extends Scene {
      */
     addPlayer(data) {
         this.player = new Player(this, data);
-        this.hud = new Hud(this);
 
         this.physics.add.collider(this.player, [
             this.layers.platforms,
