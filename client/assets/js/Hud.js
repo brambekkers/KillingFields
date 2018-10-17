@@ -9,9 +9,32 @@ class Hud {
         this.killText= null
 
         // Itembox
-        this.box1 = null
-        this.box2 = null
-        this.box3 = null
+        this.itemSlots = [
+            {
+                slot: null,
+                x: null,
+                y: null,
+                item: null
+            },
+            {
+                slot: null,
+                x: null,
+                y: null,
+                item: null
+            },
+            {
+                slot: null,
+                x: null,
+                y: null,
+                item: null
+            },
+            {
+                slot: null,
+                x: null,
+                y: null,
+                item: null
+            }
+        ]
 
         this.itemGroup = this.scene.add.group()
 
@@ -40,14 +63,13 @@ class Hud {
             
         })
 
-        let _this = this
         // font
         WebFont.load({
             google: {
                 families: ['Knewave']
             },
-            active: function (){
-                _this.killText.setFontFamily('Knewave');
+            active: ()=>{
+                this.killText.setFontFamily('Knewave');
             }
         });
     }
@@ -69,29 +91,51 @@ class Hud {
     }
     
     createItemBox(){
-        this.box3 = this.createSprite(this.scene.cameras.main.width - 80, this.scene.cameras.main.height/2-130, `dropBox3`, 1).setOrigin(0.5, 0.5)
-        this.box2 = this.createSprite(this.scene.cameras.main.width - 80, this.scene.cameras.main.height/2, `dropBox2`, 1).setOrigin(0.5, 0.5)
-        this.box1 = this.createSprite(this.scene.cameras.main.width - 80, this.scene.cameras.main.height/2+130, `dropBox1`, 1).setOrigin(0.5, 0.5)
+        let slotAmount = this.itemSlots.length-1
+        let slotHeight = slotAmount * 130
+        let slotHeightHalf = slotHeight / 2
+
+        let itemColor = 1
+
+        for (const [index, itemSlot] of this.itemSlots.entries()) {
+            itemSlot.x = this.scene.cameras.main.width - 80
+            itemSlot.y = (this.scene.cameras.main.height/2 + slotHeightHalf) - (index*130)
+
+            itemSlot.slot = this.createSprite(itemSlot.x, itemSlot.y, `dropBox${itemColor}`, 1).setOrigin(0.5, 0.5)
+
+            if(itemColor <= 2){
+                itemColor++
+            }
+        }
 
         this.updateItemBox()
     }
 
     updateItemBox(){
+        for (const [num, itemSlot] of this.itemSlots.entries()) {
+            if(player.items[num]){
+                itemSlot.item = player.items[num]
+            }else{
+                itemSlot.item = null
+            }
+        }
+
+        this.drawItems()
+    }
+
+    drawItems(){
         this.itemGroup.clear(true); 
 
-        for (const [num, item] of player.items.entries()) {
-            let dist
-            if(num == 2){
-                dist = -130
-            }else if(num == 1){
-                dist = 0
-            }else if(num == 0){
-                dist = 130
-            }
+        for (const  itemSlot of this.itemSlots){
+            let newItem
 
-            if(item === 'crate'){
-                let crate =  this.scene.add.image(this.scene.cameras.main.width - 80, this.scene.cameras.main.height/2 + dist, `item_crate`).setScrollFactor(0);
-                this.itemGroup.add(crate);
+            if(itemSlot.item === 'crate'){
+                newItem =  this.scene.add.image(itemSlot.x, itemSlot.y, `item_crate`)
+            }
+    
+            if(itemSlot.item){
+                newItem.setScrollFactor(0);
+                this.itemGroup.add(newItem);
             }
         }
     }
