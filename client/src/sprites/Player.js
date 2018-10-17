@@ -1,27 +1,28 @@
+import ArcadeSprite from './ArcadeSprite';
+import PlayerInput from './PlayerInput';
+import PlayerState from './PlayerState';
+import Hud from '../Hud';
+import Fireball from './items/Fireball';
+import Crate from './items/Crate';
+
 /**
  *
  */
-class Player extends ArcadeSprite {
+export default class Player extends ArcadeSprite {
     /**
      *
      */
-    get jumpVelocity() {
-        return 1000;
-    }
+    jumpVelocity = 1000;
 
     /**
      *
      */
-    get walkVelocity() {
-        return 400;
-    }
+    walkVelocity = 400;
 
     /**
      *
      */
-    get fallVelocity() {
-        return 600;
-    }
+    fallVelocity = 600;
 
     /**
      *

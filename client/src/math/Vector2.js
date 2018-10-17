@@ -1,7 +1,9 @@
+import Phaser from 'phaser';
+
 /**
  *
  */
-class Vector2 extends Phaser.Geom.Point {
+export default class Vector2 extends Phaser.Geom.Point {
     /**
      *
      */

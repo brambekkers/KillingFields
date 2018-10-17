@@ -1,16 +1,17 @@
+import Level from './Level';
+import Vector2 from '../../math/Vector2';
+
 /**
  *
  */
-class LevelTwo extends Level {
+export default class LevelTwo extends Level {
     /**
      *
      */
-    initialize() {
-        super.initialize();
-
-        this.width = 32 * 70;
-        this.height = 32 * 70;
-    }
+    dimensions = new Vector2(
+        32 * 70,
+        32 * 70
+    );
 
     /**
      *

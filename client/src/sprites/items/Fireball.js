@@ -1,7 +1,22 @@
+import ArcadeItem from './ArcadeItem';
+import Vector2 from '../../math/Vector2';
+
 /**
  *
  */
-class Fireball extends ArcadeItem {
+export default class Fireball extends ArcadeItem {
+    /**
+     * The number of health points a player loses when they collide with a
+     * fireball.
+     */
+    damage = 1;
+
+    /**
+     * The number of times a fireball can bounce against a solid before being
+     * destroyed.
+     */
+    bounces = 3;
+
     /**
      * Constructs a Fireball.
      */
@@ -13,9 +28,6 @@ class Fireball extends ArcadeItem {
                 : false
             ),
         }));
-
-        this.damage = 1;
-        this.bounces = 3;
 
         this.setBounce(0.95);
         this.body.width = 20;
