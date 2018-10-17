@@ -143,6 +143,7 @@ function createAnimations() {
 
 function createGroups(){
     crateGroup = this.physics.add.group({
+        mass: 10,
         maxVelocity: 500,
         collideWorldBounds: false,
         dragX: 10000,
