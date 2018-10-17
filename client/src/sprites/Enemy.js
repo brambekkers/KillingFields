@@ -1,7 +1,14 @@
+import Sprite from './Sprite';
+
 /**
  *
  */
-class Enemy extends Sprite {
+export default class Enemy extends Sprite {
+    /**
+     *
+     */
+    health;
+
     /**
      *
      */

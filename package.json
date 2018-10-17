@@ -1,15 +1,24 @@
 {
-  "name": "test",
-  "version": "1.0.0",
+  "name": "killing-fields",
+  "version": "0.0.1",
   "description": "",
-  "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "watchify client/src -o client/public/assets/js/bundle.js -t [ babelify --presets [ @babel/preset-env ] --plugins [ babel-plugin-transform-class-properties ] ]",
+    "build": "browserify client/src -o client/public/assets/js/bundle.js -t [ babelify --presets [ @babel/preset-env ] --plugins [ babel-plugin-transform-class-properties ] ]"
   },
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "express": "^4.15.2",
-    "socket.io": "^2.1.1"
+    "phaser": "^3.14.0",
+    "socket.io": "^2.1.1",
+    "socket.io-client": "^2.1.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.1.2",
+    "@babel/preset-env": "^7.1.0",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babelify": "^10.0.0",
+    "browserify": "^16.2.3",
+    "watchify": "^3.11.0"
   }
 }

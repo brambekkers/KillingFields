@@ -1,13 +1,22 @@
 /**
  *
  */
-class PlayerState {
+export default class PlayerState {
+    /**
+     *
+     */
+    player;
+
+    /**
+     *
+     */
+    _isDucking = false;
+
     /**
      *
      */
     constructor(player) {
         this.player = player;
-        this._isDucking = false;
     }
 
     /**

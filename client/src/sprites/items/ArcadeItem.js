@@ -1,13 +1,13 @@
+import ArcadeSprite from '../ArcadeSprite';
+
 /**
- *
+ * @abstract
  */
-class ArcadeItem extends ArcadeSprite {
+export default class ArcadeItem extends ArcadeSprite {
     /**
-     *
+     * The cooldown duration of this item in frames.
      */
-    static get cooldown() {
-        return 30;
-    }
+    static cooldown = 30;
 
     /**
      * Creates an ArcadeItem.

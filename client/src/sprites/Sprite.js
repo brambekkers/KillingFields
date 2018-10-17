@@ -1,7 +1,14 @@
+import Phaser from 'phaser';
+
 /**
  * @abstract
  */
-class Sprite extends Phaser.GameObjects.Sprite {
+export default class Sprite extends Phaser.GameObjects.Sprite {
+    /**
+     *
+     */
+     id;
+
     /**
      *
      */
