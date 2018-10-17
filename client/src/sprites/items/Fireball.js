@@ -6,6 +6,11 @@ import Vector2 from '../../math/Vector2';
  */
 export default class Fireball extends ArcadeItem {
     /**
+     * The name of the image asset that should be displayed in the HUD.
+     */
+    static icon = 'fireball';
+
+    /**
      * The number of health points a player loses when they collide with a
      * fireball.
      */
@@ -34,7 +39,7 @@ export default class Fireball extends ArcadeItem {
         this.body.height = 20;
         this.body.setOffset(25, 25);
 
-        this.scene.physics.add.collider(this, this.scene.getSolids(), this.onBounce.bind(this));
+        this.scene.physics.add.collider(this, this.scene.getSolids(), this.onBounce);
     }
 
     /**
@@ -89,7 +94,7 @@ export default class Fireball extends ArcadeItem {
     /**
      *
      */
-    onBounce() {
+    onBounce = () => {
         this.bounces--;
     }
 

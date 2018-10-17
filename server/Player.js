@@ -13,8 +13,8 @@ class Player {
         this.texture = this.character;
         this.health = 10;
         this.position = {
-            x: Math.random() * 2240,
-            y: Math.random() * 1024 - 70,
+            x: 70 + Math.random() * (2240 - 70 * 2),
+            y: 70 + Math.random() * (2240 - 70 * 2),
         };
         this.animation = {
             key: `${this.character}_turn`,

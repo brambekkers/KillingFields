@@ -5,6 +5,7 @@ import Player from '../../sprites/Player';
 import Enemy from '../../sprites/Enemy';
 import Fireball from '../../sprites/items/Fireball';
 import Crate from '../../sprites/items/Crate';
+import Spike from '../../sprites/items/Spike';
 
 /**
  * @abstract
@@ -53,10 +54,14 @@ export default class Level extends Scene {
         // Fonts
         this.load.script('webfont', 'https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js')
 
-        Hud.preload(this);
+        // Player
         Player.preload(this);
+        Hud.preload(this);
+
+        // Items
         Fireball.preload(this);
         Crate.preload(this);
+        Spike.preload(this);
     }
 
     /**
@@ -81,7 +86,15 @@ export default class Level extends Scene {
      *
      */
     createBackground() {
-        this.background = this.add.tileSprite(this.dimensions.x / 2, this.dimensions.y / 2, this.dimensions.x, this.dimensions.y, 'background');
+        this.background = this.add
+            .tileSprite(
+                this.dimensions.x / 2,
+                this.dimensions.y / 2,
+                this.dimensions.x,
+                this.dimensions.y,
+                'background'
+            )
+            .setScrollFactor(0);
     }
 
     /**
@@ -138,6 +151,7 @@ export default class Level extends Scene {
      */
     createGroups() {
         this.createCrateGroup();
+        this.createSpikeGroup();
     }
 
     /**
@@ -145,15 +159,24 @@ export default class Level extends Scene {
      */
     createCrateGroup() {
         this.groups.crates = this.physics.add.group({
-            // Initial angular speed of 60 degrees per second.
-            // Drag reduces it by 5 degrees/s per second, thus to zero after 12 seconds.
-            // angularDrag: 5,
-            // angularVelocity: 60,
-            // bounceX: 0.05,
-            // bounceY: 0,
+            mass: 10,
+            maxVelocity: 500,
             collideWorldBounds: false,
-            dragX: 1000,
-            // dragY: 1000
+            dragX: 10000,
+            velocityY: -100,
+        });
+    }
+
+    /**
+     *
+     */
+    createSpikeGroup() {
+        this.groups.spikes = this.physics.add.group({
+            mass: 10,
+            maxVelocity: 500,
+            collideWorldBounds: false,
+            dragX: 10000,
+            velocityY: -100,
         });
     }
 
@@ -232,7 +255,6 @@ export default class Level extends Scene {
             this.layers.objects,
         ]);
 
-        // camera
         this.cameras.main.startFollow(this.player);
         this.cameras.main.setZoom(1);
 
@@ -324,6 +346,9 @@ export default class Level extends Scene {
 
             case 'crate':
                 return this.addEnemyCrate(data);
+
+            case 'spike':
+                return this.addEnemySpike(data);
         }
     }
 
@@ -350,7 +375,18 @@ export default class Level extends Scene {
     /**
      *
      */
+    addEnemySpike(data) {
+        return new Spike(this, data);
+    }
+
+    /**
+     * @todo Move to the specific class of item, so that it can decide what to
+     * do.
+     */
     onPlayerHit(projectile, playerSprite) {
+        projectile.destroy();
+        socket.emit('projectileDestroyed', projectile.id);
+
         this.player.hitBy(projectile);
     }
 
@@ -360,7 +396,6 @@ export default class Level extends Scene {
     onProjectileDestroyed(id) {
         try {
             let projectile = this.getProjectile(id);
-
             projectile.destroy();
         } catch (error) {
             console.warn('Failed to destroy projectile.', error);
@@ -373,7 +408,6 @@ export default class Level extends Scene {
     onEnemyHit(enemyData) {
         try {
             const enemy = this.getEnemy(enemyData.id);
-
             enemy.updateHealth(enemyData.health);
         } catch (error) {
             console.warn('Failed to update enemy health.', error);
@@ -386,7 +420,6 @@ export default class Level extends Scene {
     onEnemyDied(enemyData) {
         try {
             let enemy = this.getEnemy(enemyData.id);
-
             enemy.destroy();
         } catch (error) {
             console.warn('Failed to destroy enemy.', error);

@@ -6,6 +6,11 @@ import Vector2 from '../../math/Vector2';
  */
 export default class Crate extends ArcadeItem {
     /**
+     * The name of the image asset that should be displayed in the HUD.
+     */
+    static icon = 'crate2';
+
+    /**
      * The cooldown duration of this item in frames.
      */
     static cooldown = 20;

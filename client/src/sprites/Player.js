@@ -4,23 +4,33 @@ import PlayerState from './PlayerState';
 import Hud from '../Hud';
 import Fireball from './items/Fireball';
 import Crate from './items/Crate';
+import Spike from './items/Spike';
 
 /**
  *
  */
 export default class Player extends ArcadeSprite {
     /**
-     *
+     * The duration of the invincible state after a player is hit.
+     */
+    static hitCooldown = 60;
+
+    /**
+     * The velocity applied in the negative vertical direction when a player
+     * jumps.
      */
     jumpVelocity = 1000;
 
     /**
-     *
+     * The horizontal velocity applied to the player when walking.
      */
     walkVelocity = 400;
 
     /**
+     * The limit of the player's positive vertical velocity.
      *
+     * NB: If the velocity is allowed to become too large, the player may clip
+     * through some colliders.
      */
     fallVelocity = 600;
 
@@ -35,14 +45,20 @@ export default class Player extends ArcadeSprite {
         this.kills = 0;
 
         this.setSize(50, 94, true);
+        this.setDragY(300);
 
         this.cooldowns = {
+            hit: Player.hitCooldown,
             primary: 0,
             secondary: 0,
         };
 
         this.PrimaryItem = Fireball;
-        this.SecondaryItem = Crate;
+        this.secondaryItems = [
+            Crate,
+            Spike,
+            Fireball,
+        ];
 
         this.input = new PlayerInput(this);
         this.state = new PlayerState(this);
@@ -106,6 +122,7 @@ export default class Player extends ArcadeSprite {
         this.animateMovement();
 
         this.coolDown();
+        this.displayHitCooldown();
         this.useItems();
     }
 
@@ -223,6 +240,7 @@ export default class Player extends ArcadeSprite {
      *
      */
     coolDown() {
+        this.cooldowns.hit--;
         this.cooldowns.primary--;
         this.cooldowns.secondary--;
     }
@@ -261,31 +279,50 @@ export default class Player extends ArcadeSprite {
      */
     useSecondaryItem() {
         if (
-            !this.SecondaryItem ||
+            this.secondaryItems.length <= 0 ||
             this.cooldowns.secondary > 0
         ) {
             return;
         }
 
-        this.SecondaryItem.use(this);
+        const Item = this.secondaryItems.shift();
+        this.hud.updateItemBox()
 
-        this.cooldowns.secondary = this.SecondaryItem.cooldown;
+        Item.use(this);
+
+        this.cooldowns.secondary = Item.cooldown;
+    }
+
+    //////////////////
+    ///// HEALTH /////
+    //////////////////
+
+    /**
+     *
+     */
+    displayHitCooldown() {
+        if (this.cooldowns.hit > 0) {
+            this.setAlpha(0.5);
+        } else {
+            this.setAlpha(1);
+        }
     }
 
     /**
-     * @todo Sould the server determine whether the player died instead?
+     * @todo Souldn't the server determine whether the player died instead?
      */
     hitBy(projectile) {
-        projectile.disableBody(true, true);
-        delete this.scene.projectiles[projectile.id];
+        if (this.cooldowns.hit > 0) {
+            return;
+        }
 
-        socket.emit('projectileDestroyed', projectile.id);
+        this.cooldowns.hit = Player.hitCooldown;
 
         this.health -= projectile.damage;
+        this.hud.heartHealth.play(`heartHealth${this.health}`, true);
 
         if (this.health > 0) {
             socket.emit('hit', projectile.damage);
-            // hud.heartHealth.play(`heartHealth${this.health}`, true);
         } else {
             this.die();
         }
