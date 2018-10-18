@@ -69,7 +69,7 @@ export default class Player extends ArcadeSprite {
      *
      */
     static preload(scene) {
-        for (let i = 1; i <= 3; i++) {
+        for (let i = 1; i <= 4; i++) {
             scene.load.spritesheet(`player${i}`, `assets/img/Player/player${i}.png`, {
                 frameWidth: 73,
                 frameHeight: 96,
@@ -81,7 +81,7 @@ export default class Player extends ArcadeSprite {
      *
      */
     static createAnimations(scene) {
-        for (let i = 1; i <= 3; i++) {
+        for (let i = 1; i <= 4; i++) {
             scene.anims.create({
                 key: `player${i}_walk`,
                 frames: scene.anims.generateFrameNumbers(`player${i}`, {

@@ -9,7 +9,7 @@ class Player {
         this.socket = socket;
         this.room = room;
 
-        this.character = `player${1 + Math.round(Math.random() * 2)}`;
+        this.character = `player${1 + Math.round(Math.random() * 3)}`;
         this.texture = this.character;
         this.health = 10;
         this.position = {

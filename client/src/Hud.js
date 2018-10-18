@@ -50,7 +50,7 @@ export default class Hud {
         // Fonts
         scene.load.script('webfont', 'https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js')
 
-        for (let i = 1; i <= 3; i++) {
+        for (let i = 1; i <= 4; i++) {
             scene.load.image(`hud_player${i}`, `assets/img/HUD/hud${i}/hudSquare.png`);
             scene.load.image(`dropBox${i}`, `assets/img/HUD/dropBox${i}.png`);
         }
