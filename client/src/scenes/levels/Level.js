@@ -3,6 +3,7 @@ import Vector2 from '../../math/Vector2';
 import Hud from '../../Hud';
 import Player from '../../sprites/Player';
 import Enemy from '../../sprites/Enemy';
+import ItemBox from '../../sprites/ItemBox';
 import Fireball from '../../sprites/items/Fireball';
 import Crate from '../../sprites/items/Crate';
 import Spike from '../../sprites/items/Spike';
@@ -58,6 +59,9 @@ export default class Level extends Scene {
         Player.preload(this);
         Hud.preload(this);
 
+        // Objects
+        ItemBox.preload(this);
+
         // Items
         Fireball.preload(this);
         Crate.preload(this);
@@ -71,15 +75,39 @@ export default class Level extends Scene {
         this.physics.world.setBounds(0, 0, this.dimensions.x, this.dimensions.y);
         this.cameras.main.setBounds(0, 0, this.dimensions.x, this.dimensions.y);
 
+        this.createAnimations();
+        this.bindSocketEvents();
+
         this.createBackground();
         this.createLayers();
         this.createGroups();
 
-        this.createAnimations();
-
-        this.bindSocketEvents();
-
         this.start();
+    }
+
+    /**
+     *
+     */
+    createAnimations() {
+        Player.createAnimations(this);
+        Hud.createAnimations(this);
+    }
+
+    /**
+     *
+     */
+    bindSocketEvents() {
+        socket.on('gameStarted', this.onGameStarted.bind(this));
+
+        socket.on('enemyJoined', this.onEnemyJoined.bind(this));
+        socket.on('enemyLeft', this.onEnemyLeft.bind(this));
+        socket.on('enemyMoved', this.onEnemyMoved.bind(this));
+        socket.on('enemyShot', this.onEnemyShoot.bind(this));
+        socket.on('enemyHit', this.onEnemyHit.bind(this));
+        socket.on('enemyDied', this.onEnemyDied.bind(this));
+
+        socket.on('projectileUpdated', this.onProjectileUpdated.bind(this));
+        socket.on('projectileDestroyed', this.onProjectileDestroyed.bind(this));
     }
 
     /**
@@ -183,23 +211,15 @@ export default class Level extends Scene {
     /**
      *
      */
-    createAnimations() {
-        Player.createAnimations(this);
-        Hud.createAnimations(this);
-    }
-
-    /**
-     *
-     */
-    bindSocketEvents() {
-        socket.on('gameStarted', this.onGameStarted.bind(this));
-        socket.on('enemyJoined', this.onEnemyJoined.bind(this));
-        socket.on('enemyLeft', this.onEnemyLeft.bind(this));
-        socket.on('enemyMoved', this.onEnemyMoved.bind(this));
-        socket.on('enemyShot', this.onEnemyShoot.bind(this));
-        socket.on('projectileDestroyed', this.onProjectileDestroyed.bind(this)); // TODO: Should be part of onEnemyHit.
-        socket.on('enemyHit', this.onEnemyHit.bind(this));
-        socket.on('enemyDied', this.onEnemyDied.bind(this));
+    createItemBoxes() {
+        for (let i = 0; i < 10; i++) {
+            new ItemBox(this, {
+                position: new Vector2(
+                    70 + Math.random() * this.dimensions.x - 70 * 2,
+                    70 + Math.random() * this.dimensions.y - 70 * 2
+                ),
+            });
+        }
     }
 
     /**
@@ -231,6 +251,11 @@ export default class Level extends Scene {
         for (const enemy of game.enemies) {
             this.addEnemy(enemy);
         }
+
+        /**
+         * @todo Let the server spawn these periodically instead.
+         */
+        this.createItemBoxes();
     }
 
     /**
@@ -393,9 +418,21 @@ export default class Level extends Scene {
     /**
      *
      */
+    onProjectileUpdated(projectileData) {
+        try {
+            const projectile = this.getProjectile(projectileData.id);
+            projectile.updatePosition(projectileData.position);
+        } catch (error) {
+            console.warn('Failed to update projectile.', error);
+        }
+    }
+
+    /**
+     *
+     */
     onProjectileDestroyed(id) {
         try {
-            let projectile = this.getProjectile(id);
+            const projectile = this.getProjectile(id);
             projectile.destroy();
         } catch (error) {
             console.warn('Failed to destroy projectile.', error);

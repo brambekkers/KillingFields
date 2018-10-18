@@ -11,14 +11,18 @@ export default class Spike extends ArcadeItem {
     static icon = 'spike';
 
     /**
+     * The number of health points a player loses when they collide with a
+     * spike.
+     */
+    damage = 2;
+
+    /**
      *
      */
     constructor(scene, data) {
         super(scene, Object.assign(data, {
             texture: 'spike',
         }));
-
-        this.damage = 2;
 
         this.scene.physics.add.collider(this, this.scene.getSolids());
         this.scene.physics.add.overlap(this, this.scene.player, this.onOverlapPlayer);

@@ -41,13 +41,6 @@ export default class ArcadeSprite extends Phaser.Physics.Arcade.Sprite {
     }
 
     /**
-     * Returns the position of the sprite as a vector.
-     */
-    get position() {
-        return new Vector2(this.x, this.y);
-    }
-
-    /**
      * Returns the data representation of this instance, so that it can be sent
      * to the server.
      */
@@ -72,7 +65,6 @@ export default class ArcadeSprite extends Phaser.Physics.Arcade.Sprite {
      */
     destroy() {
         this.body.destroy();
-
         super.destroy();
     }
 }

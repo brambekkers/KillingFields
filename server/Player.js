@@ -32,9 +32,11 @@ class Player {
         this.socket.on('disconnect', this.onDisconnect.bind(this));
         this.socket.on('move', this.onMove.bind(this));
         this.socket.on('shoot', this.onShoot.bind(this));
-        this.socket.on('projectileDestroyed', this.onProjectileDestroyed.bind(this)); // TODO: Should be part of onHit.
         this.socket.on('hit', this.onHit.bind(this));
         this.socket.on('died', this.onDie.bind(this));
+
+        this.socket.on('projectileUpdated', this.onProjectileUpdated.bind(this));
+        this.socket.on('projectileDestroyed', this.onProjectileDestroyed.bind(this));
     }
 
     /**
@@ -65,7 +67,16 @@ class Player {
     }
 
     /**
-     * @todo Should be part of onHit.
+     *
+     */
+    onProjectileUpdated(data) {
+        // TODO: Store projectile's state.
+
+        this.socket.broadcast.emit('projectileUpdated', data);
+    }
+
+    /**
+     *
      */
     onProjectileDestroyed(id) {
         this.socket.broadcast.emit('projectileDestroyed', id);

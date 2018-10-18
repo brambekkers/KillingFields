@@ -20,6 +20,28 @@ export default class ArcadeItem extends ArcadeSprite {
     }
 
     /**
+     *
+     */
+    updatePosition(position) {
+        this.x = position.x;
+        this.y = position.y;
+    }
+
+    /**
+     *
+     */
+    updateFacing(flipX) {
+        this.flipX = flipX;
+    }
+
+    /**
+     *
+     */
+    updateAnimation(animation) {
+        this.anims.play(animation.key, animation.repeat);
+    }
+
+    /**
      * Destroys this item.
      */
     destroy() {

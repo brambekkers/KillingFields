@@ -248,6 +248,14 @@ export default class Player extends ArcadeSprite {
     /**
      *
      */
+    addItem(Item) {
+        this.secondaryItems.push(Item);
+        this.hud.updateItemBox();
+    }
+
+    /**
+     *
+     */
     useItems() {
         if (this.input.primary) {
             this.usePrimaryItem();
@@ -286,7 +294,7 @@ export default class Player extends ArcadeSprite {
         }
 
         const Item = this.secondaryItems.shift();
-        this.hud.updateItemBox()
+        this.hud.updateItemBox();
 
         Item.use(this);
 
