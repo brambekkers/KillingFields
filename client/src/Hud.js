@@ -1,46 +1,41 @@
 export default class Hud {
+    itemSlots = [
+        {
+            slot: null,
+            x: null,
+            y: null,
+            Item: null
+        },
+        {
+            slot: null,
+            x: null,
+            y: null,
+            Item: null
+        },
+        {
+            slot: null,
+            x: null,
+            y: null,
+            Item: null
+        },
+        {
+            slot: null,
+            x: null,
+            y: null,
+            Item: null
+        }
+    ]
+
     constructor(player) {
         this.player = player;
 
-        // CharInfo
-        this.background = null
-        this.char =  null
-        this.heartHealth = null
-        this.killText= null
-
-        // Itembox
-        this.itemSlots = [
-            {
-                slot: null,
-                x: null,
-                y: null,
-                Item: null
-            },
-            {
-                slot: null,
-                x: null,
-                y: null,
-                Item: null
-            },
-            {
-                slot: null,
-                x: null,
-                y: null,
-                Item: null
-            },
-            {
-                slot: null,
-                x: null,
-                y: null,
-                Item: null
-            }
-        ]
-
         this.itemGroup = this.player.scene.add.group()
 
-        this.create()
-    }
+        this.createCharInfo()
+        this.createItemSlots()
 
+        this.createFont()
+    }
 
     static preload(scene) {
         scene.load.image('voorbeeldHud', 'assets/img/HUD/voorbeeldHud.png');
@@ -67,20 +62,16 @@ export default class Hud {
         }
     }
 
-    create() {
-        this.createCharInfo()
-        this.createItemBox({
-
-        })
-
-        // font
-        WebFont.load({
+    createFont() {
+        return WebFont.load({
             google: {
-                families: ['Knewave']
+                families: [
+                    'Knewave',
+                ],
             },
-            active: ()=>{
+            active: () => {
                 this.killText.setFontFamily('Knewave');
-            }
+            },
         });
     }
 
@@ -90,17 +81,27 @@ export default class Hud {
         this.heartHealth = this.createSprite(128, 45, 'heartHealth', 0.8)
         this.heartHealth.anims.play(`heartHealth10`);
 
-        this.killText = this.player.scene.add.text(230, 97, this.player.kills, {
-            fontFamily: 'Nosifer',
-            fontSize: 14,
-            color: '#ffffff' ,
-            border: '#000000',
-        }).setOrigin(1, 0);
-        this.killText.setStroke('#000000', 5)
-        this.killText.setScrollFactor(0);
+        this.killText = this.player.scene.add
+            .text(230, 97, this.player.kills, {
+                fontFamily: 'Nosifer',
+                fontSize: 14,
+                color: '#ffffff' ,
+                border: '#000000',
+            })
+            .setOrigin(1, 0)
+            .setStroke('#000000', 5)
+            .setScrollFactor(0);
     }
 
-    createItemBox() {
+    createSprite(x, y, spriteName, scale) {
+        let sprite = this.player.scene.add.sprite(x, y, spriteName).setOrigin(0, 0);
+        sprite.setScrollFactor(0);
+        sprite.setScale(scale)
+
+        return sprite
+    }
+
+    createItemSlots() {
         let slotAmount = this.itemSlots.length - 1
         let slotHeight = slotAmount * 130
         let slotHeightHalf = slotHeight / 2
@@ -118,10 +119,19 @@ export default class Hud {
             }
         }
 
-        this.updateItemBox()
+        this.updateItemSlots()
     }
 
-    updateItemBox() {
+    update() {
+        this.updateItemSlots();
+        this.updateHealth();
+    }
+
+    updateHealth() {
+        this.heartHealth.play(`heartHealth${this.player.health}`, true);
+    }
+
+    updateItemSlots() {
         for (const [i, itemSlot] of this.itemSlots.entries()) {
             if (this.player.secondaryItems[i]) {
                 itemSlot.Item = this.player.secondaryItems[i]
@@ -133,6 +143,11 @@ export default class Hud {
         this.drawItems()
     }
 
+    /**
+     * @todo We might be able to find a way to re-draw only those icons that
+     * have changed since the previous frame. Now that the HUD updates the slots
+     * on each frame, that would save a bunch of resources.
+     */
     drawItems() {
         this.itemGroup.clear(true);
 
@@ -145,13 +160,5 @@ export default class Hud {
             icon.setScrollFactor(0);
             this.itemGroup.add(icon);
         }
-    }
-
-    createSprite(x, y, spriteName, scale) {
-        let sprite = this.player.scene.add.sprite(x, y, spriteName).setOrigin(0, 0);
-        sprite.setScrollFactor(0);
-        sprite.setScale(scale)
-
-        return sprite
     }
 }

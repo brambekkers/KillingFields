@@ -124,6 +124,8 @@ export default class Player extends ArcadeSprite {
         this.coolDown();
         this.displayHitCooldown();
         this.useItems();
+
+        this.hud.update();
     }
 
     ////////////////////
@@ -250,7 +252,6 @@ export default class Player extends ArcadeSprite {
      */
     addItem(Item) {
         this.secondaryItems.push(Item);
-        this.hud.updateItemBox();
     }
 
     /**
@@ -294,7 +295,6 @@ export default class Player extends ArcadeSprite {
         }
 
         const Item = this.secondaryItems.shift();
-        this.hud.updateItemBox();
 
         Item.use(this);
 
@@ -319,18 +319,17 @@ export default class Player extends ArcadeSprite {
     /**
      * @todo Souldn't the server determine whether the player died instead?
      */
-    hitBy(projectile) {
+    hitBy(item) {
         if (this.cooldowns.hit > 0) {
             return;
         }
 
         this.cooldowns.hit = Player.hitCooldown;
 
-        this.health -= projectile.damage;
-        this.hud.heartHealth.play(`heartHealth${this.health}`, true);
+        this.health -= item.damage;
 
         if (this.health > 0) {
-            socket.emit('hit', projectile.damage);
+            socket.emit('hit', item.damage);
         } else {
             this.die();
         }
@@ -340,6 +339,8 @@ export default class Player extends ArcadeSprite {
      *
      */
     die() {
+        this.hud.update();
+
         this.disableBody(true, true);
         this.scene.player = undefined;
 

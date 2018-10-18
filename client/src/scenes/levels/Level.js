@@ -43,7 +43,7 @@ export default class Level extends Scene {
     /**
      *
      */
-    projectiles = {};
+    items = {};
 
     /**
      *
@@ -106,8 +106,8 @@ export default class Level extends Scene {
         socket.on('enemyHit', this.onEnemyHit.bind(this));
         socket.on('enemyDied', this.onEnemyDied.bind(this));
 
-        socket.on('projectileUpdated', this.onProjectileUpdated.bind(this));
-        socket.on('projectileDestroyed', this.onProjectileDestroyed.bind(this));
+        socket.on('itemUpdated', this.onItemUpdated.bind(this));
+        socket.on('itemDestroyed', this.onItemDestroyed.bind(this));
     }
 
     /**
@@ -122,7 +122,7 @@ export default class Level extends Scene {
                 this.dimensions.y,
                 'background'
             )
-            .setScrollFactor(0);
+            .setScrollFactor(0.2);
     }
 
     /**
@@ -237,8 +237,8 @@ export default class Level extends Scene {
             this.player.update();
         }
 
-        for (const key of Object.keys(this.projectiles)) {
-            this.projectiles[key].update();
+        for (const key of Object.keys(this.items)) {
+            this.items[key].update();
         }
     }
 
@@ -316,14 +316,14 @@ export default class Level extends Scene {
     /**
      *
      */
-    getProjectile(id) {
-        const projectile = this.projectiles[id];
+    getItem(id) {
+        const item = this.items[id];
 
-        if (!projectile) {
-            throw new Error(`Projectile ${id} does not exist.`);
+        if (!item) {
+            throw new Error(`Item ${id} does not exist.`);
         }
 
-        return projectile;
+        return item;
     }
 
     /**
@@ -358,13 +358,13 @@ export default class Level extends Scene {
      *
      */
     onEnemyShoot(data) {
-        this.addEnemyProjectile(data);
+        this.addEnemyItem(data);
     }
 
     /**
      *
      */
-    addEnemyProjectile(data) {
+    addEnemyItem(data) {
         switch (data.type) {
             case 'fireball':
                 return this.addEnemyFireball(data);
@@ -408,34 +408,34 @@ export default class Level extends Scene {
      * @todo Move to the specific class of item, so that it can decide what to
      * do.
      */
-    onPlayerHit(projectile, playerSprite) {
-        projectile.destroy();
-        socket.emit('projectileDestroyed', projectile.id);
+    onPlayerHit(item, playerSprite) {
+        item.destroy();
+        socket.emit('itemDestroyed', item.id);
 
-        this.player.hitBy(projectile);
+        this.player.hitBy(item);
     }
 
     /**
      *
      */
-    onProjectileUpdated(projectileData) {
+    onItemUpdated(itemData) {
         try {
-            const projectile = this.getProjectile(projectileData.id);
-            projectile.updatePosition(projectileData.position);
+            const item = this.getItem(itemData.id);
+            item.updatePosition(itemData.position);
         } catch (error) {
-            console.warn('Failed to update projectile.', error);
+            console.warn('Failed to update item.', error);
         }
     }
 
     /**
      *
      */
-    onProjectileDestroyed(id) {
+    onItemDestroyed(id) {
         try {
-            const projectile = this.getProjectile(id);
-            projectile.destroy();
+            const item = this.getItem(id);
+            item.destroy();
         } catch (error) {
-            console.warn('Failed to destroy projectile.', error);
+            console.warn('Failed to destroy item.', error);
         }
     }
 

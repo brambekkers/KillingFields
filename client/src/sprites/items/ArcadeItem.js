@@ -16,7 +16,7 @@ export default class ArcadeItem extends ArcadeSprite {
         super(scene, data);
 
         // Register this item with the scene.
-        this.scene.projectiles[this.id] = this;
+        this.scene.items[this.id] = this;
     }
 
     /**
@@ -46,7 +46,7 @@ export default class ArcadeItem extends ArcadeSprite {
      */
     destroy() {
         // Unregister this item from the scene.
-        delete this.scene.projectiles[this.id];
+        delete this.scene.items[this.id];
 
         super.destroy();
     }

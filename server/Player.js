@@ -35,8 +35,8 @@ class Player {
         this.socket.on('hit', this.onHit.bind(this));
         this.socket.on('died', this.onDie.bind(this));
 
-        this.socket.on('projectileUpdated', this.onProjectileUpdated.bind(this));
-        this.socket.on('projectileDestroyed', this.onProjectileDestroyed.bind(this));
+        this.socket.on('itemUpdated', this.onItemUpdated.bind(this));
+        this.socket.on('itemDestroyed', this.onItemDestroyed.bind(this));
     }
 
     /**
@@ -60,7 +60,7 @@ class Player {
     }
 
     /**
-     * @todo Store projectile in array, so that we can send them to newly joined players.
+     * @todo Store item in array, so that we can send them to newly joined players.
      */
     onShoot(data) {
         this.socket.broadcast.emit('enemyShot', data);
@@ -69,21 +69,21 @@ class Player {
     /**
      *
      */
-    onProjectileUpdated(data) {
-        // TODO: Store projectile's state.
+    onItemUpdated(data) {
+        // TODO: Store item's state.
 
-        this.socket.broadcast.emit('projectileUpdated', data);
+        this.socket.broadcast.emit('itemUpdated', data);
     }
 
     /**
      *
      */
-    onProjectileDestroyed(id) {
-        this.socket.broadcast.emit('projectileDestroyed', id);
+    onItemDestroyed(id) {
+        this.socket.broadcast.emit('itemDestroyed', id);
     }
 
     /**
-     * @todo
+     *
      */
     onHit(damage) {
         this.health -= damage;
@@ -91,7 +91,7 @@ class Player {
     }
 
     /**
-     * @todo
+     *
      */
     onDie() {
         this.health = 0;
