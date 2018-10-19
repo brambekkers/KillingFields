@@ -29,7 +29,7 @@ export default class Level extends Scene {
 
 
     preload() {
-        this.load.image('background', 'assets/img/background.png');
+        this.load.image('background', 'assets/img/background1.png');
         this.load.image('buttonBackground', 'assets/img/Menu/buttonBackground.png');
         this.load.image('achtergrondLogo', 'assets/img/Menu/achtergrondlogo.png');
         this.load.image('music', 'assets/img/Menu/button_music.png');
@@ -64,7 +64,8 @@ export default class Level extends Scene {
 
 
     createBackground() {
-        this.backgroundLogo = this.add.image(this.dimensions.x/2, 0, `achtergrondLogo`, 1).setOrigin(0.5, 0).setScale(0.9)
+        this.background = this.add.image(0, 0, `background`).setOrigin(0, 0).setScale(0.7)
+        this.backgroundLogo = this.add.image(this.dimensions.x/2, 0, `achtergrondLogo`).setOrigin(0.5, 0).setScale(0.9)
         
     }
 
@@ -83,7 +84,7 @@ export default class Level extends Scene {
     }
 
     createButtonBackground(button){
-        let buttonBackground = this.add.sprite(button.x, button.y, `buttonBackground`, 1).setOrigin(0.5, 0.5).setScale(0.35)
+        let buttonBackground = this.add.sprite(button.x, button.y, `buttonBackground`).setOrigin(0.5, 0.5).setScale(0.35)
 
         // Mouse interaction
         this.setMousePointer(buttonBackground)
@@ -129,10 +130,10 @@ export default class Level extends Scene {
 
 
             if(button.name === 'Sound'){
-                button.background =this.add.sprite(button.x, button.y, `sound`, 1).setOrigin(1, 1).setScale(0.35)
+                button.background =this.add.sprite(button.x, button.y, `sound`).setOrigin(1, 1).setScale(0.35)
             } 
             if(button.name === 'Music'){
-                button.background =this.add.sprite(button.x, button.y, `music`, 1).setOrigin(1, 1).setScale(0.35)
+                button.background =this.add.sprite(button.x, button.y, `music`).setOrigin(1, 1).setScale(0.35)
             } 
 
             // Mouse interaction
@@ -143,16 +144,21 @@ export default class Level extends Scene {
             button.background.on('pointerout', function (event) {
                 this.clearTint();
             });
-            button.background.on('pointerdown', function (pointer, test) {
-                console.log(pointer)
-                console.log(test)
+            button.background.on('pointerdown', (pointer) => {
+
                 button.isOn = !button.isOn
 
-                // if(button.isOn && button.name === 'Sound'){
-                //     button.background = this.add.sprite(button.x, button.y, `sound`, 1).setOrigin(1, 1).setScale(0.35)
-                // }else{
-                //     button.background = this.add.sprite(button.x, button.y, `muteSound`, 1).setOrigin(1, 1).setScale(0.35)
-                // }
+                if(button.isOn && button.name === 'Sound'){
+                    button.background = this.add.sprite(button.x, button.y, `sound`).setOrigin(1, 1).setScale(0.35)
+                }else if(!button.isOn && button.name === 'Sound'){
+                    button.background = this.add.sprite(button.x, button.y, `muteSound`).setOrigin(1, 1).setScale(0.35)
+                }
+
+                if(button.isOn && button.name === 'Music'){
+                    button.background = this.add.sprite(button.x, button.y, `music`).setOrigin(1, 1).setScale(0.35)
+                }else if(!button.isOn && button.name === 'Music'){
+                    button.background = this.add.sprite(button.x, button.y, `muteMusic`).setOrigin(1, 1).setScale(0.35)
+                }
             });
         }
     }
