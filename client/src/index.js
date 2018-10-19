@@ -8,8 +8,8 @@ const game = new Phaser.Game({
     type: Phaser.AUTO,
     width: window.innerWidth,
     height: window.innerHeight,
-    title: 'KillingFields',
     pixelArt: true,
+    backgroundColor: '#f3e184',
     scene: [
         MainMenu,
     ],
@@ -22,4 +22,16 @@ const game = new Phaser.Game({
             debug: true,
         },
     },
+    // Uitstraling in de Dev-tools
+    title: 'KillingFields',
+    banner: {
+        text: '#ffffff',
+        background: [
+            '#fff200',
+            '#38f0e8',
+            '#00bff3',
+            '#ec008c'
+        ],
+        hidePhaser: true
+    }
 });
