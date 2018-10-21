@@ -12,7 +12,7 @@ import { createContext } from 'vm';
  */
 export default class Level extends Scene {
     
-    constructor(scene, data) {
+    constructor() {
         super("MainMenu");
 
     }
@@ -23,6 +23,7 @@ export default class Level extends Scene {
     );
     background;
     backgroundLogo;
+    cursor;
     menuButtons = [
         {name: "Quick play ",    x:0, y:0, background: null, text: null},
         {name: "Lobby ",         x:0, y:0, background: null, text: null},
@@ -42,7 +43,7 @@ export default class Level extends Scene {
 
 
     preload() {
-        this.load.image('background', 'assets/img/background3.png');
+        this.load.image('backgroundMainMenu', 'assets/img/backgroundMainMenu.png');
         this.load.image('buttonBackground', 'assets/img/Menu/buttonBackground.png');
         this.load.image('achtergrondLogo', 'assets/img/Menu/achtergrondlogo.png');
         this.load.image('music', 'assets/img/Menu/button_music.png');
@@ -93,7 +94,7 @@ export default class Level extends Scene {
 
 
     createBackground() {
-        this.background = this.add.image(0, 0, 'background').setOrigin(0).setDisplaySize(this.dimensions.x, this.dimensions.y);
+        this.background = this.add.image(0, 0, 'backgroundMainMenu').setOrigin(0).setDisplaySize(this.dimensions.x, this.dimensions.y);
         this.backgroundLogo = this.add.image(this.dimensions.x/2, 0, `achtergrondLogo`).setOrigin(0.5, 0).setScale(0.9)
 
     }
@@ -136,9 +137,20 @@ export default class Level extends Scene {
         buttonBackground.on('pointerdown', (pointer) => {
             this.sounds.click.play();
             console.log("Clicked on: ", button.name)
-            this.scene.start("LevelTwo");
+
+            this.ExitMainMenu()
+            this.scene.launch("LevelTwo");
+            this.scene.bringToTop("MainMenu")
+
         });
         return buttonBackground
+    }
+
+    ExitMainMenu(){
+        this.sounds.backgroundMusic.stop();
+
+        this.scene.sleep()
+
     }
 
     createButtonText(button){
@@ -154,7 +166,7 @@ export default class Level extends Scene {
     }
 
     createPointer(){
-        this.input.setDefaultCursor('url(assets/img/Cursor/Cursor2_Small.cur), pointer')
+        this.cursor = this.input.setDefaultCursor('url(assets/img/Cursor/Cursor2_Small.cur), pointer')
 
     }
 

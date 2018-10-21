@@ -87,12 +87,11 @@ export default class Level extends Scene {
      */
     createBackground() {
         this.background = this.add
-            .tileSprite(
-                this.dimensions.x / 2,
-                this.dimensions.y / 2,
-                this.dimensions.x,
-                this.dimensions.y,
-                'background'
+            .image(0, 0, 'background')
+            .setOrigin(0)
+            .setDisplaySize(
+                this.dimensions.x, 
+                this.dimensions.y
             )
             .setScrollFactor(0);
     }

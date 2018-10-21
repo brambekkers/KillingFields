@@ -14,7 +14,7 @@ class Player {
         this.health = 10;
         this.position = {
             x: 70 + Math.random() * (2240 - 70 * 2),
-            y: 70 + Math.random() * (2240 - 70 * 2),
+            y: 70 + Math.random() * (1500 - 70 * 2),
         };
         this.animation = {
             key: `${this.character}_turn`,
