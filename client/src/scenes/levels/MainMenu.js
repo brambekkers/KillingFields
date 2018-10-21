@@ -25,6 +25,10 @@ export default class Level extends Scene {
         {name: "Sound", x:0, y:0, background: null, isOn: true},
         {name: "Music", x:0, y:0, background: null, isOn: true},
     ]
+    sounds = {
+        click: null,
+        rollover: null,
+    };
     
 
 
@@ -36,6 +40,11 @@ export default class Level extends Scene {
         this.load.image('muteMusic', 'assets/img/Menu/button_muteMusic.png');
         this.load.image('sound', 'assets/img/Menu/button_sound.png');
         this.load.image('muteSound', 'assets/img/Menu/button_muteSound.png');
+
+        // Audio
+        this.load.audio('click', 'assets/audio/Click/click2.ogg');
+        this.load.audio('rollover', 'assets/audio/Click/rollover6.ogg');
+       
         
         // Fonts
         this.load.script('webfont', 'https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js')
@@ -45,8 +54,9 @@ export default class Level extends Scene {
         this.cameras.main.setBounds(0, 0, this.dimensions.x, this.dimensions.y);
         this.createPointer();
         this.createBackground();
-        this.createMenuButton()
-        this.createSoundButton()
+        this.createMenuButton();
+        this.createSoundButton();
+        this.createSounds();
 
 
         // font
@@ -60,6 +70,11 @@ export default class Level extends Scene {
                 }
             }
         });
+    }
+
+    createSounds(){
+        this.sounds.click = this.sound.add('click');
+        this.sounds.rollover = this.sound.add('rollover');
     }
 
 
@@ -78,28 +93,28 @@ export default class Level extends Scene {
             button.x = this.dimensions.x / 2
             button.y = (this.dimensions.y / 1.7) + (index * 120) - buttonHeightHalf
 
-            button.background = this.createButtonBackground(button);
+            button.background = this.createButtonBackground(this, button);
             button.text = this.createButtonText(button);
         }
     }
 
-    createButtonBackground(button){
+    createButtonBackground(scene, button){
         let buttonBackground = this.add.sprite(button.x, button.y, `buttonBackground`).setOrigin(0.5, 0.5).setScale(0.35)
 
         // Mouse interaction
         this.setMousePointer(buttonBackground)
 
-        buttonBackground.on('pointerover', function (event) {
-            this.setTint(0xff0000);
+        buttonBackground.on('pointerover', (event) => {
+            buttonBackground.setTint(0xff0000);
+            this.sounds.rollover.play();
         });
-        buttonBackground.on('pointerout', function (event) {
-            this.clearTint();
+        buttonBackground.on('pointerout', (event) => {
+            buttonBackground.clearTint();
         });
-        buttonBackground.on('pointerdown', function (pointer) {
-            console.log(button.name)
+        buttonBackground.on('pointerdown', (pointer) => {
+            this.sounds.click.play();
+            console.log("Clicked on: ", button.name)
         });
-
-
         return buttonBackground
     }
 
@@ -138,15 +153,17 @@ export default class Level extends Scene {
 
             // Mouse interaction
             this.setMousePointer(button.background)
-            button.background.on('pointerover', function (event) {
-                this.setTint(0xff0000);
+            button.background.on('pointerover', (event) => {
+                button.background.setTint(0xff0000);
+                this.sounds.rollover.play();
             });
-            button.background.on('pointerout', function (event) {
-                this.clearTint();
+            button.background.on('pointerout', (event) => {
+                button.background.clearTint();
             });
             button.background.on('pointerdown', (pointer) => {
 
-                button.isOn = !button.isOn
+                button.isOn = !button.isOn;
+                this.sounds.click.play();
 
                 if(button.isOn && button.name === 'Sound'){
                     button.background = this.add.sprite(button.x, button.y, `sound`).setOrigin(1, 1).setScale(0.35)
