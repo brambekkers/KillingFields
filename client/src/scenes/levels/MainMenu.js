@@ -169,12 +169,14 @@ export default class Level extends Scene {
                     button.background = this.add.sprite(button.x, button.y, `sound`).setOrigin(1, 1).setScale(0.35)
                 }else if(!button.isOn && button.name === 'Sound'){
                     button.background = this.add.sprite(button.x, button.y, `muteSound`).setOrigin(1, 1).setScale(0.35)
+                    this.muteSound()
                 }
 
                 if(button.isOn && button.name === 'Music'){
                     button.background = this.add.sprite(button.x, button.y, `music`).setOrigin(1, 1).setScale(0.35)
                 }else if(!button.isOn && button.name === 'Music'){
                     button.background = this.add.sprite(button.x, button.y, `muteMusic`).setOrigin(1, 1).setScale(0.35)
+                    this.muteMusic()                
                 }
             });
         }
@@ -183,6 +185,14 @@ export default class Level extends Scene {
     setMousePointer(sprite){
         sprite.setInteractive({ cursor: 'url(assets/img/Cursor/Pointer_Small.cur), pointer' });
       
+    }
+
+    muteSound(){
+        this.sounds.rollover.setMute(true)
+        this.sounds.click.setMute(true)
+    }
+    muteMusic(){
+
     }
 }
 
