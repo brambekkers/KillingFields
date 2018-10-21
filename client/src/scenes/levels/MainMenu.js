@@ -2,12 +2,20 @@ import Scene from '../Scene';
 import Vector2 from '../../math/Vector2';
 import { createContext } from 'vm';
 
+// import levelTwo from 'levelTwo';
+
+
 
 
 /**
  * @abstract
  */
 export default class Level extends Scene {
+    
+    constructor(scene, data) {
+        super("MainMenu");
+
+    }
 
     dimensions = new Vector2(
         window.innerWidth,
@@ -26,6 +34,7 @@ export default class Level extends Scene {
         {name: "Music", x:0, y:0, background: null, isOn: true},
     ]
     sounds = {
+        backgroundMusic: null,
         click: null,
         rollover: null,
     };
@@ -33,7 +42,7 @@ export default class Level extends Scene {
 
 
     preload() {
-        this.load.image('background', 'assets/img/background1.png');
+        this.load.image('background', 'assets/img/background3.png');
         this.load.image('buttonBackground', 'assets/img/Menu/buttonBackground.png');
         this.load.image('achtergrondLogo', 'assets/img/Menu/achtergrondlogo.png');
         this.load.image('music', 'assets/img/Menu/button_music.png');
@@ -44,6 +53,7 @@ export default class Level extends Scene {
         // Audio
         this.load.audio('click', 'assets/audio/Click/click2.ogg');
         this.load.audio('rollover', 'assets/audio/Click/rollover6.ogg');
+        this.load.audio('backgroundMusic', 'assets/audio/Music/background7.ogg');
        
         
         // Fonts
@@ -70,18 +80,22 @@ export default class Level extends Scene {
                 }
             }
         });
+
+        this.sounds.backgroundMusic.play();
+        this.sounds.backgroundMusic.setLoop(true);
     }
 
     createSounds(){
+        this.sounds.backgroundMusic = this.sound.add('backgroundMusic');
         this.sounds.click = this.sound.add('click');
         this.sounds.rollover = this.sound.add('rollover');
     }
 
 
     createBackground() {
-        this.background = this.add.image(0, 0, `background`).setOrigin(0, 0).setScale(0.7)
+        this.background = this.add.image(0, 0, 'background').setOrigin(0).setDisplaySize(this.dimensions.x, this.dimensions.y);
         this.backgroundLogo = this.add.image(this.dimensions.x/2, 0, `achtergrondLogo`).setOrigin(0.5, 0).setScale(0.9)
-        
+
     }
 
     createMenuButton() {
@@ -96,6 +110,14 @@ export default class Level extends Scene {
             button.background = this.createButtonBackground(this, button);
             button.text = this.createButtonText(button);
         }
+    }
+
+    resize (width, height){
+        if (width === undefined) { width = this.sys.game.config.width; }
+        if (height === undefined) { height = this.sys.game.config.height; }
+
+
+        this.logo.setPosition(width / 2, height / 2);
     }
 
     createButtonBackground(scene, button){
@@ -114,6 +136,7 @@ export default class Level extends Scene {
         buttonBackground.on('pointerdown', (pointer) => {
             this.sounds.click.play();
             console.log("Clicked on: ", button.name)
+            this.scene.start("LevelTwo");
         });
         return buttonBackground
     }
@@ -196,8 +219,9 @@ export default class Level extends Scene {
         this.sounds.rollover.setMute(boolean)
         this.sounds.click.setMute(boolean)
     }
-    muteMusic(){
-
+    muteMusic(boolean){
+        console.log(this.sounds.backgroundMusic)
+        this.sounds.backgroundMusic.setMute(boolean);
     }
 }
 

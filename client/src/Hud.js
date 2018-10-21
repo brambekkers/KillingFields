@@ -43,7 +43,6 @@ export default class Hud {
 
 
     static preload(scene) {
-        scene.load.image('voorbeeldHud', 'assets/img/HUD/voorbeeldHud.png');
         scene.load.image('hudAchtergrond', 'assets/img/HUD/hudAchtergrond.png');
         scene.load.spritesheet('heartHealth', 'assets/img/HUD/hudHealth/heartSpritesheet.png', { frameWidth: 53, frameHeight: 45});
 
@@ -52,6 +51,8 @@ export default class Hud {
 
         for (let i = 1; i <= 5; i++) {
             scene.load.image(`hud_player${i}`, `assets/img/HUD/hud${i}/hudSquare.png`);
+        }
+        for (let i = 1; i <= 3; i++) {
             scene.load.image(`dropBox${i}`, `assets/img/HUD/dropBox${i}.png`);
         }
     }

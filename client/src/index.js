@@ -1,6 +1,7 @@
 import io from 'socket.io-client';
 import Phaser from 'phaser';
 import MainMenu from './scenes/levels/MainMenu';
+import LevelTwo from './scenes/levels/LevelTwo';
 
 window.socket = io();
 
@@ -12,6 +13,7 @@ const game = new Phaser.Game({
     backgroundColor: '#f3e184',
     scene: [
         MainMenu,
+        LevelTwo
     ],
     physics: {
         default: 'arcade',
