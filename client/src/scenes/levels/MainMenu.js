@@ -143,12 +143,12 @@ export default class Level extends Scene {
             button.x = this.dimensions.x - (index * 100)
             button.y = this.dimensions.y
 
-
+            // load sprite
             if(button.name === 'Sound'){
-                button.background =this.add.sprite(button.x, button.y, `sound`).setOrigin(1, 1).setScale(0.35)
+                button.background = this.add.sprite(button.x, button.y, `sound`).setOrigin(1, 1).setScale(0.35)
             } 
             if(button.name === 'Music'){
-                button.background =this.add.sprite(button.x, button.y, `music`).setOrigin(1, 1).setScale(0.35)
+                button.background = this.add.sprite(button.x, button.y, `music`).setOrigin(1, 1).setScale(0.35)
             } 
 
             // Mouse interaction
@@ -165,18 +165,23 @@ export default class Level extends Scene {
                 button.isOn = !button.isOn;
                 this.sounds.click.play();
 
+                // Sound button
                 if(button.isOn && button.name === 'Sound'){
                     button.background = this.add.sprite(button.x, button.y, `sound`).setOrigin(1, 1).setScale(0.35)
+                    this.muteSound(false)
+                    
                 }else if(!button.isOn && button.name === 'Sound'){
                     button.background = this.add.sprite(button.x, button.y, `muteSound`).setOrigin(1, 1).setScale(0.35)
-                    this.muteSound()
+                    this.muteSound(true)
                 }
 
+                // Music button
                 if(button.isOn && button.name === 'Music'){
                     button.background = this.add.sprite(button.x, button.y, `music`).setOrigin(1, 1).setScale(0.35)
+                    this.muteMusic(false)
                 }else if(!button.isOn && button.name === 'Music'){
                     button.background = this.add.sprite(button.x, button.y, `muteMusic`).setOrigin(1, 1).setScale(0.35)
-                    this.muteMusic()                
+                    this.muteMusic(true)                
                 }
             });
         }
@@ -187,9 +192,9 @@ export default class Level extends Scene {
       
     }
 
-    muteSound(){
-        this.sounds.rollover.setMute(true)
-        this.sounds.click.setMute(true)
+    muteSound(boolean){
+        this.sounds.rollover.setMute(boolean)
+        this.sounds.click.setMute(boolean)
     }
     muteMusic(){
 
