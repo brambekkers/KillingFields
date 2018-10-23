@@ -4,9 +4,11 @@ export default class Hud {
 
         // CharInfo
         this.background = null
+        this.optionButton = null
         this.char =  null
         this.heartHealth = null
         this.killText= null
+        this.cursor = null
 
         // Itembox
         this.itemSlots = [
@@ -44,6 +46,8 @@ export default class Hud {
 
     static preload(scene) {
         scene.load.image('hudAchtergrond', 'assets/img/HUD/hudAchtergrond.png');
+        scene.load.image('optionsButton', 'assets/img/Menu/button_options.png');
+
         scene.load.spritesheet('heartHealth', 'assets/img/HUD/hudHealth/heartSpritesheet.png', { frameWidth: 53, frameHeight: 45});
 
         // Fonts
@@ -70,9 +74,7 @@ export default class Hud {
 
     create() {
         this.createCharInfo()
-        this.createItemBox({
-
-        })
+        this.createItemBox()
 
         // font
         WebFont.load({
@@ -88,6 +90,8 @@ export default class Hud {
     createCharInfo() {
         this.background = this.createSprite(0, 0, 'hudAchtergrond', 1)
         this.char = this.createSprite(50, 50, `hud_${this.player.character}`, 0.9)
+        this.createOptionsButton()
+        
         this.heartHealth = this.createSprite(128, 45, 'heartHealth', 0.8)
         this.heartHealth.anims.play(`heartHealth10`);
 
@@ -100,6 +104,24 @@ export default class Hud {
         this.killText.setStroke('#000000', 5)
         this.killText.setScrollFactor(0);
     }
+
+    createOptionsButton(){
+        this.optionButton = this.createSprite(40, 120, 'optionsButton', 0.2)
+        console.log("button gemaakt")
+
+        this.optionButton.on('pointerover', (event) => {
+            this.optionButton.setTint(0xff0000);
+
+        });
+        this.optionButton.on('pointerout', (event) => {
+            this.optionButton.clearTint();
+
+        });
+        this.optionButton.on('pointerdown', (pointer) => {
+
+        });
+    }
+
 
     createItemBox() {
         let slotAmount = this.itemSlots.length - 1
