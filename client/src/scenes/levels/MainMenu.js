@@ -12,6 +12,7 @@ export default class MainMenu extends Scene {
     constructor() {
         super("MainMenu");
 
+ 
     }
 
     dimensions = new Vector2(
@@ -21,18 +22,78 @@ export default class MainMenu extends Scene {
     background;
     backgroundLogo;
     cursor;
+
+    backgroundMusic = null
+
+    MusicMute = false
+    SoundMute = false
+
+
+    /**
+     * Stop all things in main menu 
+     */
+    ExitMainMenu = () => {
+        this.backgroundMusic.stop();
+
+        this.scene.sleep()
+        this.startGame()
+    }
+
+    /**
+     * Start new scenes 
+     */
+    startGame(){
+        this.scene.launch("LevelTwo");
+        this.scene.launch("InGameMenu");
+        this.scene.bringToTop("InGameMenu")
+        this.scene.sleep("InGameMenu")
+    }
+
+    /**
+     * 
+     */
+    createMusic(){
+        this.backgroundMusic = this.sound.add('backgroundMusic');
+    }
+
+    muteMusic = () => {
+        this.MusicMute = !this.MusicMute
+        this.backgroundMusic.setMute(this.MusicMute);
+
+        let button = this.soundButtons.filter(b => b.texture === "muteMusicButton")
+        button[0].sprite.changeSoundButton(button[0], this.MusicMute)
+    }
+    muteSound = () => {        
+        this.SoundMute = !this.SoundMute
+
+        let button = this.soundButtons.filter(b => b.texture === "muteSoundButton")
+        button[0].sprite.changeSoundButton(button[0], this.SoundMute)
+
+        // mute/unmute all buttons
+        for (const button of this.menuButtons) {
+            button.sprite.muteClickSound(this.SoundMute)
+        }
+        for (const button of this.soundButtons) {
+            button.sprite.muteClickSound(this.SoundMute)
+        }
+        
+    }
+
+
+
     menuButtons = [
-        {sprite: null, name: "Quick play ", x:0, y:0, texture: "buttonBackground", scale:0.3, callback: ()=>{ console.log("Clicked on Quickplay")} },
+        {sprite: null, name: "Quick play ", x:0, y:0, texture: "buttonBackground", scale:0.3, callback: this.ExitMainMenu },
         {sprite: null, name: "Lobby ", x:0, y:0, texture: "buttonBackground", scale:0.3, callback: ()=>{ console.log("Clicked on Lobby")} },
         {sprite: null, name: "Options ", x:0, y:0, texture: "buttonBackground", scale:0.3, callback: ()=>{ console.log("Clicked on Options")} },
         {sprite: null, name: "Exit ", x:0, y:0, texture: "buttonBackground", scale:0.3, callback: ()=>{ console.log("Clicked on Exit")} },
 
     ];
     soundButtons = [
-        {sprite: null, scale: 0.3, x:0, y:0, texture: "musicButton", isOn: true, callback: ()=>{ console.log("Clicked on Sound button")} },
-        {sprite: null, scale: 0.3, x:0, y:0, texture: "soundButton", isOn: true, callback: ()=>{ console.log("Clicked on Music button")} },
+        {sprite: null, scale: 0.3, x:0, y:0, texture: "muteMusicButton", textureOff: "musicButton", callback: this.muteMusic },
+        {sprite: null, scale: 0.3, x:0, y:0, texture: "muteSoundButton", textureOff: "soundButton", callback: this.muteSound },
     ]
-    backgroundMusic = null
+
+
    
 
 
@@ -50,6 +111,8 @@ export default class MainMenu extends Scene {
     
         
     }
+
+
 
     create(){
         this.createPointer();
@@ -75,9 +138,7 @@ export default class MainMenu extends Scene {
         });
     }
 
-    createMusic(){
-        this.backgroundMusic = this.sound.add('backgroundMusic');
-    }
+
 
 
     createBackground() {
@@ -99,21 +160,6 @@ export default class MainMenu extends Scene {
         }
     }
 
-
-    ExitMainMenu(){
-        this.backgroundMusic.stop();
-
-        this.scene.sleep()
-        this.startGame()
-    }
-
-    startGame(){
-        this.scene.launch("LevelTwo");
-        this.scene.launch("InGameMenu");
-        this.scene.bringToTop("InGameMenu")
-        this.scene.sleep("InGameMenu")
-    }
-
     createPointer(){
         this.cursor = this.input.setDefaultCursor('url(assets/img/Cursor/Cursor2_Small.cur), pointer')
     }
@@ -127,51 +173,14 @@ export default class MainMenu extends Scene {
             button.y = this.dimensions.y - 50
 
             button.sprite = new Button(this, button);
-
-
-
-
-
-            // // Mouse interaction
-  
-            // button.background.on('pointerdown', (pointer) => {
-
-            //     button.isOn = !button.isOn;
-            //
-
-            //     // Sound button
-            //     if(button.isOn && button.name === 'Sound'){
-            //         button.background = this.add.sprite(button.x, button.y, `sound`).setOrigin(1, 1).setScale(0.35)
-            //         this.muteSound(false)
-                    
-            //     }else if(!button.isOn && button.name === 'Sound'){
-            //         button.background = this.add.sprite(button.x, button.y, `muteSound`).setOrigin(1, 1).setScale(0.35)
-            //         this.muteSound(true)
-            //     }
-
-            //     // Music button
-            //     if(button.isOn && button.name === 'Music'){
-            //         button.background = this.add.sprite(button.x, button.y, `music`).setOrigin(1, 1).setScale(0.35)
-            //         this.muteMusic(false)
-            //     }else if(!button.isOn && button.name === 'Music'){
-            //         button.background = this.add.sprite(button.x, button.y, `muteMusic`).setOrigin(1, 1).setScale(0.35)
-            //         this.muteMusic(true)                
-            //     }
-            // });
         }
     }
 
-    setMousePointer(sprite){
-        sprite.setInteractive({ cursor: 'url(assets/img/Cursor/Pointer_Small.cur), pointer' });
+    muteSound = (boolean) => {
+        this.rollover.setMute(boolean)
+        this.click.setMute(boolean)
     }
 
-    muteSound(boolean){
-        // this.rollover.setMute(boolean)
-        // this.click.setMute(boolean)
-    }
-    muteMusic(boolean){
-        this.backgroundMusic.setMute(boolean);
-    }
 }
 
 

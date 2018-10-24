@@ -78,6 +78,19 @@ export default class Button extends Sprite {
         this.sounds.rollover = this.scene.sound.add('rollover');
     }
 
+    changeSoundButton(button, boolean){
+        if(boolean){
+            this.setTexture(button.textureOff)
+        }else{
+            this.setTexture(button.texture)
+        }
+    }
+
+    muteClickSound(boolean){
+        this.sounds.click.setMute(boolean);
+        this.sounds.rollover.setMute(boolean);
+    }
+
 
     /**
      *
