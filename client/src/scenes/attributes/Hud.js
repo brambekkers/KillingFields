@@ -22,8 +22,7 @@ export default class Hud extends Scene {
 
 
     openMenu = ()=>{
-        console.log(this)
-        this.scene.launch("InGameMenu");
+        this.scene.start("InGameMenu");
         this.scene.bringToTop("InGameMenu")
     }
 

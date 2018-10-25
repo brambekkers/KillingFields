@@ -21,7 +21,7 @@ export default class MainMenu extends Scene {
     backgroundLogo;
     cursor;
 
-    backgroundMusic = null
+    backgroundMusic
 
     MusicMute = false
     SoundMute = false
@@ -41,8 +41,9 @@ export default class MainMenu extends Scene {
      * Start new scenes 
      */
     startGame(){
-        this.scene.launch("LevelTwo");
-        this.scene.launch("Hud");
+        this.scene.start("LevelTwo");
+        this.scene.start("Hud");
+        this.scene.bringToTop("LevelTwo")
         this.scene.bringToTop("Hud")
     }
 
@@ -99,14 +100,11 @@ export default class MainMenu extends Scene {
         this.load.image('backgroundMainMenu', 'assets/img/backgroundMainMenu.png');
         this.load.image('achtergrondLogo', 'assets/img/Menu/achtergrondlogo.png');
 
-
         // Audio
         this.load.audio('backgroundMusic', 'assets/audio/Music/background7.ogg');
        
         // Fonts
-        this.load.script('webfont', 'https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js')
-    
-        
+        this.load.script('webfont', 'https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js')        
     }
 
 
