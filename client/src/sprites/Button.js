@@ -61,7 +61,9 @@ export default class Button extends Sprite {
         });
         this.on('pointerdown', (pointer) => {
             this.sounds.click.play();
-            data.callback()
+            if(typeof data.callback === 'function'){
+                data.callback()
+            }
         });
     }
 
