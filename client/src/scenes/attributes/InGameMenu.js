@@ -46,7 +46,9 @@ export default class InGameMenu extends Scene {
 
 
     createBackground(){
-        this.menuBackground = this.add.image(this.dimensions.x/2, this.dimensions.y/2, 'backgroundInGameMenu').setOrigin(0.5).setScale(0.5);
+        this.menuBackground = this.add.image(this.dimensions.x/2, this.dimensions.y/2, 'backgroundInGameMenu')
+        .setOrigin(0.5)
+        .setScale(0.4);
     }
     
 

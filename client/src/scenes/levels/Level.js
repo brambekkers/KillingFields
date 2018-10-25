@@ -1,6 +1,6 @@
 import Scene from '../Scene';
 import Vector2 from '../../math/Vector2';
-import Hud from '../../Hud';
+// import Hud from '../../Hud';
 import Player from '../../sprites/Player';
 import Enemy from '../../sprites/Enemy';
 import Fireball from '../../sprites/items/Fireball';
@@ -56,7 +56,7 @@ export default class Level extends Scene {
 
         // Player
         Player.preload(this);
-        Hud.preload(this);
+        // Hud.preload(this);
 
         // Items
         Fireball.preload(this);
@@ -184,7 +184,7 @@ export default class Level extends Scene {
      */
     createAnimations() {
         Player.createAnimations(this);
-        Hud.createAnimations(this);
+        // Hud.createAnimations(this);
     }
 
     /**

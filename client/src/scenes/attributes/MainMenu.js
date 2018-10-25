@@ -11,8 +11,6 @@ export default class MainMenu extends Scene {
     
     constructor() {
         super("MainMenu");
-
- 
     }
 
     dimensions = new Vector2(
@@ -44,9 +42,8 @@ export default class MainMenu extends Scene {
      */
     startGame(){
         this.scene.launch("LevelTwo");
-        this.scene.launch("InGameMenu");
-        this.scene.bringToTop("InGameMenu")
-        this.scene.sleep("InGameMenu")
+        this.scene.launch("Hud");
+        this.scene.bringToTop("Hud")
     }
 
     /**

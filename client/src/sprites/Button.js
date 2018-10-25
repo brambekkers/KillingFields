@@ -21,7 +21,7 @@ export default class Button extends Sprite {
             rollover: null,
         };
 
-        
+        console.log("button aangemaakt")
 
         this.clickInteraction(data)
         this.addText(data)
@@ -33,6 +33,7 @@ export default class Button extends Sprite {
      */
     static preload(scene) {
         scene.load.image('buttonBackground', 'assets/img/Menu/buttonBackground.png');
+        scene.load.image('optionsButton', 'assets/img/Menu/button_options.png');
         scene.load.image('musicButton', 'assets/img/Menu/button_music.png');
         scene.load.image('muteMusicButton', 'assets/img/Menu/button_muteMusic.png');
         scene.load.image('soundButton', 'assets/img/Menu/button_sound.png');

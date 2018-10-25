@@ -1,8 +1,9 @@
 import io from 'socket.io-client';
 import Phaser from 'phaser';
-import MainMenu from './scenes/levels/MainMenu';
+import MainMenu from './scenes/attributes/MainMenu';
 import LevelTwo from './scenes/levels/LevelTwo';
-import InGameMenu from './scenes/levels/InGameMenu';
+import InGameMenu from './scenes/attributes/InGameMenu';
+import Hud from './scenes/attributes/Hud';
 
 window.socket = io();
 
@@ -15,6 +16,7 @@ const game = new Phaser.Game({
     scene: [
         MainMenu,
         InGameMenu,
+        Hud,
         LevelTwo
     ],
     physics: {

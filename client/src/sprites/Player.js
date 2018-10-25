@@ -1,7 +1,6 @@
 import ArcadeSprite from './ArcadeSprite';
 import PlayerInput from './PlayerInput';
 import PlayerState from './PlayerState';
-import Hud from '../Hud';
 import Fireball from './items/Fireball';
 import Crate from './items/Crate';
 import Spike from './items/Spike';
@@ -40,6 +39,7 @@ export default class Player extends ArcadeSprite {
     constructor(scene, data) {
         super(scene, data);
 
+        this.scene = scene
         this.character = data.character;
         this.health = data.health;
         this.kills = 0;
@@ -62,7 +62,8 @@ export default class Player extends ArcadeSprite {
 
         this.input = new PlayerInput(this);
         this.state = new PlayerState(this);
-        this.hud = new Hud(this);
+        this.hud = this.scene.scene.get('Hud');
+        this.hud.setPlayerData(this)
     }
 
     /**
@@ -319,7 +320,9 @@ export default class Player extends ArcadeSprite {
         this.cooldowns.hit = Player.hitCooldown;
 
         this.health -= projectile.damage;
-        this.hud.heartHealth.play(`heartHealth${this.health}`, true);
+        this.hud.updateItemBox()
+
+        this.hud.charInfo.heartHealth.play(`heartHealth${this.health}`, true);
 
         if (this.health > 0) {
             socket.emit('hit', projectile.damage);
