@@ -1,12 +1,12 @@
 import Scene from '../Scene';
 import Vector2 from '../../math/Vector2';
-import Hud from '../../Hud';
 import Player from '../../sprites/Player';
 import Enemy from '../../sprites/Enemy';
 import Loot from '../../sprites/Loot';
 import Fireball from '../../sprites/items/Fireball';
 import Crate from '../../sprites/items/Crate';
 import Spike from '../../sprites/items/Spike';
+import Trampoline from '../../sprites/items/Trampoline';
 
 /**
  * @abstract
@@ -62,7 +62,6 @@ export default class Level extends Scene {
 
         // Player
         Player.preload(this);
-        Hud.preload(this);
 
         // Objects
         Loot.preload(this);
@@ -71,6 +70,7 @@ export default class Level extends Scene {
         Fireball.preload(this);
         Crate.preload(this);
         Spike.preload(this);
+        Trampoline.preload(this);
     }
 
     /**
@@ -86,6 +86,7 @@ export default class Level extends Scene {
         this.createBackground();
         this.createLayers();
         this.createGroups();
+        this.configureCollider();
 
         this.start();
     }
@@ -95,7 +96,6 @@ export default class Level extends Scene {
      */
     createAnimations() {
         Player.createAnimations(this);
-        Hud.createAnimations(this);
     }
 
     /**
@@ -123,12 +123,11 @@ export default class Level extends Scene {
      */
     createBackground() {
         this.background = this.add
-            .tileSprite(
-                this.dimensions.x / 2,
-                this.dimensions.y / 2,
-                this.dimensions.x,
-                this.dimensions.y,
-                'background'
+            .image(0, 0, 'background')
+            .setOrigin(0)
+            .setDisplaySize(
+                this.dimensions.x, 
+                this.dimensions.y
             )
             .setScrollFactor(0.2);
     }
@@ -188,6 +187,7 @@ export default class Level extends Scene {
     createGroups() {
         this.createCrateGroup();
         this.createSpikeGroup();
+        this.createTrampolineGroup();
     }
 
     /**
@@ -195,6 +195,19 @@ export default class Level extends Scene {
      */
     createCrateGroup() {
         this.groups.crates = this.physics.add.group({
+            mass: 10,
+            maxVelocity: 500,
+            collideWorldBounds: false,
+            dragX: 10000,
+            velocityY: -100,
+        });
+    }
+
+    /**
+     *
+     */
+    createTrampolineGroup() {
+        this.groups.trampoline = this.physics.add.group({
             mass: 10,
             maxVelocity: 500,
             collideWorldBounds: false,
@@ -255,13 +268,25 @@ export default class Level extends Scene {
         }
     };
 
+    getSolids(){
+        return [
+            ...this.getSolidLayers(),
+            ...this.getSolidGroups()
+        ];
+    }
+
     /**
      *
      */
-    getSolids() {
+    getSolidLayers() {
         return [
             this.layers.platforms,
             this.layers.objects,
+        ];
+    }
+
+    getSolidGroups() {
+        return [
             this.groups.crates,
         ];
     }
@@ -271,11 +296,6 @@ export default class Level extends Scene {
      */
     addPlayer(data) {
         this.player = new Player(this, data);
-
-        this.physics.add.collider(this.player, [
-            this.layers.platforms,
-            this.layers.objects,
-        ]);
 
         this.cameras.main.startFollow(this.player);
         this.cameras.main.setZoom(1);
@@ -336,6 +356,27 @@ export default class Level extends Scene {
         return loot;
     }
 
+
+    
+    configureCollider(){
+        
+        //collision box to eachother
+        this.physics.add.collider(this.getSolidGroups(), this.getSolidGroups(), function (s1, s2) {
+
+            let b1 = s1.body;
+            let b2 = s2.body;
+
+            if (b1.y > b2.y) {
+                b2.y += (b1.top - b2.bottom);
+                b2.stop();
+            }
+            else {
+                b1.y += (b2.top - b1.bottom);
+                b1.stop();
+            }
+        });
+    }
+
     /**
      *
      */
@@ -384,6 +425,9 @@ export default class Level extends Scene {
 
             case 'spike':
                 return new Spike(this, data);
+
+            case 'trampoline':
+                return new Trampoline(this, data);
         }
     }
 

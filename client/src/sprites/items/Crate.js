@@ -16,6 +16,11 @@ export default class Crate extends ArcadeItem {
     static cooldown = 20;
 
     /**
+     * The amount of crates you get from a pickup
+     */
+    static amount = 1;
+
+    /**
      *
      */
     constructor(scene, data) {
@@ -61,7 +66,7 @@ export default class Crate extends ArcadeItem {
             position: position.add(direction.multiply(70)),
         });
 
-        socket.emit('shoot', crate.toData());
+        window.socket.emit('shoot', crate.toData());
     }
 
     /**

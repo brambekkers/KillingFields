@@ -23,6 +23,11 @@ export default class Fireball extends ArcadeItem {
     bounces = 3;
 
     /**
+     * The amount of fireballs you get from a pickup
+     */
+    static amount = 20
+
+    /**
      * Constructs a Fireball.
      */
     constructor(scene, data) {
@@ -63,7 +68,7 @@ export default class Fireball extends ArcadeItem {
             velocity: direction.setMagnitude(500),
         });
 
-        socket.emit('shoot', fireball.toData());
+        window.socket.emit('shoot', fireball.toData());
     }
 
     /**
@@ -83,7 +88,7 @@ export default class Fireball extends ArcadeItem {
      *
      */
     faceDirection() {
-        this.flipX = this.body.velocity.x < 0 ? true : false;
+        this.flipX = this.body.velocity.x < 0;
     }
 
     /**

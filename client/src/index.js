@@ -1,6 +1,9 @@
 import io from 'socket.io-client';
 import Phaser from 'phaser';
+import MainMenu from './scenes/attributes/MainMenu';
 import LevelTwo from './scenes/levels/LevelTwo';
+import InGameMenu from './scenes/attributes/InGameMenu';
+import Hud from './scenes/attributes/Hud';
 
 window.socket = io();
 
@@ -9,8 +12,12 @@ const game = new Phaser.Game({
     width: window.innerWidth,
     height: window.innerHeight,
     pixelArt: true,
+    backgroundColor: '#f3e184',
     scene: [
-        LevelTwo,
+        MainMenu,
+        Hud,
+        InGameMenu,
+        LevelTwo
     ],
     physics: {
         default: 'arcade',
@@ -21,4 +28,16 @@ const game = new Phaser.Game({
             debug: true,
         },
     },
+    // Uitstraling in de Dev-tools
+    title: 'KillingFields',
+    banner: {
+        text: '#ffffff',
+        background: [
+            '#fff200',
+            '#38f0e8',
+            '#00bff3',
+            '#ec008c'
+        ],
+        hidePhaser: true
+    }
 });

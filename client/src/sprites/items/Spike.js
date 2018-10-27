@@ -10,6 +10,12 @@ export default class Spike extends ArcadeItem {
      */
     static icon = 'spike';
 
+
+    /**
+     * The amount of spikes you get from a pickup
+     */
+    static amount = 2;
+
     /**
      * The number of health points a player loses when they collide with a
      * spike.
@@ -28,7 +34,12 @@ export default class Spike extends ArcadeItem {
         this.scene.physics.add.collider(this, this.scene.getSolids());
         this.scene.physics.add.overlap(this, this.scene.player, this.onOverlapPlayer);
 
+        
+
         this.scene.groups.spikes.add(this);
+
+        this.setSize(70,35)
+        this.body.setOffset(0, 35); 
     }
 
     /**

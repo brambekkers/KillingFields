@@ -5,6 +5,10 @@ import Vector2 from '../../math/Vector2';
  *
  */
 export default class LevelTwo extends Level {
+    constructor() {
+        super("LevelTwo");
+
+    }
     /**
      *
      */

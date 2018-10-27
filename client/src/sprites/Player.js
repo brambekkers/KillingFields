@@ -1,10 +1,10 @@
 import ArcadeSprite from './ArcadeSprite';
 import PlayerInput from './PlayerInput';
 import PlayerState from './PlayerState';
-import Hud from '../Hud';
 import Fireball from './items/Fireball';
 import Crate from './items/Crate';
 import Spike from './items/Spike';
+import Trampoline from './items/Trampoline';
 
 /**
  *
@@ -40,6 +40,7 @@ export default class Player extends ArcadeSprite {
     constructor(scene, data) {
         super(scene, data);
 
+        this.scene = scene
         this.character = data.character;
         this.health = data.health;
         this.kills = 0;
@@ -55,21 +56,35 @@ export default class Player extends ArcadeSprite {
 
         this.PrimaryItem = Fireball;
         this.secondaryItems = [
-            Crate,
-            Spike,
-            Fireball,
+            {
+                object: Trampoline,
+                amount: 1
+            },
+            {
+                object: Crate,
+                amount: 5
+            },
+            {
+                object: Spike,
+                amount: 2
+            },
         ];
 
         this.input = new PlayerInput(this);
         this.state = new PlayerState(this);
-        this.hud = new Hud(this);
+
+        this.hud = this.scene.scene.get('Hud');
+        this.hud.setPlayer(this);
+
+        this.scene.physics.add.collider(this, this.scene.getSolids());
+
     }
 
     /**
      *
      */
     static preload(scene) {
-        for (let i = 1; i <= 3; i++) {
+        for (let i = 1; i <= 5; i++) {
             scene.load.spritesheet(`player${i}`, `assets/img/Player/player${i}.png`, {
                 frameWidth: 73,
                 frameHeight: 96,
@@ -81,7 +96,7 @@ export default class Player extends ArcadeSprite {
      *
      */
     static createAnimations(scene) {
-        for (let i = 1; i <= 3; i++) {
+        for (let i = 1; i <= 5; i++) {
             scene.anims.create({
                 key: `player${i}_walk`,
                 frames: scene.anims.generateFrameNumbers(`player${i}`, {
@@ -167,7 +182,7 @@ export default class Player extends ArcadeSprite {
             this.stand();
         }
 
-        socket.emit('move', this.toData());
+        window.socket.emit('move', this.toData());
     }
 
     /**
@@ -191,7 +206,7 @@ export default class Player extends ArcadeSprite {
         this.state.isDucking = true;
 
         this.setSize(50, 65);
-        this.displayOriginY = 60;
+        this.body.setOffset(12.5, 30);
     }
 
     /**
@@ -199,9 +214,7 @@ export default class Player extends ArcadeSprite {
      */
     stand() {
         this.state.isDucking = false;
-
         this.setSize(50, 94)
-        this.displayOriginY = 48;
     }
 
     /**
@@ -294,11 +307,18 @@ export default class Player extends ArcadeSprite {
             return;
         }
 
-        const Item = this.secondaryItems.shift();
+        let Item;
 
-        Item.use(this);
+        if (this.secondaryItems[0].amount > 1) {
+            this.secondaryItems[0].amount--;
+            Item = this.secondaryItems[0];
+        } else {
+            Item = this.secondaryItems.shift();
+        }
+        
+        Item.object.use(this);
 
-        this.cooldowns.secondary = Item.cooldown;
+        this.cooldowns.secondary = Item.object.cooldown;
     }
 
     //////////////////
@@ -329,7 +349,7 @@ export default class Player extends ArcadeSprite {
         this.health -= item.damage;
 
         if (this.health > 0) {
-            socket.emit('hit', item.damage);
+            window.socket.emit('hit', item.damage);
         } else {
             this.die();
         }
@@ -344,6 +364,6 @@ export default class Player extends ArcadeSprite {
         this.disableBody(true, true);
         this.scene.player = undefined;
 
-        socket.emit('died');
+        window.socket.emit('died');
     }
 }
