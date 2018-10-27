@@ -6,6 +6,7 @@ import Enemy from '../../sprites/Enemy';
 import Fireball from '../../sprites/items/Fireball';
 import Crate from '../../sprites/items/Crate';
 import Spike from '../../sprites/items/Spike';
+import Trampoline from '../../sprites/items/Trampoline';
 
 /**
  * @abstract
@@ -62,6 +63,7 @@ export default class Level extends Scene {
         Fireball.preload(this);
         Crate.preload(this);
         Spike.preload(this);
+        Trampoline.preload(this);
     }
 
     /**
@@ -348,6 +350,9 @@ export default class Level extends Scene {
 
             case 'spike':
                 return this.addEnemySpike(data);
+
+            case 'trampoline':
+                return this.addEnemyTrampoline(data);
         }
     }
 
@@ -376,6 +381,13 @@ export default class Level extends Scene {
      */
     addEnemySpike(data) {
         return new Spike(this, data);
+    }
+
+    /**
+     *
+     */
+    addEnemyTrampoline(data) {
+        return new Trampoline(this, data);
     }
 
     /**

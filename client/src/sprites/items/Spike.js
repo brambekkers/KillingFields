@@ -29,7 +29,12 @@ export default class Spike extends ArcadeItem {
         this.scene.physics.add.collider(this, this.scene.getSolids());
         this.scene.physics.add.overlap(this, this.scene.player, this.onOverlapPlayer);
 
+        
+
         this.scene.groups.spikes.add(this);
+
+        this.setSize(70,35)
+        this.body.setOffset(0, 35); 
     }
 
     /**
@@ -46,11 +51,11 @@ export default class Spike extends ArcadeItem {
         const position = new Vector2(player.x, player.y);
         const direction = new Vector2(player.flipX ? -1 : 1, 0).normalize();
 
-        const crate = new Spike(player.scene, {
+        const spike = new Spike(player.scene, {
             position: position.add(direction.multiply(70)),
         });
 
-        socket.emit('shoot', crate.toData());
+        socket.emit('shoot', spike.toData());
     }
 
     /**

@@ -207,12 +207,11 @@ export default class Hud extends Scene {
             if (!itemSlot.item) {
                 continue;
             }
-
             const icon = this.add.image(itemSlot.x, itemSlot.y, itemSlot.item.icon);
             icon.setScrollFactor(0);
             this.itemGroup.add(icon);
 
-            const text = this.drawItemAmount(itemSlot.x, itemSlot.y, this.player.secondaryItems[i].amount)
+            const text = this.drawItemAmount(itemSlot.x, itemSlot.y, `${this.player.secondaryItems[i].amount} `)
             this.itemGroup.add(text);
 
         }
@@ -220,8 +219,8 @@ export default class Hud extends Scene {
 
     drawItemAmount(x, y, amount) {
         let text = this.add.text(x + 15, y + 5, amount, {
-                fontFamily: 'Nosifer',
-                fontSize: 25,
+                fontFamily: 'Knewave',
+                fontSize: 20,
                 color: '#ffffff',
                 border: '#000000',
             })

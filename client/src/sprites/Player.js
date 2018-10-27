@@ -4,6 +4,7 @@ import PlayerState from './PlayerState';
 import Fireball from './items/Fireball';
 import Crate from './items/Crate';
 import Spike from './items/Spike';
+import Trampoline from './items/Trampoline';
 
 /**
  *
@@ -56,7 +57,7 @@ export default class Player extends ArcadeSprite {
         this.PrimaryItem = Fireball;
         this.secondaryItems = [
             {
-                object: Crate,
+                object: Trampoline,
                 amount: 1
             },
             {
@@ -200,7 +201,7 @@ export default class Player extends ArcadeSprite {
         this.state.isDucking = true;
 
         this.setSize(50, 65);
-        this.displayOriginY = 60;
+        this.body.setOffset(12.5, 30);
     }
 
     /**
@@ -208,9 +209,7 @@ export default class Player extends ArcadeSprite {
      */
     stand() {
         this.state.isDucking = false;
-
         this.setSize(50, 94)
-        this.displayOriginY = 48;
     }
 
     /**
