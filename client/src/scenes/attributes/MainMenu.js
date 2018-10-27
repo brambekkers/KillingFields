@@ -44,9 +44,17 @@ export default class MainMenu extends Scene {
      */
     startGame(){
         this.scene.start("LevelTwo");
-        this.scene.start("Hud");
-        this.scene.bringToTop("LevelTwo")
+        this.scene.launch("Hud");
         this.scene.bringToTop("Hud")
+
+        this.scene.stop("MainMenu")
+    }
+
+    lobbyMenu = ()=>{
+        this.scene.pause("MainMenu")
+        
+        this.scene.launch('LobbyMenu');
+        this.scene.bringToTop("LobbyMenu")
     }
 
     /**
@@ -83,7 +91,7 @@ export default class MainMenu extends Scene {
 
     menuButtons = [
         {sprite: null, name: "Quick play ", x:0, y:0, texture: "buttonBackground", scale:0.3, callback: this.ExitMainMenu },
-        {sprite: null, name: "Lobby ", x:0, y:0, texture: "buttonBackground", scale:0.3, callback: ()=>{ console.log("Clicked on Lobby")} },
+        {sprite: null, name: "Lobby ", x:0, y:0, texture: "buttonBackground", scale:0.3, callback: this.lobbyMenu },
         {sprite: null, name: "Options ", x:0, y:0, texture: "buttonBackground", scale:0.3, callback: ()=>{ console.log("Clicked on Options")} },
         {sprite: null, name: "Exit ", x:0, y:0, texture: "buttonBackground", scale:0.3, callback: ()=>{ console.log("Clicked on Exit")} },
 

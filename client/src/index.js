@@ -3,6 +3,7 @@ import Phaser from 'phaser';
 import MainMenu from './scenes/attributes/MainMenu';
 import LevelTwo from './scenes/levels/LevelTwo';
 import InGameMenu from './scenes/attributes/InGameMenu';
+import LobbyMenu from './scenes/attributes/LobbyMenu';
 import Hud from './scenes/attributes/Hud';
 
 window.socket = io();
@@ -17,7 +18,8 @@ const game = new Phaser.Game({
         MainMenu,
         Hud,
         InGameMenu,
-        LevelTwo
+        LevelTwo,
+        LobbyMenu
     ],
     physics: {
         default: 'arcade',

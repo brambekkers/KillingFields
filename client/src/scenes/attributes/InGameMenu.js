@@ -20,11 +20,11 @@ export default class InGameMenu extends Scene {
     menuBackground;
     
     exit = ()=>{
+        this.scene.run("MainMenu");
+        this.scene.bringToTop("MainMenu")
+
         this.scene.stop("InGameMenu");
         this.scene.stop("LevelTwo");
-        
-        this.scene.start("MainMenu");
-        this.scene.bringToTop("MainMenu")
     }
 
     helloWorld = ()=>{
@@ -39,7 +39,6 @@ export default class InGameMenu extends Scene {
 
     createButtons(){
         for (const button of this.buttons) {
-            console.log(button)
             button.sprite = new Button(this, button);
         }
     }
@@ -56,16 +55,6 @@ export default class InGameMenu extends Scene {
     create(){
         this.createBackground()
         this.createButtons()
-
-        // font
-        WebFont.load({
-            google: {
-                families: ['Knewave']
-            },
-            active: ()=>{
-               
-            }
-        }); 
     }
 
 

@@ -33,6 +33,7 @@ export default class Button extends Sprite {
 
         // Different buttons
         scene.load.image('buttonBackground', 'assets/img/Menu/buttonBackground.png');
+        scene.load.image('buttonBackground1', 'assets/img/Menu/buttonBackground1.png');
         scene.load.image('optionsButton', 'assets/img/Menu/button_options.png');
         scene.load.image('musicButton', 'assets/img/Menu/button_music.png');
         scene.load.image('muteMusicButton', 'assets/img/Menu/button_muteMusic.png');
@@ -74,7 +75,7 @@ export default class Button extends Sprite {
             color: '#ffffff' ,
         })
         .setOrigin(0.5, 0.5)
-        .setShadow(5, 5, "#000000", 5, true, true);
+        .setShadow(2, 3, "#000000", 0, true, true);
     }
 
     setFont(){
