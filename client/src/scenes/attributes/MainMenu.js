@@ -9,8 +9,10 @@ import { createContext } from 'vm';
  */
 export default class MainMenu extends Scene {
     
-    constructor() {
-        super("MainMenu");
+    constructor(config) {
+        super({
+            key: "MainMenu"
+        });
     }
 
     dimensions = new Vector2(

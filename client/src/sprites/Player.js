@@ -71,6 +71,7 @@ export default class Player extends ArcadeSprite {
 
         this.input = new PlayerInput(this);
         this.state = new PlayerState(this);
+
         this.hud = this.scene.scene.get('Hud');
         this.hud.setPlayerData(this)
     }
@@ -336,7 +337,7 @@ export default class Player extends ArcadeSprite {
 
         this.health -= projectile.damage;
 
-        this.hud.charInfo.heartHealth.play(`heartHealth${this.health}`, true);
+        // this.hud.charInfo.heartHealth.play(`heartHealth${this.health}`, true);
 
         if (this.health > 0) {
             socket.emit('hit', projectile.damage);

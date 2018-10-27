@@ -6,12 +6,9 @@ import Button from '../../sprites/Button';
 /**
  *
  */
+
 export default class Hud extends Scene {
-    constructor() {
-        super("Hud");   
-    }
-    
-    itemGroup 
+    itemGroup;
     player;
     charInfo = {
         background: null,
@@ -20,17 +17,32 @@ export default class Hud extends Scene {
         killText: null
     }
 
+    /**
+     *
+     */
+    constructor(player) {
+        super("Hud");
+        this.player = player
+    }
 
-    openMenu = ()=>{
+
+
+    openMenu = () => {
         this.scene.start("InGameMenu");
         this.scene.bringToTop("InGameMenu")
     }
 
-    optionButton = {sprite: null, scale: 0.2, x:60, y:150, texture: "optionsButton", callback: this.openMenu }
+    optionButton = {
+        sprite: null,
+        scale: 0.2,
+        x: 60,
+        y: 150,
+        texture: "optionsButton",
+        callback: this.openMenu
+    }
 
     // Itembox
-    itemSlots = [
-        {
+    itemSlots = [{
             slot: null,
             x: null,
             y: null,
@@ -59,7 +71,10 @@ export default class Hud extends Scene {
         Button.preload(this)
 
         this.load.image('hudAchtergrond', 'assets/img/HUD/hudAchtergrond.png');
-        this.load.spritesheet('heartHealth', 'assets/img/HUD/hudHealth/heartSpritesheet.png', { frameWidth: 53, frameHeight: 45});
+        this.load.spritesheet('heartHealth', 'assets/img/HUD/hudHealth/heartSpritesheet.png', {
+            frameWidth: 53,
+            frameHeight: 45
+        });
 
         // Fonts
         this.load.script('webfont', 'https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js')
@@ -74,33 +89,49 @@ export default class Hud extends Scene {
 
 
     create() {
+        this.itemGroup = this.add.group()
         this.createAnimations()
         this.createCharInfoBox()
         this.createItemBox()
+        this.createKillText()
+
 
         // font
         WebFont.load({
             google: {
                 families: ['Knewave']
+            },
+            active: ()=>{
+               this.setFont()
             }
         });
     }
 
-    setPlayerData(player){
-        this.player = player
-
-        this.createChar()
-        this.createKillText()
-        this.setFont()
-        this.updateItemBox()
+    update(){
+        if(this.player){
+            this.createChar()
+            this.updateItemBox()
+            this.updateKillText()
+            this.updateHeartHealth()
+        }
     }
 
+    updateHeartHealth(){
+        this.charInfo.heartHealth.play(`heartHealth${this.player.health}`, true);
+    }
+
+    setPlayerData(player){
+        this.player = player
+    }
 
     createAnimations() {
         for (let i = 0; i <= 11; i++) {
             this.anims.create({
                 key: `heartHealth${i}`,
-                frames: this.anims.generateFrameNumbers('heartHealth', { start: `${i}`, end: `${i}`}),
+                frames: this.anims.generateFrameNumbers('heartHealth', {
+                    start: `${i}`,
+                    end: `${i}`
+                }),
                 frameRate: 10,
                 repeat: -1
             });
@@ -114,22 +145,26 @@ export default class Hud extends Scene {
         this.charInfo.heartHealth.anims.play(`heartHealth10`);
     }
 
-    createChar(){
+    createChar() {
         this.charInfo.char = this.createSprite(50, 50, `hud_${this.player.character}`, 0.9)
     }
 
-    createKillText(){
-        this.charInfo.killText = this.add.text(230, 97, this.player.kills, {
+    createKillText() {
+        this.charInfo.killText = this.add.text(230, 97, ' ', {
             fontFamily: 'Nosifer',
             fontSize: 14,
-            color: '#ffffff' ,
+            color: '#ffffff',
             border: '#000000',
         }).setOrigin(1, 0);
         this.charInfo.killText.setStroke('#000000', 5)
         this.charInfo.killText.setScrollFactor(0);
     }
 
-    setFont(){
+    updateKillText(){
+        this.charInfo.killText.setText(this.player.kills)
+    }
+
+    setFont() {
         this.charInfo.killText.setFontFamily('Knewave');
 
     }
@@ -165,12 +200,8 @@ export default class Hud extends Scene {
     }
 
     drawItems() {
-        if(this.itemGroup){
-            this.itemGroup.clear(true);
-        }else{
-            this.itemGroup = this.add.group()
-        }
-        
+        this.itemGroup.clear(true);
+
 
         for (const [i, itemSlot] of this.itemSlots.entries()) {
             if (!itemSlot.item) {
@@ -187,15 +218,15 @@ export default class Hud extends Scene {
         }
     }
 
-    drawItemAmount(x,y,amount){
-        let text = this.add.text(x+15, y+5, amount, {
-            fontFamily: 'Nosifer',
-            fontSize: 25,
-            color: '#ffffff' ,
-            border: '#000000',
-        })
-        .setStroke('#000000', 5)
-        .setScrollFactor(0);
+    drawItemAmount(x, y, amount) {
+        let text = this.add.text(x + 15, y + 5, amount, {
+                fontFamily: 'Nosifer',
+                fontSize: 25,
+                color: '#ffffff',
+                border: '#000000',
+            })
+            .setStroke('#000000', 5)
+            .setScrollFactor(0);
 
         return text
     }

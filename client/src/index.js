@@ -15,8 +15,8 @@ const game = new Phaser.Game({
     backgroundColor: '#f3e184',
     scene: [
         MainMenu,
-        InGameMenu,
         Hud,
+        InGameMenu,
         LevelTwo
     ],
     physics: {

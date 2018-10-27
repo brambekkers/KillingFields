@@ -5,7 +5,7 @@ import Vector2 from '../../math/Vector2';
  *
  */
 export default class LevelTwo extends Level {
-    constructor(scene, data) {
+    constructor() {
         super("LevelTwo");
 
     }
