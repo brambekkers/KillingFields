@@ -42,7 +42,7 @@ export default class Loot extends ArcadeSprite {
      *
      */
     onOverlapPlayer = (itemBox, player) => {
-        player.addItem(itemBox.items.draw());
+        player.addSecondaryItem(itemBox.items.draw());
         itemBox.destroy();
     };
 

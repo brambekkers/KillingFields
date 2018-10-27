@@ -42,23 +42,24 @@ export default class Hud extends Scene {
     }
 
     // Itembox
-    itemSlots = [{
+    itemSlots = [
+        {
             slot: null,
             x: null,
             y: null,
-            item: null,
+            Item: null,
         },
         {
             slot: null,
             x: null,
             y: null,
-            item: null,
+            Item: null,
         },
         {
             slot: null,
             x: null,
             y: null,
-            item: null,
+            Item: null,
         }
     ]
 
@@ -110,7 +111,7 @@ export default class Hud extends Scene {
     update(){
         if(this.player){
             this.createChar()
-            this.updateItemBox()
+            // this.updateItemSlots() // TODO: Make this work ;)
             this.updateKillText()
             this.updateHeartHealth()
         }
@@ -188,37 +189,38 @@ export default class Hud extends Scene {
         }
     }
 
-    updateItemBox() {
+    updateItemSlots() {
         for (const [i, itemSlot] of this.itemSlots.entries()) {
             if (this.player.secondaryItems[i]) {
-                itemSlot.item = this.player.secondaryItems[i].object
+                itemSlot.Item = this.player.secondaryItems[i].Item
             } else {
-                itemSlot.item = null
+                itemSlot.Item = null
             }
         }
+
         this.drawItems()
     }
 
     drawItems() {
         this.itemGroup.clear(true);
 
-
         for (const [i, itemSlot] of this.itemSlots.entries()) {
-            if (!itemSlot.item) {
+            if (!itemSlot.Item) {
                 continue;
             }
-            const icon = this.add.image(itemSlot.x, itemSlot.y, itemSlot.item.icon);
+
+            const icon = this.add.image(itemSlot.x, itemSlot.y, itemSlot.Item.icon);
             icon.setScrollFactor(0);
             this.itemGroup.add(icon);
 
             const text = this.drawItemAmount(itemSlot.x, itemSlot.y, `${this.player.secondaryItems[i].amount} `)
             this.itemGroup.add(text);
-
         }
     }
 
     drawItemAmount(x, y, amount) {
-        let text = this.add.text(x + 15, y + 5, amount, {
+        let text = this.add
+            .text(x + 15, y + 5, amount, {
                 fontFamily: 'Knewave',
                 fontSize: 20,
                 color: '#ffffff',

@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import ArcadeSprite from './ArcadeSprite';
 import PlayerInput from './PlayerInput';
 import PlayerState from './PlayerState';
@@ -37,47 +38,67 @@ export default class Player extends ArcadeSprite {
     /**
      *
      */
+    kills = 0;
+
+    /**
+     *
+     */
+    cooldowns = {
+        hit: Player.hitCooldown,
+        primary: 0,
+        secondary: 0,
+    };
+
+    /**
+     *
+     */
+    PrimaryItem = Fireball;
+
+    /**
+     *
+     */
+    secondaryItems = [
+        {
+            Item: Trampoline,
+            amount: 1
+        },
+        {
+            Item: Crate,
+            amount: 5
+        },
+        {
+            Item: Spike,
+            amount: 2
+        },
+    ];
+
+    /**
+     *
+     */
+    input = new PlayerInput(this);
+
+    /**
+     *
+     */
+    state = new PlayerState(this);
+
+    /**
+     *
+     */
     constructor(scene, data) {
         super(scene, data);
 
-        this.scene = scene
         this.character = data.character;
         this.health = data.health;
-        this.kills = 0;
+
+        this.scene.physics.add.collider(this, this.scene.getSolids());
 
         this.setSize(50, 94, true);
         this.setDragY(300);
 
-        this.cooldowns = {
-            hit: Player.hitCooldown,
-            primary: 0,
-            secondary: 0,
-        };
-
-        this.PrimaryItem = Fireball;
-        this.secondaryItems = [
-            {
-                object: Trampoline,
-                amount: 1
-            },
-            {
-                object: Crate,
-                amount: 5
-            },
-            {
-                object: Spike,
-                amount: 2
-            },
-        ];
-
-        this.input = new PlayerInput(this);
-        this.state = new PlayerState(this);
-
         this.hud = this.scene.scene.get('Hud');
         this.hud.setPlayer(this);
-
-        this.scene.physics.add.collider(this, this.scene.getSolids());
-
+        this.hud.updateItemSlots(); // TODO: Remove when HUD can do this on its own.
     }
 
     /**
@@ -263,8 +284,19 @@ export default class Player extends ArcadeSprite {
     /**
      *
      */
-    addItem(Item) {
-        this.secondaryItems.push(Item);
+    addSecondaryItem(Item) {
+        const lastSlot = _.last(this.secondaryItems);
+
+        if (lastSlot.Item === Item) {
+            lastSlot.amount += Item.amount;
+        } else {
+            this.secondaryItems.push({
+                Item: Item,
+                amount: Item.amount,
+            });
+        }
+
+        this.hud.updateItemSlots(); // TODO: Remove when HUD can do this on its own.
     }
 
     /**
@@ -307,18 +339,20 @@ export default class Player extends ArcadeSprite {
             return;
         }
 
-        let Item;
+        let slot;
 
         if (this.secondaryItems[0].amount > 1) {
             this.secondaryItems[0].amount--;
-            Item = this.secondaryItems[0];
+            slot = this.secondaryItems[0];
         } else {
-            Item = this.secondaryItems.shift();
+            slot = this.secondaryItems.shift();
         }
-        
-        Item.object.use(this);
 
-        this.cooldowns.secondary = Item.object.cooldown;
+        slot.Item.use(this);
+
+        this.cooldowns.secondary = slot.Item.cooldown;
+
+        this.hud.updateItemSlots(); // TODO: Remove when HUD can do this on its own.
     }
 
     //////////////////
