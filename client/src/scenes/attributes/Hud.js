@@ -34,19 +34,19 @@ export default class Hud extends Scene {
             slot: null,
             x: null,
             y: null,
-            Item: null
+            item: null,
         },
         {
             slot: null,
             x: null,
             y: null,
-            Item: null
+            item: null,
         },
         {
             slot: null,
             x: null,
             y: null,
-            Item: null
+            item: null,
         }
     ]
 
@@ -74,7 +74,6 @@ export default class Hud extends Scene {
 
 
     create() {
-        this.itemGroup = this.add.group()
         this.createAnimations()
         this.createCharInfoBox()
         this.createItemBox()
@@ -157,26 +156,48 @@ export default class Hud extends Scene {
     updateItemBox() {
         for (const [i, itemSlot] of this.itemSlots.entries()) {
             if (this.player.secondaryItems[i]) {
-                itemSlot.Item = this.player.secondaryItems[i]
+                itemSlot.item = this.player.secondaryItems[i].object
             } else {
-                itemSlot.Item = null
+                itemSlot.item = null
             }
         }
         this.drawItems()
     }
 
     drawItems() {
-        this.itemGroup.clear(true);
+        if(this.itemGroup){
+            this.itemGroup.clear(true);
+        }else{
+            this.itemGroup = this.add.group()
+        }
+        
 
-        for (const itemSlot of this.itemSlots) {
-            if (!itemSlot.Item) {
+        for (const [i, itemSlot] of this.itemSlots.entries()) {
+            if (!itemSlot.item) {
                 continue;
             }
 
-            const icon = this.add.image(itemSlot.x, itemSlot.y, itemSlot.Item.icon);
+            const icon = this.add.image(itemSlot.x, itemSlot.y, itemSlot.item.icon);
             icon.setScrollFactor(0);
             this.itemGroup.add(icon);
+
+            const text = this.drawItemAmount(itemSlot.x, itemSlot.y, this.player.secondaryItems[i].amount)
+            this.itemGroup.add(text);
+
         }
+    }
+
+    drawItemAmount(x,y,amount){
+        let text = this.add.text(x+15, y+5, amount, {
+            fontFamily: 'Nosifer',
+            fontSize: 25,
+            color: '#ffffff' ,
+            border: '#000000',
+        })
+        .setStroke('#000000', 5)
+        .setScrollFactor(0);
+
+        return text
     }
 
     createSprite(x, y, spriteName, scale) {

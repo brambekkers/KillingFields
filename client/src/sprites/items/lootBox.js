@@ -4,39 +4,31 @@ import Vector2 from '../../math/Vector2';
 /**
  *
  */
-export default class Spike extends ArcadeItem {
+export default class lootBox extends ArcadeItem {
     /**
      * The name of the image asset that should be displayed in the HUD.
      */
-    static icon = 'spike';
-
-
-    /**
-     * The amount of spikes you get from a pickup
-     */
-    static amount = 2
+    static icon = 'lootBox';
 
     /**
      *
      */
     constructor(scene, data) {
         super(scene, Object.assign(data, {
-            texture: 'spike',
+            texture: 'lootBox',
         }));
-
-        this.damage = 2;
 
         this.scene.physics.add.collider(this, this.scene.getSolids());
         this.scene.physics.add.overlap(this, this.scene.player, this.onOverlapPlayer);
 
-        this.scene.groups.spikes.add(this);
+        this.scene.groups.lootBox.add(this);
     }
 
     /**
      *
      */
     static preload(scene) {
-        scene.load.image('spike', 'assets/img/Items/spikes.png');
+        scene.load.image('lootBox', 'assets/img/Tiles/boxItem.png');
     }
 
     /**
@@ -66,7 +58,7 @@ export default class Spike extends ArcadeItem {
      */
     toData() {
         return Object.assign(super.toData(), {
-            type: 'spike',
+            type: 'lootBox',
         });
     }
 }

@@ -23,6 +23,11 @@ export default class Fireball extends ArcadeItem {
     bounces = 3;
 
     /**
+     * The amount of fireballs you get from a pickup
+     */
+    static amount = 20
+
+    /**
      * Constructs a Fireball.
      */
     constructor(scene, data) {

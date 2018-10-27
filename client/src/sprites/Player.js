@@ -55,9 +55,18 @@ export default class Player extends ArcadeSprite {
 
         this.PrimaryItem = Fireball;
         this.secondaryItems = [
-            Crate,
-            Spike,
-            Fireball,
+            {
+                object: Crate,
+                amount: 1
+            },
+            {
+                object: Spike,
+                amount: 2
+            },
+            {
+                object: Fireball,
+                amount: 20
+            }
         ];
 
         this.input = new PlayerInput(this);
@@ -286,12 +295,18 @@ export default class Player extends ArcadeSprite {
             return;
         }
 
-        const Item = this.secondaryItems.shift();
+        let Item
+        if(this.secondaryItems[0].amount > 1){
+            this.secondaryItems[0].amount--
+            Item = this.secondaryItems[0]
+        }else{
+            Item = this.secondaryItems.shift();
+        }
+        
         this.hud.updateItemBox()
+        Item.object.use(this);
 
-        Item.use(this);
-
-        this.cooldowns.secondary = Item.cooldown;
+        this.cooldowns.secondary = Item.object.cooldown;
     }
 
     //////////////////
@@ -320,7 +335,6 @@ export default class Player extends ArcadeSprite {
         this.cooldowns.hit = Player.hitCooldown;
 
         this.health -= projectile.damage;
-        this.hud.updateItemBox()
 
         this.hud.charInfo.heartHealth.play(`heartHealth${this.health}`, true);
 

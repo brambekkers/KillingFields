@@ -16,6 +16,11 @@ export default class Crate extends ArcadeItem {
     static cooldown = 20;
 
     /**
+     * The amount of crates you get from a pickup
+     */
+    static amount = 1
+
+    /**
      *
      */
     constructor(scene, data) {
