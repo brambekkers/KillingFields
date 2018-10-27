@@ -61,13 +61,13 @@ export default class Player extends ArcadeSprite {
                 amount: 1
             },
             {
+                object: Crate,
+                amount: 5
+            },
+            {
                 object: Spike,
                 amount: 2
             },
-            {
-                object: Fireball,
-                amount: 20
-            }
         ];
 
         this.input = new PlayerInput(this);
@@ -75,6 +75,9 @@ export default class Player extends ArcadeSprite {
 
         this.hud = this.scene.scene.get('Hud');
         this.hud.setPlayerData(this)
+
+        this.scene.physics.add.collider(this, this.scene.getSolids());
+
     }
 
     /**

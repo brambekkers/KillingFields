@@ -7,6 +7,7 @@ import Fireball from '../../sprites/items/Fireball';
 import Crate from '../../sprites/items/Crate';
 import Spike from '../../sprites/items/Spike';
 import Trampoline from '../../sprites/items/Trampoline';
+import ArcadeSprite from '../../sprites/ArcadeSprite';
 
 /**
  * @abstract
@@ -76,6 +77,7 @@ export default class Level extends Scene {
         this.createBackground();
         this.createLayers();
         this.createGroups();
+        this.configureCollider();
 
         this.createAnimations();
 
@@ -153,6 +155,7 @@ export default class Level extends Scene {
     createGroups() {
         this.createCrateGroup();
         this.createSpikeGroup();
+        this.createTrampolineGroup();
     }
 
     /**
@@ -160,6 +163,19 @@ export default class Level extends Scene {
      */
     createCrateGroup() {
         this.groups.crates = this.physics.add.group({
+            mass: 10,
+            maxVelocity: 500,
+            collideWorldBounds: false,
+            dragX: 10000,
+            velocityY: -100,
+        });
+    }
+
+    /**
+     *
+     */
+    createTrampolineGroup() {
+        this.groups.trampoline = this.physics.add.group({
             mass: 10,
             maxVelocity: 500,
             collideWorldBounds: false,
@@ -234,13 +250,25 @@ export default class Level extends Scene {
         }
     }
 
+    getSolids(){
+        return [
+            ...this.getSolidLayers(),
+            ...this.getSolidGroups()
+        ];
+    }
+
     /**
      *
      */
-    getSolids() {
+    getSolidLayers() {
         return [
             this.layers.platforms,
             this.layers.objects,
+        ];
+    }
+
+    getSolidGroups() {
+        return [
             this.groups.crates,
         ];
     }
@@ -250,11 +278,6 @@ export default class Level extends Scene {
      */
     addPlayer(data) {
         this.player = new Player(this, data);
-
-        this.physics.add.collider(this.player, [
-            this.layers.platforms,
-            this.layers.objects,
-        ]);
 
         this.cameras.main.startFollow(this.player);
         this.cameras.main.setZoom(1);
@@ -300,6 +323,27 @@ export default class Level extends Scene {
         }
 
         return projectile;
+    }
+
+
+    
+    configureCollider(){
+        
+        //collision box to eachother
+        this.physics.add.collider(this.getSolidGroups(), this.getSolidGroups(), function (s1, s2) {
+
+            let b1 = s1.body;
+            let b2 = s2.body;
+
+            if (b1.y > b2.y) {
+                b2.y += (b1.top - b2.bottom);
+                b2.stop();
+            }
+            else {
+                b1.y += (b2.top - b1.bottom);
+                b1.stop();
+            }
+        });
     }
 
     /**
