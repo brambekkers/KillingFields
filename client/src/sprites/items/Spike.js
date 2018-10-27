@@ -20,9 +20,10 @@ export default class Spike extends ArcadeItem {
      *
      */
     constructor(scene, data) {
-        super(scene, Object.assign(data, {
+        super(scene, {
+            ...data,
             texture: 'spike',
-        }));
+        });
 
         this.scene.physics.add.collider(this, this.scene.getSolids());
         this.scene.physics.add.overlap(this, this.scene.player, this.onOverlapPlayer);
@@ -44,11 +45,11 @@ export default class Spike extends ArcadeItem {
         const position = new Vector2(player.x, player.y);
         const direction = new Vector2(player.flipX ? -1 : 1, 0).normalize();
 
-        const crate = new Spike(player.scene, {
+        const spike = new Spike(player.scene, {
             position: position.add(direction.multiply(70)),
         });
 
-        socket.emit('shoot', crate.toData());
+        window.socket.emit('shoot', spike.toData());
     }
 
     /**
@@ -56,7 +57,7 @@ export default class Spike extends ArcadeItem {
      */
     onOverlapPlayer = (spike, player) => {
         player.hitBy(spike);
-    }
+    };
 
     /**
      * Returns the data representation of this instance, so that it can be sent

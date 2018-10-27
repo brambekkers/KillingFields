@@ -7,7 +7,7 @@ import Spike from './items/Spike';
 /**
  *
  */
-export default class ItemBox extends ArcadeSprite {
+export default class Loot extends ArcadeSprite {
     /**
      *
      */
@@ -26,6 +26,9 @@ export default class ItemBox extends ArcadeSprite {
 
         this.scene.physics.add.collider(this, this.scene.getSolids());
         this.scene.physics.add.overlap(this, this.scene.player, this.onOverlapPlayer);
+
+        // Register this item with the scene.
+        this.scene.loot[this.id] = this;
     }
 
     /**
@@ -41,5 +44,18 @@ export default class ItemBox extends ArcadeSprite {
     onOverlapPlayer = (itemBox, player) => {
         player.addItem(itemBox.items.draw());
         itemBox.destroy();
+    };
+
+    /**
+     * Destroys this item.
+     */
+    destroy() {
+        // Unregister this loot from the scene.
+        delete this.scene.loot[this.id];
+
+        // Tell the server that the loot is destroyed.
+        window.socket.emit('destroyLoot', this.id);
+
+        super.destroy();
     }
 }

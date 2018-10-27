@@ -19,9 +19,10 @@ export default class Crate extends ArcadeItem {
      *
      */
     constructor(scene, data) {
-        super(scene, Object.assign(data, {
+        super(scene, {
+            ...data,
             texture: Crate.randomTexture(),
-        }));
+        });
 
         this.scene.physics.add.collider(this, [
             ...this.scene.getSolids(),

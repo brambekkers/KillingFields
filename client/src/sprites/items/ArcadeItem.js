@@ -48,6 +48,9 @@ export default class ArcadeItem extends ArcadeSprite {
         // Unregister this item from the scene.
         delete this.scene.items[this.id];
 
+        // Tell the server that the item is destroyed.
+        window.socket.emit('itemDestroyed', this.id);
+
         super.destroy();
     }
 }

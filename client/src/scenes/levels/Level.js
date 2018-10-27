@@ -3,7 +3,7 @@ import Vector2 from '../../math/Vector2';
 import Hud from '../../Hud';
 import Player from '../../sprites/Player';
 import Enemy from '../../sprites/Enemy';
-import ItemBox from '../../sprites/ItemBox';
+import Loot from '../../sprites/Loot';
 import Fireball from '../../sprites/items/Fireball';
 import Crate from '../../sprites/items/Crate';
 import Spike from '../../sprites/items/Spike';
@@ -48,6 +48,11 @@ export default class Level extends Scene {
     /**
      *
      */
+    loot = {};
+
+    /**
+     *
+     */
     preload() {
         // Tilemap
         this.load.image('tiles', 'assets/maps/tiles_spritesheet.png');
@@ -60,7 +65,7 @@ export default class Level extends Scene {
         Hud.preload(this);
 
         // Objects
-        ItemBox.preload(this);
+        Loot.preload(this);
 
         // Items
         Fireball.preload(this);
@@ -97,17 +102,20 @@ export default class Level extends Scene {
      *
      */
     bindSocketEvents() {
-        socket.on('gameStarted', this.onGameStarted.bind(this));
+        window.socket.on('gameStarted', this.onGameStarted);
 
-        socket.on('enemyJoined', this.onEnemyJoined.bind(this));
-        socket.on('enemyLeft', this.onEnemyLeft.bind(this));
-        socket.on('enemyMoved', this.onEnemyMoved.bind(this));
-        socket.on('enemyShot', this.onEnemyShoot.bind(this));
-        socket.on('enemyHit', this.onEnemyHit.bind(this));
-        socket.on('enemyDied', this.onEnemyDied.bind(this));
+        window.socket.on('enemyJoined', this.onEnemyJoined);
+        window.socket.on('enemyLeft', this.onEnemyLeft);
+        window.socket.on('enemyMoved', this.onEnemyMoved);
+        window.socket.on('itemCreated', this.onEnemyShoot);
+        window.socket.on('enemyHit', this.onEnemyHit);
+        window.socket.on('enemyDied', this.onEnemyDied);
 
-        socket.on('itemUpdated', this.onItemUpdated.bind(this));
-        socket.on('itemDestroyed', this.onItemDestroyed.bind(this));
+        window.socket.on('itemUpdated', this.onItemUpdated);
+        window.socket.on('itemDestroyed', this.onItemDestroyed);
+
+        window.socket.on('lootCreated', this.onLootCreated);
+        window.socket.on('lootDestroyed', this.onLootDestroyed);
     }
 
     /**
@@ -211,22 +219,8 @@ export default class Level extends Scene {
     /**
      *
      */
-    createItemBoxes() {
-        for (let i = 0; i < 10; i++) {
-            new ItemBox(this, {
-                position: new Vector2(
-                    70 + Math.random() * this.dimensions.x - 70 * 2,
-                    70 + Math.random() * this.dimensions.y - 70 * 2
-                ),
-            });
-        }
-    }
-
-    /**
-     *
-     */
     start() {
-        socket.emit('start');
+        window.socket.emit('start');
     }
 
     /**
@@ -245,18 +239,21 @@ export default class Level extends Scene {
     /**
      *
      */
-    onGameStarted(game) {
+    onGameStarted = (game) => {
         this.addPlayer(game.player);
 
         for (const enemy of game.enemies) {
             this.addEnemy(enemy);
         }
 
-        /**
-         * @todo Let the server spawn these periodically instead.
-         */
-        this.createItemBoxes();
-    }
+        for (const item of game.items) {
+            this.addEnemyItem(item);
+        }
+
+        for (const loot of game.loot) {
+            this.addLoot(loot);
+        }
+    };
 
     /**
      *
@@ -289,9 +286,9 @@ export default class Level extends Scene {
     /**
      *
      */
-    onEnemyJoined(data) {
+    onEnemyJoined = (data) => {
         this.addEnemy(data);
-    }
+    };
 
     /**
      *
@@ -329,7 +326,20 @@ export default class Level extends Scene {
     /**
      *
      */
-    onEnemyMoved(enemyData) {
+    getLoot(id) {
+        const loot = this.loot[id];
+
+        if (!loot) {
+            throw new Error(`Loot ${id} does not exist.`);
+        }
+
+        return loot;
+    }
+
+    /**
+     *
+     */
+    onEnemyMoved = (enemyData) => {
         try {
             const enemy = this.getEnemy(enemyData.id);
 
@@ -339,12 +349,12 @@ export default class Level extends Scene {
         } catch (error) {
             console.warn('Failed to update enemy.', error);
         }
-    }
+    };
 
     /**
      *
      */
-    onEnemyLeft(id) {
+    onEnemyLeft = (id) => {
         try {
             const enemy = this.getEnemy(id);
 
@@ -352,14 +362,14 @@ export default class Level extends Scene {
         } catch (error) {
             console.warn('Failed to remove enemy.', error);
         }
-    }
+    };
 
     /**
      *
      */
-    onEnemyShoot(data) {
+    onEnemyShoot = (data) => {
         this.addEnemyItem(data);
-    }
+    };
 
     /**
      *
@@ -367,99 +377,87 @@ export default class Level extends Scene {
     addEnemyItem(data) {
         switch (data.type) {
             case 'fireball':
-                return this.addEnemyFireball(data);
+                return new Fireball(this, data);
 
             case 'crate':
-                return this.addEnemyCrate(data);
+                return new Crate(this, data);
 
             case 'spike':
-                return this.addEnemySpike(data);
+                return new Spike(this, data);
         }
     }
 
     /**
      *
      */
-    addEnemyFireball(data) {
-        const fireball = new Fireball(this, data);
-
-        if (this.player) {
-            this.physics.add.collider(fireball, this.player, this.onPlayerHit.bind(this));
-        }
-
-        return fireball;
-    }
-
-    /**
-     *
-     */
-    addEnemyCrate(data) {
-        return new Crate(this, data);
-    }
-
-    /**
-     *
-     */
-    addEnemySpike(data) {
-        return new Spike(this, data);
-    }
-
-    /**
-     * @todo Move to the specific class of item, so that it can decide what to
-     * do.
-     */
-    onPlayerHit(item, playerSprite) {
-        item.destroy();
-        socket.emit('itemDestroyed', item.id);
-
-        this.player.hitBy(item);
-    }
-
-    /**
-     *
-     */
-    onItemUpdated(itemData) {
+    onItemUpdated = (itemData) => {
         try {
             const item = this.getItem(itemData.id);
             item.updatePosition(itemData.position);
         } catch (error) {
             console.warn('Failed to update item.', error);
         }
-    }
+    };
 
     /**
      *
      */
-    onItemDestroyed(id) {
+    onItemDestroyed = (id) => {
         try {
             const item = this.getItem(id);
             item.destroy();
         } catch (error) {
             console.warn('Failed to destroy item.', error);
         }
-    }
+    };
 
     /**
      *
      */
-    onEnemyHit(enemyData) {
+    onEnemyHit = (enemyData) => {
         try {
             const enemy = this.getEnemy(enemyData.id);
             enemy.updateHealth(enemyData.health);
         } catch (error) {
             console.warn('Failed to update enemy health.', error);
         }
-    }
+    };
 
     /**
      *
      */
-    onEnemyDied(enemyData) {
+    onEnemyDied = (enemyData) => {
         try {
             let enemy = this.getEnemy(enemyData.id);
             enemy.destroy();
         } catch (error) {
             console.warn('Failed to destroy enemy.', error);
         }
+    };
+
+    /**
+     *
+     */
+    onLootCreated = (lootData) => {
+        this.addLoot(lootData)
+    };
+
+    /**
+     *
+     */
+    addLoot(lootData) {
+        new Loot(this, lootData);
     }
+
+    /**
+     *
+     */
+    onLootDestroyed = (lootId) => {
+        try {
+            let loot = this.getLoot(lootId);
+            loot.destroy();
+        } catch (error) {
+            console.warn('Failed to destroy loot.', error);
+        }
+    };
 }
