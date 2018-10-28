@@ -5,6 +5,7 @@ import LevelTwo from './scenes/levels/LevelTwo';
 import InGameMenu from './scenes/attributes/InGameMenu';
 import LobbyMenu from './scenes/attributes/LobbyMenu';
 import Hud from './scenes/attributes/Hud';
+import Credits from './scenes/attributes/Credits';
 
 window.socket = io();
 
@@ -16,6 +17,7 @@ const game = new Phaser.Game({
     backgroundColor: '#f3e184',
     scene: [
         MainMenu,
+        Credits,
         Hud,
         InGameMenu,
         LevelTwo,

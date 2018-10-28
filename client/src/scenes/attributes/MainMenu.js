@@ -87,6 +87,13 @@ export default class MainMenu extends Scene {
         
     }
 
+    credits = ()=>{
+        this.scene.start("Credits");
+
+        this.backgroundMusic.stop();
+        this.scene.stop("MainMenu")
+    }
+
 
 
     menuButtons = [
@@ -99,7 +106,8 @@ export default class MainMenu extends Scene {
     soundButtons = [
         {sprite: null, scale: 0.3, x:0, y:0, texture: "muteMusicButton", textureOff: "musicButton", callback: this.muteMusic },
         {sprite: null, scale: 0.3, x:0, y:0, texture: "muteSoundButton", textureOff: "soundButton", callback: this.muteSound },
-    ]
+    ];
+    creditButton = {sprite: null, scale: 1.2, x:100, y: this.dimensions.y -70, texture: "CreditRock", callback: this.credits }
 
 
    
@@ -124,6 +132,7 @@ export default class MainMenu extends Scene {
         this.createBackground();
         this.createMenuButton();
         this.createSoundButton();
+        this.createCreditButton();
         this.createMusic();
 
         this.backgroundMusic.play();
@@ -142,9 +151,6 @@ export default class MainMenu extends Scene {
             }
         });
     }
-
-
-
 
     createBackground() {
         this.background = this.add.image(0, 0, 'backgroundMainMenu').setOrigin(0).setDisplaySize(this.dimensions.x, this.dimensions.y);
@@ -179,6 +185,10 @@ export default class MainMenu extends Scene {
 
             button.sprite = new Button(this, button);
         }
+    }
+
+    createCreditButton(){
+        this.creditButton.sprite = new Button(this, this.creditButton);
     }
 
     muteSound = (boolean) => {

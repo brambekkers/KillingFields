@@ -35,6 +35,7 @@ export default class Button extends Sprite {
         scene.load.image('buttonBackground', 'assets/img/Menu/buttonBackground.png');
         scene.load.image('buttonBackground1', 'assets/img/Menu/buttonBackground1.png');
         scene.load.image('optionsButton', 'assets/img/Menu/button_options.png');
+        scene.load.image('CreditRock', 'assets/img/Menu/Credits_rock.png');
         scene.load.image('musicButton', 'assets/img/Menu/button_music.png');
         scene.load.image('muteMusicButton', 'assets/img/Menu/button_muteMusic.png');
         scene.load.image('soundButton', 'assets/img/Menu/button_sound.png');
