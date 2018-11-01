@@ -14,17 +14,22 @@ export default class Spike extends ArcadeItem {
     /**
      * The amount of spikes you get from a pickup
      */
-    static amount = 2
+    static amount = 2;
+
+    /**
+     * The number of health points a player loses when they collide with a
+     * spike.
+     */
+    damage = 2;
 
     /**
      *
      */
     constructor(scene, data) {
-        super(scene, Object.assign(data, {
+        super(scene, {
+            ...data,
             texture: 'spike',
-        }));
-
-        this.damage = 2;
+        });
 
         this.scene.physics.add.collider(this, this.scene.getSolids());
         this.scene.physics.add.overlap(this, this.scene.player, this.onOverlapPlayer);
@@ -55,7 +60,7 @@ export default class Spike extends ArcadeItem {
             position: position.add(direction.multiply(70)),
         });
 
-        socket.emit('shoot', spike.toData());
+        window.socket.emit('shoot', spike.toData());
     }
 
     /**
@@ -63,7 +68,7 @@ export default class Spike extends ArcadeItem {
      */
     onOverlapPlayer = (spike, player) => {
         player.hitBy(spike);
-    }
+    };
 
     /**
      * Returns the data representation of this instance, so that it can be sent

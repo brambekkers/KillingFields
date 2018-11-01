@@ -13,12 +13,12 @@ export default class Trampoline extends ArcadeItem {
 	/**
 	 * The amount of spikes you get from a pickup
 	 */
-	static amount = 2
+	static amount = 2;
 
 	/**
 	 * The amount of spikes you get from a pickup
 	 */
-	jumpVelocity = 1300
+	jumpVelocity = 1300;
 
 	/**
 	 *
@@ -67,19 +67,16 @@ export default class Trampoline extends ArcadeItem {
 			position: position.add(direction.multiply(70)),
 		});
 
-		socket.emit('shoot', trampoline.toData());
+		window.socket.emit('shoot', trampoline.toData());
 	}
 
 	/**
 	 *
 	 */
 	onOverlapPlayer = (trampoline, player) => {
-		console.log("JUMPINGGGGGG")
 		player.setVelocityY(this.jumpVelocity * -1);
 		this.play('trampolineAnims');
-	}
-
-
+	};
 
 	/**
 	 * Returns the data representation of this instance, so that it can be sent

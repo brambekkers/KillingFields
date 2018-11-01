@@ -1,5 +1,4 @@
 import Phaser from 'phaser';
-import Vector2 from '../math/Vector2';
 
 /**
  * @abstract
@@ -19,7 +18,7 @@ export default class ArcadeSprite extends Phaser.Physics.Arcade.Sprite {
         // Generate an ID.
         this.id = data.id || new Date().getTime(); // TODO: User a better ID.
 
-        // Set faing direction.
+        // Set facing direction.
         this.flipX = data.flipX || false;
 
         // Set the animation.
@@ -38,13 +37,6 @@ export default class ArcadeSprite extends Phaser.Physics.Arcade.Sprite {
                 data.velocity.y
             );
         }
-    }
-
-    /**
-     * Returns the position of the sprite as a vector.
-     */
-    get position() {
-        return new Vector2(this.x, this.y);
     }
 
     /**
@@ -72,7 +64,6 @@ export default class ArcadeSprite extends Phaser.Physics.Arcade.Sprite {
      */
     destroy() {
         this.body.destroy();
-
         super.destroy();
     }
 }

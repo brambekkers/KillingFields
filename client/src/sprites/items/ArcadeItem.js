@@ -16,7 +16,29 @@ export default class ArcadeItem extends ArcadeSprite {
         super(scene, data);
 
         // Register this item with the scene.
-        this.scene.projectiles[this.id] = this;
+        this.scene.items[this.id] = this;
+    }
+
+    /**
+     *
+     */
+    updatePosition(position) {
+        this.x = position.x;
+        this.y = position.y;
+    }
+
+    /**
+     *
+     */
+    updateFacing(flipX) {
+        this.flipX = flipX;
+    }
+
+    /**
+     *
+     */
+    updateAnimation(animation) {
+        this.anims.play(animation.key, animation.repeat);
     }
 
     /**
@@ -24,7 +46,10 @@ export default class ArcadeItem extends ArcadeSprite {
      */
     destroy() {
         // Unregister this item from the scene.
-        delete this.scene.projectiles[this.id];
+        delete this.scene.items[this.id];
+
+        // Tell the server that the item is destroyed.
+        window.socket.emit('itemDestroyed', this.id);
 
         super.destroy();
     }

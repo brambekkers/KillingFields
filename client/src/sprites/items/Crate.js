@@ -18,15 +18,16 @@ export default class Crate extends ArcadeItem {
     /**
      * The amount of crates you get from a pickup
      */
-    static amount = 1
+    static amount = 1;
 
     /**
      *
      */
     constructor(scene, data) {
-        super(scene, Object.assign(data, {
+        super(scene, {
+            ...data,
             texture: Crate.randomTexture(),
-        }));
+        });
 
         this.scene.physics.add.collider(this, [
             ...this.scene.getSolids(),
@@ -65,7 +66,7 @@ export default class Crate extends ArcadeItem {
             position: position.add(direction.multiply(70)),
         });
 
-        socket.emit('shoot', crate.toData());
+        window.socket.emit('shoot', crate.toData());
     }
 
     /**

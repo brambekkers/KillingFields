@@ -31,20 +31,22 @@ export default class Fireball extends ArcadeItem {
      * Constructs a Fireball.
      */
     constructor(scene, data) {
-        super(scene, Object.assign(data, {
+        super(scene, {
+            ...data,
             texture: 'fireball',
             flipX: data.flipX || (data.velocity
                 ? data.velocity.x < 0
                 : false
             ),
-        }));
+        });
 
         this.setBounce(0.95);
         this.body.width = 20;
         this.body.height = 20;
         this.body.setOffset(25, 25);
 
-        this.scene.physics.add.collider(this, this.scene.getSolids(), this.onBounce);
+        this.scene.physics.add.collider(this, this.scene.getSolids(), this.onCollideSolid);
+        this.scene.physics.add.collider(this, this.scene.player, this.onCollidePlayer);
     }
 
     /**
@@ -66,7 +68,7 @@ export default class Fireball extends ArcadeItem {
             velocity: direction.setMagnitude(500),
         });
 
-        socket.emit('shoot', fireball.toData());
+        window.socket.emit('shoot', fireball.toData());
     }
 
     /**
@@ -86,7 +88,7 @@ export default class Fireball extends ArcadeItem {
      *
      */
     faceDirection() {
-        this.flipX = this.body.velocity.x < 0 ? true : false;
+        this.flipX = this.body.velocity.x < 0;
     }
 
     /**
@@ -99,9 +101,19 @@ export default class Fireball extends ArcadeItem {
     /**
      *
      */
-    onBounce = () => {
+    onCollideSolid = (fireball, solid) => {
         this.bounces--;
-    }
+    };
+
+    /**
+     *
+     * @param fireball
+     * @param player
+     */
+    onCollidePlayer = (fireball, player) => {
+        player.hitBy(this);
+        this.destroy();
+    };
 
     /**
      * Returns the data representation of this instance, so that it can be sent

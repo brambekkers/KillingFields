@@ -1,14 +1,27 @@
-import Phaser from 'phaser';
-
 /**
  *
  */
-export default class Vector2 extends Phaser.Geom.Point {
+class Vector2 {
     /**
      *
      */
-    constructor(x, y) {
-        super(x, y);
+    constructor(x, y = undefined) {
+        this.x = x;
+        this.y = typeof y !== 'undefined' ? y : x;
+    }
+
+    /**
+     *
+     */
+    static zero() {
+        return new Vector2(0, 0);
+    }
+
+    /**
+     *
+     */
+    static unit() {
+        return new Vector2(1, 1);
     }
 
     /**
@@ -25,14 +38,18 @@ export default class Vector2 extends Phaser.Geom.Point {
      *
      */
     getMagnitude() {
-        return Phaser.Geom.Point.GetMagnitude(this);
+        return Math.sqrt(Math.pow(this.x, 2) + Math.pow(this.y, 2));
     }
 
     /**
      *
      */
     setMagnitude(magnitude) {
-        return Phaser.Geom.Point.SetMagnitude(this, magnitude);
+        if (magnitude === 0) {
+            return Vector2.zero();
+        }
+
+        return this.multiply(this.getMagnitude() / magnitude);
     }
 
     /**
@@ -82,3 +99,5 @@ export default class Vector2 extends Phaser.Geom.Point {
         );
     }
  }
+
+ module.exports = Vector2;
