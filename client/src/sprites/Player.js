@@ -98,7 +98,6 @@ export default class Player extends ArcadeSprite {
 
         this.hud = this.scene.scene.get('Hud');
         this.hud.setPlayer(this);
-        // this.hud.updateItemSlots(); // TODO: Remove when HUD can do this on its own. // volgens mij is dit gedaan
     }
 
     /**
