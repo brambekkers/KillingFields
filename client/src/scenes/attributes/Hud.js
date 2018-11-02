@@ -8,7 +8,7 @@ import Button from '../../sprites/Button';
  */
 
 export default class Hud extends Scene {
-    itemGroup;
+    // itemGroup;
     player;
     charInfo = {
         background: null,
@@ -45,21 +45,27 @@ export default class Hud extends Scene {
     itemSlots = [
         {
             slot: null,
+            object: null,
+            text: null,
             x: null,
             y: null,
-            Item: null,
+            // Item: null,
         },
         {
             slot: null,
+            object: null,
+            text: null,
             x: null,
             y: null,
-            Item: null,
+            // Item: null,
         },
         {
             slot: null,
+            object: null,
+            text: null,
             x: null,
             y: null,
-            Item: null,
+            // Item: null,
         }
     ]
 
@@ -90,7 +96,8 @@ export default class Hud extends Scene {
 
 
     create() {
-        this.itemGroup = this.add.group()
+        console.log('create is gedraaid')
+        // this.itemGroup = this.add.group()
         this.createAnimations()
         this.createCharInfoBox()
         this.createItemBox()
@@ -111,7 +118,7 @@ export default class Hud extends Scene {
     update(){
         if(this.player){
             this.createChar()
-            // this.updateItemSlots() // TODO: Make this work ;)
+            this.updateItemSlots()
             this.updateKillText()
             this.updateHeartHealth()
         }
@@ -182,7 +189,10 @@ export default class Hud extends Scene {
             itemSlot.y = (this.dimensions.y / 2 + slotHeightHalf) - (index * 130)
 
             itemSlot.slot = this.createSprite(itemSlot.x, itemSlot.y, `dropBox${itemColor}`, 1).setOrigin(0.5, 0.5)
-
+            itemSlot.object = this.createSprite(itemSlot.x, itemSlot.y, ``, 1).setOrigin(0.5, 0.5)
+            itemSlot.object.setVisible(false)
+            itemSlot.text = this.drawItemAmount(itemSlot.x, itemSlot.y, ``)
+        
             if (itemColor <= 2) {
                 itemColor++
             }
@@ -192,29 +202,18 @@ export default class Hud extends Scene {
     updateItemSlots() {
         for (const [i, itemSlot] of this.itemSlots.entries()) {
             if (this.player.secondaryItems[i]) {
-                itemSlot.Item = this.player.secondaryItems[i].Item
+                // Maak zichtbaar
+                itemSlot.object.setVisible(true)
+                itemSlot.text.setVisible(true)
+
+                // update text and sprite
+                itemSlot.object.setTexture(this.player.secondaryItems[i].Item.icon)
+                itemSlot.text.setText(this.player.secondaryItems[i].amount)
+
             } else {
-                itemSlot.Item = null
+                itemSlot.object.setVisible(false)
+                itemSlot.text.setVisible(false)
             }
-        }
-
-        this.drawItems()
-    }
-
-    drawItems() {
-        this.itemGroup.clear(true);
-
-        for (const [i, itemSlot] of this.itemSlots.entries()) {
-            if (!itemSlot.Item) {
-                continue;
-            }
-
-            const icon = this.add.image(itemSlot.x, itemSlot.y, itemSlot.Item.icon);
-            icon.setScrollFactor(0);
-            this.itemGroup.add(icon);
-
-            const text = this.drawItemAmount(itemSlot.x, itemSlot.y, `${this.player.secondaryItems[i].amount} `)
-            this.itemGroup.add(text);
         }
     }
 

@@ -17,5 +17,6 @@ app.get('/', function(req, res) {
 
 // Start the server.
 http.listen(3030, function() {
-    console.log('listening on *:3030');
+    console.log('Server listening on localhost:3030');
+    console.log('Killing Fields has started!');
 });
