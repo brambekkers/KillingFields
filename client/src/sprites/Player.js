@@ -188,9 +188,18 @@ export default class Player extends ArcadeSprite {
         this.walk(this.input.horizontal);
 
         // Jumping.
-        if (this.input.jump && this.state.canJump) {
-            this.jump();
+        if (this.input.jump) {
+
+            // Single jump
+            if (this.state.canJump) {
+                this.jump();
+            }
+            // dubble jump
+            else if (this.state.canDubbleJump) {
+                this.dubbleJump();
+            }
         }
+  
 
         // Ducking.
         else if (this.input.down && this.state.canDuck) {
@@ -216,7 +225,13 @@ export default class Player extends ArcadeSprite {
      *
      */
     jump() {
+        this.state.isDubbleJump = true;
         this.setVelocityY(this.jumpVelocity * -1);
+    }
+
+    dubbleJump() {
+        this.state.isDubbleJump = false
+        this.setVelocityY(this.jumpVelocity * -0.8);
     }
 
     /**
@@ -224,7 +239,6 @@ export default class Player extends ArcadeSprite {
      */
     duck() {
         this.state.isDucking = true;
-
         this.setSize(50, 65);
         this.body.setOffset(12.5, 30);
     }
@@ -294,8 +308,6 @@ export default class Player extends ArcadeSprite {
                 amount: Item.amount,
             });
         }
-
-        this.hud.updateItemSlots(); // TODO: Remove when HUD can do this on its own.
     }
 
     /**

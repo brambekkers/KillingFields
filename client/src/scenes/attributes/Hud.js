@@ -96,8 +96,6 @@ export default class Hud extends Scene {
 
 
     create() {
-        console.log('create is gedraaid')
-        // this.itemGroup = this.add.group()
         this.createAnimations()
         this.createCharInfoBox()
         this.createItemBox()
@@ -202,7 +200,7 @@ export default class Hud extends Scene {
     updateItemSlots() {
         for (const [i, itemSlot] of this.itemSlots.entries()) {
             if (this.player.secondaryItems[i]) {
-                // Maak zichtbaar
+                // Make items ach text visible
                 itemSlot.object.setVisible(true)
                 itemSlot.text.setVisible(true)
 
@@ -211,6 +209,7 @@ export default class Hud extends Scene {
                 itemSlot.text.setText(this.player.secondaryItems[i].amount)
 
             } else {
+                // When there is no item in Player set sprite and text to not visible
                 itemSlot.object.setVisible(false)
                 itemSlot.text.setVisible(false)
             }

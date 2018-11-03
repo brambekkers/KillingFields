@@ -15,6 +15,11 @@ export default class PlayerState {
     /**
      *
      */
+    _dubbleJumpStatus = true;
+
+    /**
+     *
+     */
     constructor(player) {
         this.player = player;
     }
@@ -70,6 +75,19 @@ export default class PlayerState {
         this._isDucking = value;
     }
 
+
+    set isDubbleJump(value) {
+        this._dubbleJumpStatus = value;
+    }
+
+
+    get canDubbleJump() {
+        return (
+            this._dubbleJumpStatus &&
+            !this.isGrounded
+        );
+    }
+
     /**
      *
      */
@@ -79,6 +97,7 @@ export default class PlayerState {
             !this.player.body.touching.up
         );
     }
+    
 
     /**
      *

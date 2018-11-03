@@ -96,6 +96,9 @@ export default class PlayerInput {
      *
      */
     get jump() {
-        return this.keys.space.isDown;
+        // if statement makes jump only once each keystroke
+        if (Phaser.Input.Keyboard.JustDown(this.keys.space)){
+            return true
+        }
     }
 }
