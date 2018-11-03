@@ -1,7 +1,7 @@
 import io from 'socket.io-client';
 import Phaser from 'phaser';
 import MainMenu from './scenes/attributes/MainMenu';
-import LevelTwo from './scenes/levels/LevelTwo';
+import LevelThree from './scenes/levels/LevelThree';
 import InGameMenu from './scenes/attributes/InGameMenu';
 import LobbyMenu from './scenes/attributes/LobbyMenu';
 import Hud from './scenes/attributes/Hud';
@@ -20,7 +20,7 @@ const game = new Phaser.Game({
         Credits,
         Hud,
         InGameMenu,
-        LevelTwo,
+        LevelThree,
         LobbyMenu
     ],
     physics: {

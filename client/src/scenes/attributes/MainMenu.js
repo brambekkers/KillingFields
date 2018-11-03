@@ -43,7 +43,7 @@ export default class MainMenu extends Scene {
      * Start new scenes 
      */
     startGame(){
-        this.scene.start("LevelTwo");
+        this.scene.start("LevelThree");
         this.scene.launch("Hud");
         this.scene.bringToTop("Hud")
 
