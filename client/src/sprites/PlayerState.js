@@ -15,7 +15,7 @@ export default class PlayerState {
     /**
      *
      */
-    _dubbleJumpStatus = true;
+    _isDubbleJump = true;
 
     /**
      *
@@ -77,13 +77,13 @@ export default class PlayerState {
 
 
     set isDubbleJump(value) {
-        this._dubbleJumpStatus = value;
+        this._isDubbleJump = value;
     }
 
 
     get canDubbleJump() {
         return (
-            this._dubbleJumpStatus &&
+            this._isDubbleJump &&
             !this.isGrounded
         );
     }
