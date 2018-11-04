@@ -1,5 +1,7 @@
 const Vector2 = require('../math/Vector2');
 const config = require('../config');
+const uniqid = require('uniqid');
+
 
 /**
  *
@@ -10,7 +12,7 @@ class GameObject {
      */
     constructor(room, data = {}) {
         data = {
-            id: new Date().getTime(), // TODO: Use better IDs.
+            id: uniqid(),
             position: room.level.bounds
                 .expand(-config.GRID_SIZE)
                 .getRandomPosition(),

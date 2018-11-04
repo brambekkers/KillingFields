@@ -17,10 +17,33 @@ class Room {
         this.players = {};
         this.items = {};
         this.loot = {};
+        this.rooms = {};
 
         this.bindEventHandlers();
 
         this.addLoot();
+    }
+
+    /**
+     * 
+     */
+    onConnect(socket) {
+        // Create a new player.
+        const player = new Player(socket, this);
+
+
+        socket.on('start', () => {
+            this.onStart(socket, player);
+        });
+
+        socket.on('createRoom', (roomID) => {
+            this.createRoom(socket, player, roomID);
+            return this.rooms
+        });
+
+        
+
+        console.log('Player joined lobby.');
     }
 
     /**
@@ -49,25 +72,28 @@ class Room {
     /**
      *
      */
-    onConnect(socket) {
-        console.log('Player connected.');
-
-        socket.on('start', () => {
-            this.onStart(socket);
-        });
-    }
-
-    /**
-     *
-     */
-    onStart(socket) {
-        console.log('Player started.');
-
-        // Create a new player.
-        const player = new Player(socket, this);
-
+    onStart(socket, player) {
         // Add player to list.
         this.addPlayer(player);
+
+        console.log('Player started.');
+    }
+
+    createRoom(socket, player, roomID){
+        console.log('New Room created:', roomID)
+
+        this.rooms[roomID] = {
+            players: [player.id],
+        };
+
+        player.roomName = roomID;
+        
+        // Tell everyone that the room has created.
+        player.socket.broadcast.emit('roomCreated', rooms);
+    }
+
+    changeRoom(){
+        console.log('roomchanged')
     }
 
     /**

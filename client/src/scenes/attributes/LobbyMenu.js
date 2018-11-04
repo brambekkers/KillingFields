@@ -1,6 +1,8 @@
 import Scene from '../Scene';
 import Vector2 from '../../math/Vector2';
 import Button from '../../sprites/Button';
+const uniqid = require('uniqid');
+
 
 /**
  * @abstract
@@ -20,7 +22,8 @@ export default class LobbyMenu extends Scene {
     menuBackground;
     
     newRoom = ()=>{
-
+        let test = window.socket.emit('createRoom', uniqid());
+        console.log(test)
     }
  
     back = ()=>{
@@ -30,7 +33,7 @@ export default class LobbyMenu extends Scene {
 
     buttons = [
         {sprite: null, scale: 0.3, x: this.dimensions.x/2 - 230 , y: this.dimensions.y/2 + 370, texture: "backButton", callback: this.back },
-        {sprite: null, name: "Create  new  Room ", scale: 0.3, x: this.dimensions.x/2 , y: this.dimensions.y/2 + 370, texture: "buttonBackground1", callback: this.newRoom },
+        {sprite: null, name: "Create  New  Room ", scale: 0.3, x: this.dimensions.x/2 , y: this.dimensions.y/2 + 370, texture: "buttonBackground1", callback: this.newRoom },
     ]
 
     preload() {   
