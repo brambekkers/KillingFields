@@ -89,7 +89,7 @@ class Room {
         player.roomName = roomID;
         
         // Tell everyone that the room has created.
-        player.socket.broadcast.emit('roomCreated', rooms);
+        player.socket.broadcast.emit('roomCreated', this.rooms);
     }
 
     changeRoom(){

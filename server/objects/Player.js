@@ -49,6 +49,8 @@ class Player extends GameObject {
         this.socket.on('itemDestroyed', this.onItemDestroy.bind(this));
 
         this.socket.on('destroyLoot', this.onDestroyLoot.bind(this));
+
+
     }
 
     /**
