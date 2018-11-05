@@ -19,6 +19,7 @@ class Player extends GameObject {
 
         this.socket = socket;
         this.roomName = 'lobby';
+        this.allRooms = {}
 
         const data = _.sample(config.players);
         this.character = data.character;
