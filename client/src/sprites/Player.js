@@ -362,8 +362,6 @@ export default class Player extends ArcadeSprite {
         slot.Item.use(this);
 
         this.cooldowns.secondary = slot.Item.cooldown;
-
-        this.hud.updateItemSlots(); // TODO: Remove when HUD can do this on its own.
     }
 
     //////////////////
