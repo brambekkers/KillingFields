@@ -18,9 +18,7 @@ const game = new Phaser.Game({
     scene: [
         MainMenu,
         Credits,
-        Hud,
         InGameMenu,
-        LevelThree,
         LobbyMenu
     ],
     physics: {

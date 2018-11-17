@@ -16,6 +16,7 @@ export default class Hud extends Scene {
         heartHealth: null,
         killText: null
     }
+    frameIndex = 0;
 
     /**
      *
@@ -42,8 +43,7 @@ export default class Hud extends Scene {
     }
 
     // Itembox
-    itemSlots = [
-        {
+    itemSlots = [{
             slot: null,
             object: null,
             text: null,
@@ -107,27 +107,30 @@ export default class Hud extends Scene {
             google: {
                 families: ['Knewave']
             },
-            active: ()=>{
-               this.setFont()
+            active: () => {
+                this.setFont()
             }
         });
     }
 
-    update(){
-        if(this.player){
-            this.createChar()
-            this.updateItemSlots()
-            this.updateKillText()
-            this.updateHeartHealth()
+    update() {
+        this.frameIndex = this.frameIndex + 1 % Infinity
+
+        if (!this.shouldUpdate()) {
+            return
         }
+
+        this.updateItemSlots()
+        this.updateKillText()
+        this.updateHeartHealth()
     }
 
-    updateHeartHealth(){
+    shouldUpdate() {
+        return this.frameIndex % 12 != 0
+    }
+
+    updateHeartHealth() {
         this.charInfo.heartHealth.play(`heartHealth${this.player.health}`, true);
-    }
-
-    setPlayer(player){
-        this.player = player
     }
 
     createAnimations() {
@@ -149,11 +152,10 @@ export default class Hud extends Scene {
         this.optionButton.sprite = new Button(this, this.optionButton);
         this.charInfo.heartHealth = this.createSprite(128, 45, 'heartHealth', 0.8)
         this.charInfo.heartHealth.anims.play(`heartHealth10`);
-    }
-
-    createChar() {
         this.charInfo.char = this.createSprite(50, 50, `hud_${this.player.character}`, 0.9)
     }
+
+
 
     createKillText() {
         this.charInfo.killText = this.add.text(230, 97, ' ', {
@@ -166,7 +168,7 @@ export default class Hud extends Scene {
         this.charInfo.killText.setScrollFactor(0);
     }
 
-    updateKillText(){
+    updateKillText() {
         this.charInfo.killText.setText(this.player.kills)
     }
 
@@ -190,7 +192,7 @@ export default class Hud extends Scene {
             itemSlot.object = this.createSprite(itemSlot.x, itemSlot.y, ``, 1).setOrigin(0.5, 0.5)
             itemSlot.object.setVisible(false)
             itemSlot.text = this.drawItemAmount(itemSlot.x, itemSlot.y, ``)
-        
+
             if (itemColor <= 2) {
                 itemColor++
             }

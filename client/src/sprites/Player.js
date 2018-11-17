@@ -7,6 +7,9 @@ import Crate from './items/Crate';
 import Spike from './items/Spike';
 import Trampoline from './items/Trampoline';
 
+import Hud from '../scenes/attributes/Hud';
+
+
 /**
  *
  */
@@ -96,8 +99,7 @@ export default class Player extends ArcadeSprite {
         this.setSize(50, 94, true);
         this.setDragY(300);
 
-        this.hud = this.scene.scene.get('Hud');
-        this.hud.setPlayer(this);
+        this.hud = this.scene.scene.add('Hud', new Hud(this), true);
     }
 
     /**
@@ -159,8 +161,6 @@ export default class Player extends ArcadeSprite {
         this.coolDown();
         this.displayHitCooldown();
         this.useItems();
-
-        this.hud.update();
     }
 
     ////////////////////

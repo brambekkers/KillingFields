@@ -23,8 +23,8 @@ export default class InGameMenu extends Scene {
         this.scene.run("MainMenu");
         this.scene.bringToTop("MainMenu")
 
-        this.scene.stop("InGameMenu");
-        this.scene.stop("LevelTwo");
+        this.scene.remove("InGameMenu");
+        this.scene.remove("LevelThree");
     }
 
     helloWorld = ()=>{

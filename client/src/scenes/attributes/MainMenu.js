@@ -1,6 +1,7 @@
 import Scene from '../Scene';
 import Vector2 from '../../math/Vector2';
 import Button from '../../sprites/Button';
+import LevelThree from '../levels/LevelThree';
 import { createContext } from 'vm';
 
 
@@ -43,7 +44,8 @@ export default class MainMenu extends Scene {
      * Start new scenes 
      */
     startGame(){
-        this.scene.start("LevelThree");
+        this.scene.add("LevelThree", LevelThree, true);
+        // this.scene.start("LevelThree");
         this.scene.launch("Hud");
         this.scene.bringToTop("Hud")
 
