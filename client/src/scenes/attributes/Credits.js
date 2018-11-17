@@ -292,7 +292,7 @@ export default class Credits extends Scene {
         this.scene.start("MainMenu");
         
         this.backgroundMusic.stop();
-        this.scene.stop("Credits")
+        this.scene.remove("Credits")
     }
 
 }

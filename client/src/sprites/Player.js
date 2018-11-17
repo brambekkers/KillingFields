@@ -99,7 +99,7 @@ export default class Player extends ArcadeSprite {
         this.setSize(50, 94, true);
         this.setDragY(300);
 
-        this.hud = this.scene.scene.add('Hud', new Hud(this), true);
+        this.scene.scene.add('Hud', new Hud(this), true);
     }
 
     /**

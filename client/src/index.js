@@ -17,7 +17,6 @@ const game = new Phaser.Game({
     backgroundColor: '#f3e184',
     scene: [
         MainMenu,
-        Credits,
         InGameMenu,
         LobbyMenu
     ],

@@ -2,6 +2,8 @@ import Scene from '../Scene';
 import Vector2 from '../../math/Vector2';
 import Button from '../../sprites/Button';
 import LevelThree from '../levels/LevelThree';
+import Credits from '../attributes/Credits';
+
 import { createContext } from 'vm';
 
 
@@ -90,7 +92,7 @@ export default class MainMenu extends Scene {
     }
 
     credits = ()=>{
-        this.scene.start("Credits");
+        this.scene.add('Credits', new Credits(), true);
 
         this.backgroundMusic.stop();
         this.scene.stop("MainMenu")
